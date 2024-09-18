@@ -31,7 +31,7 @@ export default  function SidebarMenu({ isOpen, closeMenu }) {
         </nav>
 
         <Link href="/help" className="text-gray-400 text-sm hover:text-yellow-400">Yardım merkezi</Link>
-       { !user && <button className="bg-white text-black px-4 py-2 rounded hover:bg-yellow-400">
+       { user == -1 && <button className="bg-white text-black px-4 py-2 rounded hover:bg-yellow-400">
           <Link href="/auth" onClick={()=>{
             closeMenu();
           }}>Giriş Yap</Link>
