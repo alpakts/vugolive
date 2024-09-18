@@ -15,7 +15,7 @@ export default function Header() {
         setIsSticky(true);
         setTimeout(() => {
           setIsScrolled(true);
-        }, 50); // Sabitlendikten sonra çok küçük bir gecikmeyle isScrolled geçişini tetikleyebiliriz
+        }, 50); 
       } else {
         setIsSticky(false);
 

@@ -132,16 +132,16 @@ const Profile = () => {
             <div className="py-2"> İlgi Alanları</div>
             <div className="flex flex-wrap gap-2"> 
             {['Kodlama', 'Yazılım', 'Web Tasarım', 'Web Geliştirme', 'Kitap okumak'].map((item, index) => (
-              <span key={index} className="bg-gray-900 text-black font-bold px-2 py-1 rounded-full text-xs mr-2">
+              <span key={index} className="bg-gray-900 text-white font-bold px-2 py-1 rounded-full text-xs mr-2">
                 {item}
               </span>
             ))}
             </div>
           </div>
           <div className="flex flex-col gap-2 my-8">
-          <CustomButton className="bg-gray-900  rounded px-2 py-3 text-center text-white font-bold hover:bg-primary " >SOHBETİ BAŞLAT {user?.name}</CustomButton>
-          <CustomButton>PAYLAŞ {user.name} PROFİLİ </CustomButton>
-          <CustomButton>ŞİKAYET ET  {user.name} </CustomButton>
+          <CustomButton className="bg-gray-900  text-base text-white"  >SOHBETİ BAŞLAT {user?.name}</CustomButton>
+          <CustomButton  className="bg-gray-900  text-base text-white">PAYLAŞ {user.name} PROFİLİ </CustomButton>
+          <CustomButton  className="bg-gray-900  text-base text-white">ŞİKAYET ET  {user.name} </CustomButton>
           </div>
           </div>
          

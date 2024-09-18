@@ -29,7 +29,7 @@ const AccounHome = () => {
     {/* Gizlilik Politikası */}
     <MenuItem icon={<FaInfoCircle />} text="Gizlilik Politikası" />
     <div className='flex  flex-row gap-5 items-center ml-4'>
-    <Image  src={'logo.png'} width={50} height={50} alt='logo' /> <span>1.4</span>
+    <Image  src={'/logo.png'} width={50} height={50} alt='logo' /> <span>1.4</span>
     </div>
     <MenuItem onClick={handleLogout} icon={<FaChevronLeft  />} text="Çıkış Yağ" />
 

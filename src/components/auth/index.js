@@ -7,6 +7,7 @@ import CustomButton from '@/components/web-components/button/button';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/lib/slices/userSlice';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { FaMailBulk } from 'react-icons/fa';
 
 const AuthHome = () => {
     const dispatch = useDispatch();
@@ -29,16 +30,16 @@ const AuthHome = () => {
     <div className='text-center'>Aşağıdaki mevcut yöntemlerden herhangi birini kullanarak oturum açın ve profilleri keşfetmeye başlayın</div>
     <CustomButton
       onClick={handleLogin}
-      className='flex gap-2 px-3 py-2 items-center justify-center w-4/5 mx-auto bg-blue-500  hover:text-white '
+      className='flex gap-2 px-3 py-2 items-center justify-center w-4/5 mx-auto bg-gray-900  text-white '
      
     >
       <span><Image src={'/google.logo.svg'} width={20} height={20}></Image></span>Google ile Giriş Yap
     </CustomButton>
     <CustomButton
-      className='flex gap-2 px-3 py-2 items-center justify-center w-4/5 mx-auto text-black bg-secondary'
+      className='flex gap-2 px-3 py-2 items-center justify-center w-4/5 mx-auto text-white bg-gray-900'
       
     >
-      <span><Image src={'/mail-logo.svg'} width={20} height={20}></Image></span>E-posta ile Giriş Yap
+      <span><FaMailBulk/></span>E-posta ile Giriş Yap
     </CustomButton>
     </div>
   )

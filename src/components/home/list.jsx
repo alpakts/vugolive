@@ -134,7 +134,7 @@ export default function List() {
                   </SwiperSlide>
                 ))}
               </Swiper>
-              <div className="text-white text-center absolute bottom-5 z-10 px-4 my-6 rounded-lg left-2 bg-black bg-opacity-10">
+              <div className="text-white text-center absolute bottom-5 z-10 px-4 my-6 rounded-lg left-2 bg-gray-900 bg-opacity-30">
                 {item.status}
               </div>
               <div className="text-white p-2   ">{item.name}</div>

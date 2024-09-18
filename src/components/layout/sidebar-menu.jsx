@@ -13,7 +13,9 @@ export default  function SidebarMenu({ isOpen, closeMenu }) {
 
       <div className="flex flex-col space-y-4 p-4">
         <div className="text-2xl font-bold">Vugo Live</div>
-        <div className="text-gray-300">Profilim</div>
+        {user != -1 && <div className="text-gray-300"><Link href={'/account'} onClick={()=>{
+            closeMenu();
+          }}>Profilim</Link></div>}
 
         <nav className="flex flex-col space-y-2">
           <Link href="/popular" className="flex items-center space-x-2 text-lg hover:text-yellow-400">
@@ -31,12 +33,15 @@ export default  function SidebarMenu({ isOpen, closeMenu }) {
         </nav>
 
         <Link href="/help" className="text-gray-400 text-sm hover:text-yellow-400">Yardım merkezi</Link>
-       { user == -1 && <button className="bg-white text-black px-4 py-2 rounded hover:bg-yellow-400">
-          <Link href="/auth" onClick={()=>{
+       { user == -1 && <Link className="bg-white text-black text-center px-4 py-2 rounded hover:bg-yellow-400"
+          href="/auth" onClick={()=>{
             closeMenu();
-          }}>Giriş Yap</Link>
-        </button>}
+          }}>Giriş Yap
+        </Link>}
       </div>
     </div>
   );
 }
+
+
+
