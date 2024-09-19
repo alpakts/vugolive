@@ -15,7 +15,7 @@ export default function TabComponent() {
       {/* Sekmeler */}
       <div className="flex items-center border border-black rounded-full">
         <button
-          className={`py-2 px-4 font-bold flex items-center rounded-r-none  text-center justify-center ${
+          className={`py-2 px-2 font-bold flex min-w-max items-center rounded-r-none  text-center justify-center ${
             activeTab === "Profiller"
               ? "bg-primary text-black"
               : "text-secondary bg-gray-900"
@@ -25,7 +25,7 @@ export default function TabComponent() {
           Profiller
         </button>
         <button
-          className={`py-2 px-4 font-bold flex items-center rounded-l-none  justify-center ${
+          className={`py-2 px-2 font-bold min-w-max flex items-center rounded-l-none  justify-center ${
             activeTab === "Canlı"
                ? "bg-primary text-black"
               : "text-secondary bg-gray-900"

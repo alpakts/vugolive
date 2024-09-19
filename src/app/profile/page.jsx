@@ -1,7 +1,7 @@
 "use client";
 import Skeleton from "@/components/web-components/skeleton/skeleton";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
@@ -22,6 +22,7 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [currentVideo, setCurrentVideo] = useState(null);
   const [isVideoOpen, setIsVideoOpen] = useState(null);
+  const router = useRouter();
   const params = useSearchParams();
   const userId = params.get("userId");
 
@@ -154,7 +155,7 @@ const Profile = () => {
 
               <div className="flex flex-col gap-2 my-8 lg:my-12">
                 <CustomButton className="bg-gray-900 text-base text-white " onClick={()=>{
-                  window.location.href = `/chat/${user.id}`
+                  router.push(`/chat/${user.id}`);
                 }}>
                   SOHBETİ BAŞLAT {user?.name}
                 </CustomButton>
