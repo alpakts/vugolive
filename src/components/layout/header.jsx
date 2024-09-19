@@ -32,17 +32,12 @@ export default function Header() {
   }, []);
 
   return (
-    <>
-    <div   className={`${
-        isSticky ? `pt-[${header.current.offsetHeight}]` : 'relative'
-      }`}></div>
       <header
     ref={header}
-      className={`${
-        isSticky ? 'fixed top-0 left-0 w-full z-50' : 'relative'
-      } transition-all duration-300 ease-in-out ${
-        isScrolled ? 'bg-black shadow-lg' : 'bg-transparent'
-      } flex justify-between items-center p-4 text-white`}
+      className={`sticky top-0 left-0 w-full z-50 relative'
+       transition-all duration-300 ease-in-out
+      bg-black shadow-lg
+      flex justify-between items-center p-4 text-white`}
     >
       <div className="text-xl font-bold hover:text-[#fee64e]">
         <Link  href="/">Vugo Live</Link>
@@ -62,6 +57,5 @@ export default function Header() {
 
       <SidebarMenu isOpen={isMenuOpen} closeMenu={() => setIsMenuOpen(false)} />
     </header>
-    </>
   );
 }

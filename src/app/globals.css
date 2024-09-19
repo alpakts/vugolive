@@ -6,10 +6,19 @@
 :root {
   --foreground-rgb:#e4cc4a;
   --background-start-rgb: white;
-  --background-end-rgb: black;
+  --background-end-rgb: rgb(0, 0, 0);
 }
 
 
+@layer components {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #ffffff; /* Text rengini beyaz yapıyoruz */
+    box-shadow: 0 0 0px 1000px #1f2937 inset; /* Arka plan rengini ayarlama */
+    transition: background-color 5000s ease-in-out 0s; /* Arka plan geçişi */
+  }
+}
 
 body {
   color: var(--foreground-rgb);

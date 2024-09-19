@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
+import TabComponent from "./tab-select";
 export default function List() {
   const items = [
     {
@@ -107,6 +108,8 @@ export default function List() {
 
   return (
     <div className="p-4">
+    <TabComponent></TabComponent>
+
       <h2 className="text-base font-bold mb-4 border-b border-primary pb-3">
         Sizin İçin Önerilenler
       </h2>
@@ -129,6 +132,7 @@ export default function List() {
                       alt={item.name}
                       width={100}
                       height={100}
+                      sizes="(max-width: 768px) 30vw, 50vw"
                       className="  w-full object-cover h-full aspect-square  rounded-xl "
                     />
                   </SwiperSlide>

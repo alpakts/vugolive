@@ -36,6 +36,7 @@ const AuthHome = () => {
       <span><Image src={'/google.logo.svg'} width={20} height={20}></Image></span>Google ile Giriş Yap
     </CustomButton>
     <CustomButton
+      href={params.get('callbackUrl') ?`/auth/login?callbackUrl=${params.get('callbackUrl')}`:'/auth/login'}
       className='flex gap-2 px-3 py-2 items-center justify-center w-4/5 mx-auto text-white bg-gray-900'
       
     >

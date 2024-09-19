@@ -1,6 +1,6 @@
 import React from 'react'
 import MenuItem from '../web-components/menu-item'
-import { FaWallet, FaUserAltSlash, FaUserPlus, FaShareAlt, FaRegBookmark, FaFileAlt, FaInfoCircle, FaChevronLeft } from 'react-icons/fa';
+import { FaWallet, FaUserAltSlash, FaUserPlus, FaShareAlt, FaRegBookmark, FaFileAlt, FaInfoCircle, FaChevronLeft, FaGooglePlay } from 'react-icons/fa';
 import Image from 'next/image';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../../firebaseConfig';
@@ -27,11 +27,14 @@ const AccounHome = () => {
     {/* Kullanım Koşulları */}
     <MenuItem icon={<FaFileAlt />} text="Kullanım Koşulları" />
     {/* Gizlilik Politikası */}
-    <MenuItem icon={<FaInfoCircle />} text="Gizlilik Politikası" />
+    <MenuItem onClick={()=>{
+      window.location.pathname = '/privacy'
+    }} icon={<FaInfoCircle />} text="Gizlilik Politikası" />
+    <MenuItem icon={<FaGooglePlay />} text="Uygulamayı indir" />
     <div className='flex  flex-row gap-5 items-center ml-4'>
     <Image  src={'/logo.png'} width={50} height={50} alt='logo' /> <span>1.4</span>
     </div>
-    <MenuItem onClick={handleLogout} icon={<FaChevronLeft  />} text="Çıkış Yağ" />
+    <MenuItem onClick={handleLogout} icon={<FaChevronLeft  />} text="Çıkış Yap" />
 
   </div>
   )

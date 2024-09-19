@@ -1,11 +1,9 @@
-import AuthHome from '@/components/auth'
+import ChatPage from '@/components/chat/chat-page'
 import React from 'react'
 
 const Page = () => {
   return (
-    <>
-        <AuthHome/>
-    </>
+    <ChatPage></ChatPage>
   )
 }
 
