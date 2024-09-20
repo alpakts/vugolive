@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
       <AuthProvider>
       <Suspense fallback={<Loading/>}>
       <Header />
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto min-h-screen">
       {children}
       </div>
       <Footer/>

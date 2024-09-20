@@ -1,5 +1,4 @@
 "use client";
-import Skeleton from "@/components/web-components/skeleton/skeleton";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -17,6 +16,7 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import VideoPlayer from "@/components/web-components/video-player/video-player";
 import CustomButton from "@/components/web-components/button/button";
+import Skeleton from "@/components/web-components/skeleton/skeleton";
 
 const Profile = () => {
   const [user, setUser] = useState(null);

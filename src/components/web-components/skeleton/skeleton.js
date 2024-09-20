@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Skeleton = ({ isImage = false, lines = 3 }) => {
+const Skeleton = ({ isImage = false, lines = 3  }) => {
   return (
     <div
       role="status"

@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { FiGlobe, FiChevronDown, FiFilter } from "react-icons/fi"; // React Icons'dan iconlar
 
-export default function TabComponent() {
-  const [activeTab, setActiveTab] = useState("Profiller");
+export default function TabComponent({activeTab,setActiveTab}) {
+ 
   const [dropdownOpen, setDropdownOpen] = useState(false); // Dropdown'un açık olup olmadığını kontrol ediyoruz
 
   const toggleDropdown = () => {
@@ -11,7 +11,7 @@ export default function TabComponent() {
   };
 
   return (
-    <div className="flex items-center py-4 space-x-4 text-sm ">
+    <div className="flex items-center py-4 space-x-4 text-sm justify-between ">
       {/* Sekmeler */}
       <div className="flex items-center border border-black rounded-full">
         <button
@@ -20,7 +20,9 @@ export default function TabComponent() {
               ? "bg-primary text-black"
               : "text-secondary bg-gray-900"
           }  rounded-full`}
-          onClick={() => setActiveTab("Profiller")}
+          onClick={() => {
+            setActiveTab("Profiller")
+          }}
         >
           Profiller
         </button>
@@ -30,7 +32,9 @@ export default function TabComponent() {
                ? "bg-primary text-black"
               : "text-secondary bg-gray-900"
           }  rounded-full`}
-          onClick={() => setActiveTab("Canlı")}
+          onClick={() => {
+            setActiveTab("Canlı")
+          }}
         >
           Canlı Yayınlar
         </button>

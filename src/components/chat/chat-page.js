@@ -13,9 +13,8 @@ export default function ChatPage() {
     }
   }, []);
   return (
-    <div className=" max-w-none js-chat-cont bg-black absolute z-[999] left-0  w-screen overflow-hidden top-0 py-4 h-screen max-h-screen text-white flex flex-col"> {/* Dark tema arka plan ve flex container */}
+    <div className=" max-w-none js-chat-cont bg-black fixed z-[999] left-0  w-screen overflow-hidden top-0 py-4 h-screen max-h-screen text-white flex flex-col"> {/* Dark tema arka plan ve flex container */}
       
-      {/* Header */}
       <header className=" flex items-center justify-between border-b pb-2 border-gray-700">
         <div className="w-full flex gap-5 items-center ">
           <button className="text-white" onClick={()=> router.back()}>

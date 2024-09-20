@@ -4,6 +4,11 @@ import { FaWallet, FaUserAltSlash, FaUserPlus, FaShareAlt, FaRegBookmark, FaFile
 import Image from 'next/image';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../../firebaseConfig';
+import FollowersList from './components/followings';
+import SlidingModal from '../web-components/modals/sliding-modal';
+import BlocksList from './components/blocks';
+import DiamondPage from './components/diamond';
+import PublisherApplicationForm from './components/publisher-form';
 const AccounHome = () => {
   const handleLogout = () => {
     signOut(auth).then(() => {
@@ -15,15 +20,17 @@ const AccounHome = () => {
   return (
     <div className="w-full mt-6 space-y-4 text-white">
     {/* Elmas Yükleme */}
-    <MenuItem icon={<FaWallet />} text="Elmas Yükleme" />
+    <SlidingModal  OpenButton={<MenuItem icon={<FaWallet />} text="Elmas Yükleme" />} ><DiamondPage/></SlidingModal>
     {/* Takip Edilenler */}
-    <MenuItem icon={<FaRegBookmark />} text="Takip Edilenler" />
+   
+    <SlidingModal  OpenButton={<MenuItem icon={<FaRegBookmark />} text="Takip Edilenler" />} ><FollowersList/></SlidingModal>
     {/* Engellenenler */}
-    <MenuItem icon={<FaUserAltSlash />} text="Engellenenler" />
+    
+    <SlidingModal  OpenButton={<MenuItem icon={<FaUserAltSlash />} text="Engellenenler" />} > <BlocksList/></SlidingModal>
     {/* Uygulamayı Paylaş */}
     <MenuItem icon={<FaShareAlt />} text="Uygulamayı Paylaş" />
     {/* Yayıncı Ol */}
-    <MenuItem icon={<FaUserPlus />} text="Yayıncı Ol" />
+    <SlidingModal  OpenButton={<MenuItem icon={<FaUserPlus />} text="Yayıncı Ol" />} > <PublisherApplicationForm/></SlidingModal>
     {/* Kullanım Koşulları */}
     <MenuItem icon={<FaFileAlt />} text="Kullanım Koşulları" />
     {/* Gizlilik Politikası */}

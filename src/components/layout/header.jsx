@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from 'react';
 import SidebarMenu from './sidebar-menu';
 import Image from 'next/image';
 import Link from 'next/link';
+import SlidingModal from '../web-components/modals/sliding-modal';
+import DiamondPage from '../account/components/diamond';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,7 +50,8 @@ export default function Header() {
           <Image width={24} height={24} src="/shop.svg" alt="shop menu" />
         </button>
         <button>
-          <Image width={24} height={24} src="/diamond.svg" alt="diamond menu" />
+         
+          <SlidingModal  OpenButton={ <Image width={24} height={24} src="/diamond.svg" alt="diamond menu" />} ><DiamondPage/></SlidingModal>
         </button>
         <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
           <Image width={24} height={24} src="/burger-bar.svg" alt="burger menu" />

@@ -1,4 +1,5 @@
-import List from "@/components/home/list";
+import HomeIndex from "@/components/home";
+
 export const metadata = {
   title: 'Vugo Live | Canlı Yayınlar',
   description: 'Vugo Live | Canlı Yayınlar',
@@ -6,7 +7,7 @@ export const metadata = {
 export default function Home() {
   return (
     <div>
-      <List></List>
+      <HomeIndex></HomeIndex>
     </div>
   );
 }
