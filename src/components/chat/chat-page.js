@@ -1,10 +1,11 @@
 'use client';
+import withAuth from '@/hocs/with-auth';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { FiChevronLeft, FiFile, FiGift, FiSend, FiSettings } from 'react-icons/fi';
 
-export default function ChatPage() {
+ function ChatPage() {
   const chatRef = useRef(null);
   const router = useRouter();
   useEffect(() => {
@@ -150,3 +151,4 @@ export default function ChatPage() {
     </div>
   );
 }
+export default withAuth(ChatPage);

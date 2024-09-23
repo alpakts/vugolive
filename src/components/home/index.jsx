@@ -125,9 +125,9 @@ export default function HomeIndex() {
     <div className="p-4">
       <TabComponent activeTab={activeTab} setActiveTab={setActiveTab} />
   
-      <h2 className="text-base font-bold mb-4 border-b border-primary pb-3">
+      <h1 className="text-base font-bold mb-4 border-b border-primary pb-3">
         Sizin İçin Önerilenler
-      </h2>
+      </h1>
       {users?.length>0 ?(
         <div className="grid grid-cols-2 gap-4 relative">
           {users.map((item, index) => (
@@ -135,7 +135,7 @@ export default function HomeIndex() {
           ))}
         </div>
       ) : (
-        <SkeletonImage count={6} haveLine={true} ></SkeletonImage>
+        <SkeletonImage count={6} haveLine={false} ></SkeletonImage>
       )}
       
     </div>
