@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import CustomButton from "../button/button";
+import { IoMdClose } from "react-icons/io";
 
 const SlidingModal = ({ OpenButton,modalTitle ,children }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +49,7 @@ const SlidingModal = ({ OpenButton,modalTitle ,children }) => {
   };
 
   const handleDragEnd = () => {
-    if (modalY > 200) {
+    if (modalY > 100) {
       closeModal();
     } else {
       setModalY(0); 
@@ -61,6 +62,7 @@ const SlidingModal = ({ OpenButton,modalTitle ,children }) => {
 
       {isOpen && (
         <div className="fixed inset-0 !m-0 bg-black bg-opacity-50 h-screen flex z-[999] justify-center items-end transition-opacity duration-700">
+        
           <div
             className="bg-black w-full md:w-4/5  rounded-t-lg transform h-full transition-transform duration-700 ease-out relative"
             style={{ transform: `translateY(${modalY}px)` }}
@@ -76,6 +78,12 @@ const SlidingModal = ({ OpenButton,modalTitle ,children }) => {
               onTouchStart={handleDragStart}
             >
               <div className="bg-secondary w-32 h-2 rounded"></div>
+              <CustomButton
+                className="bg-transparent absolute  w-fit right-0 text-secondary  font-bold  py-2  mt-4"
+                onClick={closeModal}
+              >
+                <IoMdClose size={24} />
+              </CustomButton>
             </div>
 
             <div className="p-6 flex flex-col justify-between h-full">
@@ -85,12 +93,7 @@ const SlidingModal = ({ OpenButton,modalTitle ,children }) => {
               </div>
 
               {/* Close Button */}
-              <CustomButton
-                className="bg-gray-900 absolute bottom-0 w-full left-0 text-secondary  font-bold  py-2  mt-4"
-                onClick={closeModal}
-              >
-                Kapat
-              </CustomButton>
+           
             </div>
           </div>
         </div>

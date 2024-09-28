@@ -135,7 +135,7 @@ export default function HomeIndex() {
           ))}
         </div>
       ) : (
-        <SkeletonImage count={6} haveLine={false} ></SkeletonImage>
+        <SkeletonImage count={10} haveLine={false} ></SkeletonImage>
       )}
       
     </div>

@@ -5,37 +5,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import SlidingModal from '../web-components/modals/sliding-modal';
 import DiamondPage from '../account/components/diamond';
+import { FaTrophy, FaUser } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSticky, setIsSticky] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const  header =  useRef(null);
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsSticky(true);
-        setTimeout(() => {
-          setIsScrolled(true);
-        }, 50); 
-      } else {
-        setIsSticky(false);
-
-        setIsScrolled(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
+  const user = useSelector((state) => state.user.user);
   return (
       <header
-    ref={header}
       className={`sticky top-0 left-0 w-full z-50 relative'
        transition-all duration-300 ease-in-out
       bg-black shadow-lg
@@ -44,15 +21,20 @@ export default function Header() {
       <div className="text-xl font-bold hover:text-[#fee64e]">
         <Link  href="/">Vugo Live</Link>
       </div>
-
+     
       <div className="flex flex-row gap-5">
-        <button>
-          <Image width={24} height={24} src="/shop.svg" alt="shop menu" />
-        </button>
+      
+        <Link href={user != -1?'/account':'auth'}>
+        <FaUser size={24} />
+        </Link>
         <button>
          
           <SlidingModal  OpenButton={ <Image width={24} height={24} src="/diamond.svg" alt="diamond menu" />} ><DiamondPage/></SlidingModal>
         </button>
+        <Link href={'/ranking'}>
+          <FaTrophy  size={24} />
+       </Link>
+      
         <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
           <Image width={24} height={24} src="/burger-bar.svg" alt="burger menu" />
         </button>

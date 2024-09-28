@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { FiGlobe, FiChevronDown, FiFilter } from "react-icons/fi"; // React Icons'dan iconlar
-
+import { TbCategoryFilled } from "react-icons/tb";
 export default function TabComponent({activeTab,setActiveTab}) {
  
   const [dropdownOpen, setDropdownOpen] = useState(false); // Dropdown'un açık olup olmadığını kontrol ediyoruz
@@ -46,8 +46,8 @@ export default function TabComponent({activeTab,setActiveTab}) {
           className="flex items-center space-x-2 bg-black text-white py-2 px-4 rounded-full"
           onClick={toggleDropdown} // Dropdown'u aç/kapat
         >
-          <FiGlobe className="text-white" size={18} />
-          <span>Global</span>
+          <TbCategoryFilled className="text-white" size={18} />
+          <span>Kategoriler</span>
           <FiChevronDown className="text-white" size={16} />
         </button>
 

@@ -17,7 +17,8 @@ import "swiper/css/scrollbar";
 import VideoPlayer from "@/components/web-components/video-player/video-player";
 import CustomButton from "@/components/web-components/button/button";
 import Skeleton from "@/components/web-components/skeleton/skeleton";
-
+import { IoVideocamSharp } from "react-icons/io5";
+import { AiFillMessage } from "react-icons/ai";
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [currentVideo, setCurrentVideo] = useState(null);
@@ -41,7 +42,7 @@ const Profile = () => {
     <div className="p-4 min-h-screen text-white">
       {user != null ? (
         <div className="max-h-fit">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 ">
             {" "}
             {/* Ekran boyutuna göre grid yapısı */}
             <Swiper
@@ -54,7 +55,7 @@ const Profile = () => {
               ]}
               effect={"creative"}
               spaceBetween={50}
-              className="w-full h-full"
+              className="w-full h-full relative"
               slidesPerView={1}
               creativeEffect={{
                 prev: {
@@ -82,7 +83,18 @@ const Profile = () => {
                   </SwiperSlide>
                 )
               )}
+              <div className="absolute bottom-4 w-full items-center justify-center flex gap-2 z-10 ">
+              <div className="flex gap-2 items-center bg-white rounded-full p-2 hover:bg-primary" onClick={()=>{
+                  router.push(`/chat/${user.id}`);
+                }}>
+                <AiFillMessage  size={30} color="black" />
+              </div>
+              <div className="flex gap-2 items-center  bg-white rounded-full p-2 hover:bg-primary">
+              <IoVideocamSharp size={30} color="black" />
+              </div>
+            </div>
             </Swiper>
+           
             <div className="px-2">
               <h1 className="text-xl flex items-center gap-2 font-bold mt-4 capitalize text-white lg:text-3xl">
                 {user?.name} <span className="text-2xl"> {user.age}</span>{" "}
