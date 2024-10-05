@@ -3,7 +3,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer class="flex flex-col space-y-10 justify-center p-5 border-t-[1px] m-4  border-primary ">
+    <footer class="flex flex-col space-y-10 justify-center p-5 m-4  ">
 
     <nav class="flex justify-center flex-wrap gap-6 text-gray-500 font-medium">
         <Link class="hover:text-primary underline" href="/privacy">Privacy</Link>

@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import SlidingModal from "../web-components/modals/sliding-modal";
 import ForYou from "../account/components/for-you";
-
+import { FaCompass, FaHeart, FaStar, FaTrophy, FaUser } from "react-icons/fa";
+import { RiCustomerServiceFill } from "react-icons/ri";
 export default function SidebarMenu({ isOpen, closeMenu }) {
   const user = useSelector((state) => state.user.user);
   return (
@@ -21,16 +22,29 @@ export default function SidebarMenu({ isOpen, closeMenu }) {
         <div className="text-2xl font-bold">Vugo Live</div>
 
         <nav className="flex flex-col space-y-2">
-          <Link
-            href="/ranking"
+        {user != -1 && (
+       <>
+       <Link
+            href="/account"
             className="flex items-center space-x-2 text-lg hover:text-yellow-400"
             onClick={() => {
               closeMenu();
             }}
           >
-            <span role="img" aria-label="Popüler">
-              🎬
-            </span>
+            <FaUser size={24} />
+            <span>Profilim</span>
+          </Link>
+          <div className="bg-secondary h-1  rounded-full "></div>
+       </>
+          )}
+          <Link
+            href="/ranking"
+            className="flex items-center space-x-2 text-lg hover:text-yellow-400 "
+            onClick={() => {
+              closeMenu();
+            }}
+          >
+              <FaTrophy className='text-primary' size={24} />
             <span>En İyiler</span>
           </Link>
           <SlidingModal
@@ -38,9 +52,7 @@ export default function SidebarMenu({ isOpen, closeMenu }) {
             <button
                 className="flex items-center space-x-2 text-lg hover:text-yellow-400"
               >
-                <span role="img" aria-label="Öne Çıkan Yayıncılar">
-                  ❤️
-                </span>
+                <FaCompass  size={24} />
                 <span>Önerilenler</span>
               </button>
           }
@@ -52,19 +64,23 @@ export default function SidebarMenu({ isOpen, closeMenu }) {
             href="/hits"
             className="flex items-center space-x-2 text-lg hover:text-yellow-400"
           >
-            <span role="img" aria-label="Hits">
-              ⭐
-            </span>
+            <FaStar size={24} className='text-primary' />
             <span>Hits</span>
           </Link>
         </nav>
+        <div className="bg-secondary h-1  rounded-full "></div>
+
 
         <Link
-          href="/help"
-          className="text-gray-400 text-sm hover:text-yellow-400"
-        >
-          Yardım merkezi
-        </Link>
+            href="/support"
+            className="flex items-center space-x-2 text-lg hover:text-yellow-400"
+            onClick={() => {
+              closeMenu();
+            }}
+          >
+            <RiCustomerServiceFill size={24} className='text-secondary' />
+            <span>Yardım Merkezi</span>
+          </Link>
         {user == -1 && (
           <Link
             className="bg-white text-black text-center px-4 py-2 rounded hover:bg-yellow-400"

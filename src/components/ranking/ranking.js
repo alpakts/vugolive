@@ -17,7 +17,7 @@ const rankingData = [
 const Ranking = () => {
     const [activeTab, setActiveTab] = useState("Profiller");
   return (
-    <div className="relative w-full bg-fixed bg-cover bg-no-repeat bg-center">
+    <div className="relative w-full bg-fixed bg-cover bg-no-repeat bg-center p-4">
       {/* Overlay to darken the background for better visibility */}
       <div className="absolute inset-0 bg-black bg-opacity-40 z-0"></div>
       {/* Content */}

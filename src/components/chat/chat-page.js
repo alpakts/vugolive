@@ -12,6 +12,7 @@ import { FiChevronLeft, FiFile, FiGift, FiSend, FiSettings } from 'react-icons/f
     if (chatRef.current) {
       chatRef.current.scroll({top: chatRef.current.scrollHeight, behavior: 'smooth'});
     }
+    document.body.style.overflow = 'hidden';
   }, []);
   return (
     <div className=" max-w-none js-chat-cont bg-black fixed z-[999] left-0  w-screen overflow-hidden top-0 py-4 h-screen max-h-screen text-white flex flex-col"> {/* Dark tema arka plan ve flex container */}
@@ -130,7 +131,7 @@ import { FiChevronLeft, FiFile, FiGift, FiSend, FiSettings } from 'react-icons/f
         </div>
 
         {/* Mesaj Gönderme Alanı */}
-        <div className="flex items-center space-x-2 p-2 bg-gray-800 rounded-full"> {/* Sabit mesaj gönderme kutusu */}
+        <div className="flex items-center mb-4 space-x-2 p-2 bg-gray-800 rounded-full"> {/* Sabit mesaj gönderme kutusu */}
           <input
             type="text"
             placeholder="Buraya yaz."

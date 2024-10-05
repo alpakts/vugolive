@@ -5,9 +5,9 @@ import { auth, provider } from '../../../firebaseConfig';
 import Image from 'next/image';
 import CustomButton from '@/components/web-components/button/button';
 import { useDispatch } from 'react-redux';
-import { setUser } from '@/lib/slices/userSlice';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FaMailBulk } from 'react-icons/fa';
+import { setUser } from '@/lib/slices/userSlice';
 
 const AuthHome = () => {
     const dispatch = useDispatch();

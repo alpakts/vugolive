@@ -86,7 +86,7 @@ const SlidingModal = ({ OpenButton,modalTitle ,children }) => {
               </CustomButton>
             </div>
 
-            <div className="p-6 flex flex-col justify-between h-full">
+            <div className="px-4 flex flex-col justify-between h-full">
               <div>
                { modalTitle&& {modalTitle}}
                 {children}

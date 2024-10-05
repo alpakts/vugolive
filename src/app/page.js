@@ -11,5 +11,3 @@ export default function Home() {
     </div>
   );
 }
-
-// sizin için önerilenler olacak, hi butonuna basıldığında kullanıcının özel mesajına gidecek ve sistem ona mesaj atacak  gezegen sembolü olacak
