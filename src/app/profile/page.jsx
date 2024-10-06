@@ -19,14 +19,18 @@ import CustomButton from "@/components/web-components/button/button";
 import Skeleton from "@/components/web-components/skeleton/skeleton";
 import { IoVideocamSharp } from "react-icons/io5";
 import { AiFillMessage } from "react-icons/ai";
+import { useAppSelector } from "@/lib/hooks";
 const Profile = () => {
+  const currentUser = useAppSelector((state) => state.user.user);
   const [user, setUser] = useState(null);
   const [currentVideo, setCurrentVideo] = useState(null);
   const [isVideoOpen, setIsVideoOpen] = useState(null);
   const router = useRouter();
   const params = useSearchParams();
   const userId = params.get("userId");
-
+  const startVideoCall = () =>{
+    router.push(`/chat/channel/${user.id+currentUser?.email}`);
+  }
   useEffect(() => {
     if (!userId) {
       window.location.href = "/";
@@ -89,7 +93,7 @@ const Profile = () => {
                 }}>
                 <AiFillMessage  size={30} color="black" />
               </div>
-              <div className="flex gap-2 items-center  bg-white rounded-full p-2 hover:bg-primary">
+              <div className="flex gap-2 items-center  bg-white rounded-full p-2 hover:bg-primary" onClick={startVideoCall} >
               <IoVideocamSharp size={30} color="black" />
               </div>
             </div>

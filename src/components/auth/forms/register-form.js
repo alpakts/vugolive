@@ -42,7 +42,6 @@ const RegisterForm = ({setPage}) => {
         });
       router.push("/account");
     } catch (err) {
-    debugger;
       if (err.code === "auth/email-already-in-use") {
         setError("Bu email adresi zaten kullanımda!");
       }else if(err.code === "auth/weak-password"){

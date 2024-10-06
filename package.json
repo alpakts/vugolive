@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.7",
+    "agora-rtc-react": "^2.3.0",
     "agora-rtc-sdk-ng": "^4.22.1",
+    "dotenv": "^16.4.5",
     "firebase": "^10.13.1",
     "formik": "^2.4.6",
     "next": "14.2.3",

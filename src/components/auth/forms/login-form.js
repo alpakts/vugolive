@@ -24,12 +24,10 @@ const LoginForm = ({setPage}) => {
 
   const handleLogin = async (values) => {
     setError(null);
-    debugger;
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
       router.push("/account");
     } catch (err) {
-      debugger;
       setError("Kullanıcı adı veya şifre yanlış!");
     }
   };
