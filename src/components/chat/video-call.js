@@ -21,6 +21,7 @@ import {
   BsMicMute,
 } from "react-icons/bs";
 import { MdCallEnd, MdCameraswitch } from "react-icons/md";
+import Loading from "@/app/loading";
 
 async function Call(props) {
   if (!window) {
@@ -101,9 +102,7 @@ function Videos(props) {
 
   if (deviceLoading) {
     return (
-      <div className="flex flex-coTl items-center pt-40">
-        Loading devices...
-      </div>
+      <Loading></Loading>
     );
   }
   const switchCamera = async () => {
