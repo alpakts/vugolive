@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import AgoraRTC from 'agora-rtc-sdk-ng';
-import { join } from 'path';
 
 let rtc = {
   // For the local audio and video tracks.
@@ -31,8 +29,12 @@ const VideoCall = () => {
 
   // Agora istemcisini başlatma ve olayları dinleme
   useEffect(() => {
+    if (!window) {
+      return;
+    }
     const initClient = async () => {
       try {
+        const AgoraRTC = (await import('agora-rtc-sdk-ng')).default 
         const agoraClient = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' });
         rtc.client = agoraClient;
         setClient(agoraClient); 
