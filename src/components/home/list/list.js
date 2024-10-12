@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 
 export default function List({item,activeTab}) {
-
+  const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   return (
           <>
           {activeTab === "Profiller" && 
@@ -15,15 +15,15 @@ export default function List({item,activeTab}) {
                 spaceBetween={50}
                 slidesPerView={1}
               >
-                {[item.avatar,item.avatar2,item.avatar3].map((image, index) => (
-                  <SwiperSlide>
+                {item.images?.map((image, index) => (
+                  <SwiperSlide key={index}>
                     <Image
-                      src={image}
-                      alt={item.name}
+                      src={fileBaseUrl+image.image}
+                      alt={item.fullName}
                       width={100}
                       height={100}
                       sizes="(max-width: 768px) 30vw, 50vw"
-                      className=" min-h-[120px]  w-full object-cover h-full aspect-auto  rounded-xl "
+                      className=" h-full w-full object-cover aspect-square  rounded-xl "
                     />
                   </SwiperSlide>
                 ))}
@@ -32,7 +32,7 @@ export default function List({item,activeTab}) {
                 {item.status}
               </div>
               <div className="absolute bottom-0 z-20 bg-black bg-opacity-30 w-full">
-              <div className="text-white px-2 flex flex-row flex-nowrap items-center gap-2 font-bold   ">{item.name} {item.age}<Image  src={'/verified.png'} className="w-4 h-4" width={16} height={10} />  </div>
+              <div className="text-white px-2 flex flex-row flex-nowrap items-center gap-2 font-bold   ">{item.fullName} {item.age}<Image  src={'/verified.png'} className="w-4 h-4" width={16} height={10} />  </div>
               <div className="text-white px-2 flex flex-row flex-nowrap items-center gap-2    "><Image  src={'/turkey.png'} className="w-4 h-4" width={16} height={10} /> Türkiye  </div>
               </div>
             </div>
@@ -45,11 +45,11 @@ export default function List({item,activeTab}) {
                 spaceBetween={50}
                 slidesPerView={1}
               >
-                {[item.avatar,item.avatar2,item.avatar3].map((image, index) => (
-                  <SwiperSlide>
+                {item?.images?.map((image, index) => (
+                  <SwiperSlide key={index}>
                     <Image
-                      src={image}
-                      alt={item.name}
+                      src={fileBaseUrl+image.image}
+                      alt={item.fullName}
                       width={100}
                       height={100}
                       sizes="(max-width: 768px) 30vw, 50vw"
@@ -62,7 +62,7 @@ export default function List({item,activeTab}) {
                 {item.status}
               </div>
               <div className="absolute bottom-0 z-20 bg-black bg-opacity-30 w-full">
-              <div className="text-white px-2 flex flex-row flex-nowrap items-center gap-2 font-bold   ">{item.name} {item.age}<Image  src={'/verified.png'} className="w-4 h-4" width={16} height={10} />  </div>
+              <div className="text-white px-2 flex flex-row flex-nowrap items-center gap-2 font-bold   ">{item.fullName} {item.age}<Image  src={'/verified.png'} className="w-4 h-4" width={16} height={10} />  </div>
               <div className="text-white px-2 flex flex-row flex-nowrap items-center gap-2    "><Image  src={'/turkey.png'} className="w-4 h-4" width={16} height={10} /> Türkiye  </div>
               </div>
             </div>

@@ -12,7 +12,9 @@ import { AiFillMessage } from "react-icons/ai";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   const user = useSelector((state) => state.user.user);
+  const apiUser = useSelector((state) => state.apiUser.apiUser);
   return (
     <header
       className={`sticky top-0 left-0 w-full z-50 relative'
@@ -26,25 +28,8 @@ export default function Header() {
 
       <div className="flex flex-row gap-5">
         <Link href={"/account/messages"}>
-          <AiFillMessage size={24} />
+          <AiFillMessage  size={24} />
         </Link>{" "}
-        <button>
-          <SlidingModal
-            OpenButton={
-              <Image
-                width={24}
-                height={24}
-                src="/diamond.svg"
-                alt="diamond menu"
-              />
-            }
-          >
-            <DiamondPage />
-          </SlidingModal>
-        </button>
-        <Link href={"/ranking"}>
-          <FaTrophy size={24} />
-        </Link>
         <SlidingModal
           OpenButton={
             <button className="flex items-center space-x-2 text-lg hover:text-yellow-400">
@@ -54,6 +39,23 @@ export default function Header() {
         >
           <ForYou />
         </SlidingModal>
+        <button>
+          <SlidingModal
+            OpenButton={
+              <Image
+                width={24}
+                height={24}
+                src="/diamond.png"
+                alt="diamond menu"
+              />
+            }
+          >
+            <DiamondPage />
+          </SlidingModal>
+        </button>
+        <Link href={"/ranking"}>
+          <FaTrophy className="text-primary" size={24} />
+        </Link>
         {user == -1 ? (
           <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <Image
@@ -66,11 +68,11 @@ export default function Header() {
         ) : (
           <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <Image
-              className="rounded-full"
               width={24}
               height={24}
-              src={user?.photoURL ?? "/profile-placeholder.png"}
+              src={apiUser?.profileimages ? fileBaseUrl+apiUser.profileimages: "/profile-placeholder.png"}
               alt="burger menu"
+              className={`rounded-full ${apiUser?.profileimages ? "" : "bg-secondary"}`}
             />
           </button>
         )}{" "}

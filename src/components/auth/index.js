@@ -1,13 +1,14 @@
 'use client';
 import React from 'react'
 import { signInWithPopup } from 'firebase/auth'; 
-import { auth, provider } from '../../../firebaseConfig';
+import { auth, provider, requestForToken } from '../../../firebaseConfig';
 import Image from 'next/image';
 import CustomButton from '@/components/web-components/button/button';
 import { useDispatch } from 'react-redux';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FaMailBulk } from 'react-icons/fa';
 import { setUser } from '@/lib/slices/userSlice';
+import { registerUser } from '@/lib/services/api-service';
 
 const AuthHome = () => {
     const dispatch = useDispatch();
@@ -18,6 +19,20 @@ const AuthHome = () => {
           const result = await signInWithPopup(auth, provider);
           const user = result.user;
           dispatch(setUser(user))
+          const deviceToken = await requestForToken();
+          const registerData = {
+            email: result.user.email,
+            fullName: result.user.displayName,
+            loginType : '4',
+            deviceType : '1',
+            rightChangeGender:1,
+            identity:result.user.email,
+            deviceToken:deviceToken ?? '123',
+            one_signal_id:'123'
+          }
+          var registerResponse = await registerUser(registerData);
+          localStorage.setItem('user', JSON.stringify(registerResponse.data.data));
+          localStorage.setItem('token', registerResponse.data.data.auth_token);
           router.push(params.get('callbackUrl') ??'/account');
         } catch (error) {
           console.error('Error during login:', error);

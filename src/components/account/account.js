@@ -12,7 +12,8 @@ import PublisherApplicationForm from './components/publisher-form';
 const AccounHome = () => {
   const handleLogout = () => {
     signOut(auth).then(() => {
-      console.log('Çıkış Yapıldı')
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
     }).catch((error) => {
       console.error('Çıkış yapılırken bir hata oluştu:', error)
     })

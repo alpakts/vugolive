@@ -2,19 +2,27 @@
 import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithCredential,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { useRouter } from "next/navigation";
 import CustomButton from "@/components/web-components/button/button";
 import Image from "next/image";
-import { auth } from "../../../../firebaseConfig";
+import { auth, requestForToken } from "../../../../firebaseConfig";
+import { registerUser } from "@/lib/services/api-service";
 
 // Form doğrulama şeması: Full Name ve Şifreyi Tekrar Yaz alanları eklendi
 const validationSchema = Yup.object({
-  fullName: Yup.string().required("Ad Soyad alanı zorunludur").test(
-    "is-fullname",
-    "Ad Soyad en az iki kelime olmalıdır",
-    (value) => value && value.trim().split(" ").length >= 2
-  ),
+  fullName: Yup.string()
+    .required("Ad Soyad alanı zorunludur")
+    .test(
+      "is-fullname",
+      "Ad Soyad en az iki kelime olmalıdır",
+      (value) => value && value.trim().split(" ").length >= 2
+    ),
   email: Yup.string()
     .email("Geçerli bir email adresi girin")
     .required("Email alanı zorunludur"),
@@ -26,7 +34,7 @@ const validationSchema = Yup.object({
     .required("Şifreyi tekrar girin"),
 });
 
-const RegisterForm = ({setPage}) => {
+const RegisterForm = ({ setPage }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter();
@@ -34,19 +42,38 @@ const RegisterForm = ({setPage}) => {
   const handleRegister = async (values) => {
     setError(null);
     try {
-        const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-    
-        const user = userCredential.user;
-        await updateProfile(user, {
-          displayName: values.fullName, 
-        });
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+
+      const user = userCredential.user;
+      await updateProfile(user, {
+        displayName: values.fullName,
+      });
+      const deviceToken = await requestForToken();
+      const registerData = {
+        email: userCredential.user.email,
+        fullName:values.fullName,
+        loginType: "4",
+        deviceType: "1",
+        rightChangeGender: 1,
+        identity: userCredential.user.email,
+        deviceToken: deviceToken ?? "123",
+        one_signal_id: "123",
+      };
+      var registerResponse = await registerUser(registerData);
+      await signInWithCredential(auth, userCredential);
+      localStorage.setItem("user", JSON.stringify(registerResponse.data.data));
+      localStorage.setItem("token", registerResponse.data.data.auth_token);
       router.push("/account");
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
         setError("Bu email adresi zaten kullanımda!");
-      }else if(err.code === "auth/weak-password"){
+      } else if (err.code === "auth/weak-password") {
         setError("Şifre en az 6 karakter olmalıdır");
-      }else{
+      } else {
         setError("Bir Hata Oluştu!");
       }
     }
@@ -56,7 +83,13 @@ const RegisterForm = ({setPage}) => {
     <div className="text-white pt-20 px-4 flex flex-col gap-6 min-h-screen">
       <div className="w-full max-w-md mx-auto space-y-8">
         <div className="text-center">
-        <Image src="/logo.png" alt="Vugo Logo" className="mx-auto " width={50} height={50}/>
+          <Image
+            src="/logo.png"
+            alt="Vugo Logo"
+            className="mx-auto "
+            width={50}
+            height={50}
+          />
           <h2 className="mt-6 text-center text-xl font-normal text-white">
             Kayıt Ol
           </h2>
@@ -65,9 +98,14 @@ const RegisterForm = ({setPage}) => {
           </div>
         </div>
         <Formik
-          initialValues={{ fullName: '', email: '', password: '', confirmPassword: '' }}
+          initialValues={{
+            fullName: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+          }}
           validationSchema={validationSchema}
-          onSubmit={(values)=>handleRegister(values)}
+          onSubmit={(values) => handleRegister(values)}
         >
           {() => (
             <Form className="mt-8 space-y-6">
@@ -195,11 +233,13 @@ const RegisterForm = ({setPage}) => {
         </Formik>
         <div className="mt-6 text-center text-gray-400">
           Zaten bir hesabınız var mı?{" "}
-          <a href="#" 
-           onClick={()=>{
-            setPage('login');
-          }}
-          className="text-secondary hover:text-primary">
+          <a
+            href="#"
+            onClick={() => {
+              setPage("login");
+            }}
+            className="text-secondary hover:text-primary"
+          >
             Giriş Yap
           </a>
         </div>

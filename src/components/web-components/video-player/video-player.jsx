@@ -91,7 +91,7 @@ const VideoPlayer = (props) => {
         </div>
           <video
             id="myVideo"
-            className="custom-video w-full aspect-auto rounded-3xl"
+            className="custom-video w-full aspect-auto rounded-3xl max-h-[100vh]"
             ref={videoRef}
             alt={user?.name?.first}
             poster={user?.avatar}

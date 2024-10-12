@@ -7,13 +7,13 @@ import withAuth from "@/hocs/with-auth";
 import AccountHeader from "@/components/account/account-header";
 
 const Page = () => {
-  const user = useSelector((state) => state.user.user?.reloadUserInfo);
-  if (!user) {
+  const apiUser = useSelector((state) => state.apiUser?.apiUser);
+  if (!apiUser) {
     return <Loading></Loading>;
   }
   return (
     <div className="px-4 py-5 min-h-screen text-white">
-   <AccountHeader user={user} />
+   <AccountHeader user={apiUser} />
       <div className="h-[1px] w-full bg-gray-900"></div>
       <AccounHome></AccounHome>
     </div>

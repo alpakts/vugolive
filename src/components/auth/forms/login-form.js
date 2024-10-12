@@ -6,7 +6,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import CustomButton from "@/components/web-components/button/button";
 import Image from "next/image";
-import { auth } from "../../../../firebaseConfig";
+import { auth,requestForToken } from "../../../../firebaseConfig";
+import { registerUser } from "@/lib/services/api-service";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -21,11 +22,26 @@ const LoginForm = ({setPage}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter();
+  
 
   const handleLogin = async (values) => {
     setError(null);
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      const googleResult = await signInWithEmailAndPassword(auth, values.email, values.password);
+      const deviceToken = await requestForToken();
+      const registerData = {
+        email: googleResult.user.email,
+        fullName: googleResult.user.displayName,
+        loginType : '4',
+        deviceType : '1',
+        rightChangeGender:1,
+        identity:googleResult.user.email,
+        deviceToken:deviceToken ?? '123',
+        one_signal_id:'123'
+      }
+      var registerResponse = await registerUser(registerData);
+      localStorage.setItem('user', JSON.stringify(registerResponse.data.data));
+      localStorage.setItem('token', registerResponse.data.data.auth_token);
       router.push("/account");
     } catch (err) {
       setError("Kullanıcı adı veya şifre yanlış!");

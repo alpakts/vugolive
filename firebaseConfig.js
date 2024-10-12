@@ -3,7 +3,9 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getAnalytics, isSupported } from "firebase/analytics";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBmN7ZCNsp2w0S63c1oM9253yEKJpwhwUY",
   authDomain: "vugo-6fdfc.firebaseapp.com",
@@ -20,6 +22,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
+// Firebase Analytics
 let analytics;
 isSupported().then((supported) => {
   if (supported) {
@@ -32,4 +35,26 @@ isSupported().then((supported) => {
   console.error('Error checking Analytics support:', error);
 });
 
-export { auth, provider, analytics, db };
+// Firebase Messaging
+const messaging = getMessaging(app);
+// Kullanıcıdan bildirim izni alma ve device token alma fonksiyonu
+const vapidKey = process.env.NEXT_PUBLIC_VAPID_KEY;
+export const requestForToken = async () => {
+  try {
+    const currentToken = await getToken(messaging, { vapidKey: vapidKey});
+    if (currentToken) {
+      return currentToken;
+    } else {
+      console.log('No registration token available. Request permission to generate one.');
+    }
+  } catch (err) {
+    console.error('An error occurred while retrieving token.', err);
+  }
+};
+
+// Bildirim geldiğinde ön planda yakalama fonksiyonu
+onMessage(messaging, (payload) => {
+  console.log('Message received. ', payload);
+});
+
+export { auth, provider, analytics, db, messaging };

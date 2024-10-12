@@ -20,6 +20,7 @@ import Skeleton from "@/components/web-components/skeleton/skeleton";
 import { IoVideocamSharp } from "react-icons/io5";
 import { AiFillMessage } from "react-icons/ai";
 import { useAppSelector } from "@/lib/hooks";
+import { getHostProfile } from "@/lib/services/api-service";
 const Profile = () => {
   const currentUser = useAppSelector((state) => state.user.user);
   const [user, setUser] = useState(null);
@@ -28,6 +29,7 @@ const Profile = () => {
   const router = useRouter();
   const params = useSearchParams();
   const userId = params.get("userId");
+  const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   const startVideoCall = () =>{
     router.push(`/chat/channel/${user.id+currentUser?.email}`);
   }
@@ -35,11 +37,11 @@ const Profile = () => {
     if (!userId) {
       window.location.href = "/";
     }
-    fetch(`https://640f6027cde47f68db4929d6.mockapi.io/api/users/4`)
-      .then((res) => res.json())
-      .then((data) => {
-        setUser(data);
-      });
+    getHostProfile(250,userId)
+      .then((res) =>{
+        setUser(res.data.data);
+      })
+    
   }, []);
 
   return (
@@ -71,17 +73,17 @@ const Profile = () => {
                 },
               }}
             >
-              {[user?.avatar, user?.avatar2, user?.avatar3].map(
+              {user?.images.map(
                 (image, index) => (
                   <SwiperSlide key={index}>
                     <Image
-                      src={image}
-                      alt={user?.name?.first}
+                      src={ fileBaseUrl+image.image}
+                      alt={user?.fullName}
                       width={500}
                       height={500} 
                       loading="lazy"
                       sizes="(min-width:768px) 50vw, 100vw" 
-                      className="w-full h-auto object-cover rounded-3xl" 
+                      className="w-full h-auto aspect-square object-cover rounded-3xl" 
                     />
       
                   </SwiperSlide>
@@ -101,7 +103,7 @@ const Profile = () => {
            
             <div className="px-2">
               <h1 className="text-xl flex items-center gap-2 font-bold mt-4 capitalize text-white lg:text-3xl">
-                {user?.name} <span className="text-2xl"> {user.age}</span>{" "}
+                {user?.fullName} <span className="text-2xl"> {user.age}</span>{" "}
                 <Image src="/verified.png" width={20} height={20} />
               </h1>
               <div className="flex gap-x-2 text-sm items-center lg:text-lg">
@@ -109,7 +111,7 @@ const Profile = () => {
                 <span className="opacity-75">Türkiye</span>
               </div>
               <div className="text-sm opacity-75 flex gap-x-2 my-2 lg:text-base">
-                Universite Öğrencisi
+               {user.about}
               </div>
 
               <h2 className="text-lg lg:text-xl mt-4">Video Galeri</h2>
@@ -125,22 +127,18 @@ const Profile = () => {
                     },
                   }}
                 >
-                  {[
-                    "/video-girl.mp4",
-                    "/video-girl.mp4",
-                    "/example-video.mp4",
-                  ].map((image, index) => (
+                  {user?.video.map((video, index) => (
                     <SwiperSlide className="relative" key={index}>
                       <video
-                        alt={user?.name}
-                        className="w-full object-fill h-full aspect-square rounded-3xl"
-                        poster={user.avatar}
+                        alt={user?.fullName}
+                        className="w-full object-fill h-full aspect-square rounded-3xl max-h-[95vh]"
+                        poster={fileBaseUrl+user.images[0].image}
                         onClick={(e) => {
                           setCurrentVideo(e.currentTarget.firstChild.src);
                           setIsVideoOpen(true);
                         }}
                       >
-                        <source src={image} type="video/mp4" />
+                        <source src={fileBaseUrl+video.video} type="video/mp4" />
                         Tarayıcınız bu videoyu desteklemiyor.
                       </video>
                       <button className="absolute pointer-events-none top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary p-3 rounded-full">
@@ -153,13 +151,7 @@ const Profile = () => {
 
               <div className="py-2 text-lg lg:text-xl">İlgi Alanları</div>
               <div className="flex flex-wrap gap-2">
-                {[
-                  "Kodlama",
-                  "Yazılım",
-                  "Web Tasarım",
-                  "Web Geliştirme",
-                  "Kitap okumak",
-                ].map((item, index) => (
+                {user.intrests.map((item, index) => (
                   <span
                     key={index}
                     className="bg-gray-900 text-white font-bold px-2 py-1 rounded-full text-xs lg:text-base mr-2"

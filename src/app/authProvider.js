@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { auth } from "../../firebaseConfig";
 import { setUser } from "@/lib/slices/userSlice";
+import { setApiUser } from "@/lib/slices/api-user-slice";
 
 
 export function AuthProvider({ children }) {
@@ -13,10 +14,19 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
+      const token = localStorage.getItem("token");
+      let apiUser = localStorage.getItem("user");
+      if (apiUser) {
+        apiUser = JSON.parse(apiUser);
+      }
+      if (currentUser && token) {
         dispatch(setUser(currentUser));
+        dispatch(setApiUser(apiUser));
       } else {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
         dispatch(setUser(-1));
+        dispatch(setApiUser(-1));
       }
     });
 
