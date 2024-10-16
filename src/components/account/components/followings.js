@@ -1,120 +1,27 @@
-// components/FollowersList.js
-import { FiChevronLeft } from 'react-icons/fi';
-import { FaCheckCircle } from 'react-icons/fa';
+
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import {getSavedProfiles } from '@/lib/services/api-service';
+import { useAppSelector } from '@/lib/hooks';
+import Loading from '@/app/loading';
+import { useRouter } from 'next/navigation';
 
 const FollowersList = () => {
-  const users = [
-    {
-      name: "BARBİE",
-      age: 27,
-      flag: "🇹🇷",
-      country: "Türkiye",
-      profilePic: "/barbie.jpg",
-      verified: true,
-      emoji: "💋",
-    },
-    {
-      name: "Zeynep",
-      age: 24,
-      flag: "🌟",
-      country: "Vugo Yıldızları",
-      profilePic: "/zeynep.jpg",
-      verified: true,
-      emoji: "🌟",
-    },
-    {
-        name: "BARBİE",
-        age: 27,
-        flag: "🇹🇷",
-        country: "Türkiye",
-        profilePic: "/barbie.jpg",
-        verified: true,
-        emoji: "💋",
-      },
-      {
-        name: "Zeynep",
-        age: 24,
-        flag: "🌟",
-        country: "Vugo Yıldızları",
-        profilePic: "/zeynep.jpg",
-        verified: true,
-        emoji: "🌟",
-      },
-      {
-        name: "BARBİE",
-        age: 27,
-        flag: "🇹🇷",
-        country: "Türkiye",
-        profilePic: "/barbie.jpg",
-        verified: true,
-        emoji: "💋",
-      },
-      {
-        name: "Zeynep",
-        age: 24,
-        flag: "🌟",
-        country: "Vugo Yıldızları",
-        profilePic: "/zeynep.jpg",
-        verified: true,
-        emoji: "🌟",
-      },
-      {
-        name: "BARBİE",
-        age: 27,
-        flag: "🇹🇷",
-        country: "Türkiye",
-        profilePic: "/barbie.jpg",
-        verified: true,
-        emoji: "💋",
-      },
-      {
-        name: "Zeynep",
-        age: 24,
-        flag: "🌟",
-        country: "Vugo Yıldızları",
-        profilePic: "/zeynep.jpg",
-        verified: true,
-        emoji: "🌟",
-      },
-      {
-        name: "BARBİE",
-        age: 27,
-        flag: "🇹🇷",
-        country: "Türkiye",
-        profilePic: "/barbie.jpg",
-        verified: true,
-        emoji: "💋",
-      },
-      {
-        name: "Zeynep",
-        age: 24,
-        flag: "🌟",
-        country: "Vugo Yıldızları",
-        profilePic: "/zeynep.jpg",
-        verified: true,
-        emoji: "🌟",
-      },
-      {
-        name: "BARBİE",
-        age: 27,
-        flag: "🇹🇷",
-        country: "Türkiye",
-        profilePic: "/barbie.jpg",
-        verified: true,
-        emoji: "💋",
-      },
-      {
-        name: "Zeynep",
-        age: 24,
-        flag: "🌟",
-        country: "Vugo Yıldızları",
-        profilePic: "/zeynep.jpg",
-        verified: true,
-        emoji: "🌟",
-      },
+  const filebaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
+  const router = useRouter();
+  const apiUser = useAppSelector((state) => state.apiUser.apiUser);
+  const [hosts, setHosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    getSavedProfiles(apiUser.id,0,25).then((response) => {
+      setHosts(response.data.data);
+      setLoading(false);
+    }).catch((err) => console.log(err));
+  }, []); 
+  if (loading) {
+    return <Loading></Loading>
+  }
 
-  ];
 
   return (
     <div className="flex flex-col items-center justify-start bg-black text-secondary">
@@ -125,14 +32,15 @@ const FollowersList = () => {
 
       {/* Followers List */}
       <div className="w-full flex-1 overflow-y-auto  max-h-[80vh]">
-        {users.map((user, index) => (
+        {hosts.length >0 ? hosts.map((user, index) => (
           <div
             key={index}
             className="flex items-center bg-slate-900 p-4 mb-4 rounded-lg shadow"
+            onClick={() => router.push(`/profile/?userId=${user.id}`)}
           >
             <Image
-              src={'https://static.vecteezy.com/system/resources/thumbnails/037/281/091/small_2x/ai-generated-minimalist-vivid-advertisment-background-with-handsome-girl-with-books-and-copy-space-free-photo.jpeg'}
-              alt={`${user.name}'s profile`}
+              src={user.profileimages?filebaseUrl+user?.profileimages: user.images ? filebaseUrl+user.images[0].image :'/profile-placeholder.png'}
+              alt={`${user.fullName}'s profile`}
               width={0}
               height={0}
               sizes='100vw'
@@ -140,10 +48,10 @@ const FollowersList = () => {
             />
             <div className="flex flex-col flex-1">
               <div className="flex items-center">
-                <h2 className="text-lg font-bold mr-2">{user.name}</h2>
+                <h2 className="text-lg font-bold mr-2">{user.fullName}</h2>
                 <span>{user.emoji}</span>
                 <span className="ml-1 text-lg">{user.age}</span>
-                {user.verified && (
+                {user.is_host && (
                   <Image className='ml-1' src={'/verified.png'} width={16} height={16} alt="verified" />
                 )}
               </div>
@@ -152,7 +60,7 @@ const FollowersList = () => {
               </div>
             </div>
           </div>
-        ))}
+        )) : <div className='text-center text-white'>Henüz takip edilen yok</div>}
       </div>
     </div>
   );

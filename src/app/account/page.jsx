@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import Loading from "../loading";
 import AccounHome from "@/components/account/account";
@@ -8,9 +8,11 @@ import AccountHeader from "@/components/account/account-header";
 
 const Page = () => {
   const apiUser = useSelector((state) => state.apiUser?.apiUser);
+  debugger;
   if (!apiUser) {
     return <Loading></Loading>;
   }
+
   return (
     <div className="px-4 py-5 min-h-screen text-white">
    <AccountHeader user={apiUser} />

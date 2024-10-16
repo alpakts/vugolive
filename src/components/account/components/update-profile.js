@@ -1,15 +1,20 @@
 // components/Profile.js
 "use client";
 import CustomButton from "@/components/web-components/button/button";
+import { useAppSelector } from "@/lib/hooks";
+import { getUserProfile, saveProfile, updateUserProfile } from "@/lib/services/api-service";
+import { setApiUser } from "@/lib/slices/api-user-slice";
 import { useRef, useState } from "react";
 import { FaPen } from "react-icons/fa";
 import { FiChevronLeft } from "react-icons/fi";
+import { useDispatch } from "react-redux";
 
 const UpdateProfile = () => {
   const fileInputRef = useRef(null);
   const [username, setUsername] = useState("alper");
+  const dispatch = useDispatch();
   const [profileImage, setProfileImage] = useState("/profile-placeholder.png"); // Default profile image
-  
+  const apiUser = useAppSelector((state) => state.apiUser.apiUser);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -22,8 +27,18 @@ const UpdateProfile = () => {
     fileInputRef.current.click(); // Butona tıklanınca input'u tetikle
   };
   
-  const handleUpdate = () => {
-    // Güncelleme işlemi burada yapılabilir.
+  const handleUpdate = async () => {
+    debugger;
+    const updateResult =  await updateUserProfile({
+      user_id:apiUser.id,
+      fullName: username,
+    },fileInputRef.current.files[0]);
+    if (updateResult.data.status) {
+      getUserProfile(apiUser.id).then((res) => {
+        dispatch(setApiUser(res.data.data));
+      });
+      
+    }
     alert("Kullanıcı adı güncellendi: " + username);
   };
 

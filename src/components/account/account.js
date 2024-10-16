@@ -9,6 +9,7 @@ import SlidingModal from '../web-components/modals/sliding-modal';
 import BlocksList from './components/blocks';
 import DiamondPage from './components/diamond';
 import PublisherApplicationForm from './components/publisher-form';
+import { useAppSelector } from '@/lib/hooks';
 const AccounHome = () => {
   const handleLogout = () => {
     signOut(auth).then(() => {

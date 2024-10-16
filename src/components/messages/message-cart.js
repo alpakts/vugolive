@@ -28,7 +28,7 @@ const ProfileCard = ({ message }) => {
           <span className="text-gray-300">{user.age}</span>
           {user.is_host&& <Image src={'/verified.png'} height={24} width={24} ></Image>}
         </div>
-        <p className="text-secondary">{message.lastMsg}</p>
+        <p className="text-secondary  max-h-5 overflow-hidden ">{message.lastMsg}</p>
       </div>
       <span className="text-gray-400 text-sm">{date}</span>
     </div>

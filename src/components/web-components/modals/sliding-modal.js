@@ -1,13 +1,20 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useImperativeHandle, forwardRef } from "react";
 import CustomButton from "../button/button";
 import { IoMdClose } from "react-icons/io";
 
-const SlidingModal = ({ OpenButton,modalTitle ,children }) => {
+const SlidingModal =  forwardRef(({ OpenButton,modalTitle ,children }, ref) => {
   const [isOpen, setIsOpen] = useState(false);
   const [modalY, setModalY] = useState(300); 
   const [startY, setStartY] = useState(0); 
-
+  useImperativeHandle(ref, () => ({
+    openModal() {
+      setIsOpen(true);
+    },
+    closeModal() {
+      closeModal();
+    },
+  }));
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -100,6 +107,6 @@ const SlidingModal = ({ OpenButton,modalTitle ,children }) => {
       )}
     </>
   );
-};
+});
 
 export default SlidingModal;
