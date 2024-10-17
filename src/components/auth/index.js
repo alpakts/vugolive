@@ -1,6 +1,6 @@
 'use client';
 import React from 'react'
-import { signInWithPopup } from 'firebase/auth'; 
+import { signInWithCredential, signInWithPopup } from 'firebase/auth'; 
 import { auth, provider, requestForToken } from '../../../firebaseConfig';
 import Image from 'next/image';
 import CustomButton from '@/components/web-components/button/button';
@@ -33,7 +33,8 @@ const AuthHome = () => {
           var registerResponse = await registerUser(registerData);
           localStorage.setItem('user', JSON.stringify(registerResponse.data.data));
           localStorage.setItem('token', registerResponse.data.data.auth_token);
-          router.push(params.get('callbackUrl') ??'/account');
+          dispatch(setUser(registerResponse.data.data));
+          window.location.href=(params.get('callbackUrl') ??'/account');
         } catch (error) {
           console.error('Error during login:', error);
         }

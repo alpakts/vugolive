@@ -28,7 +28,6 @@ const UpdateProfile = () => {
   };
   
   const handleUpdate = async () => {
-    debugger;
     const updateResult =  await updateUserProfile({
       user_id:apiUser.id,
       fullName: username,

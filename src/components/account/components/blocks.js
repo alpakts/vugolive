@@ -2,118 +2,33 @@
 import { FiChevronLeft } from "react-icons/fi";
 import Image from "next/image";
 import CustomButton from "@/components/web-components/button/button";
+import { useEffect, useState } from "react";
+import { useAppSelector } from "@/lib/hooks";
+import { useRouter } from "next/navigation";
+import Loading from "@/app/loading";
+import { getBlockedProfiles, unblockHost } from "@/lib/services/api-service";
 
 const BlocksList = () => {
-  const users = [
-    {
-      name: "BARBİE",
-      age: 27,
-      flag: "🇹🇷",
-      country: "Türkiye",
-      profilePic: "/barbie.jpg",
-      verified: true,
-      emoji: "💋",
-    },
-    {
-      name: "Zeynep",
-      age: 24,
-      flag: "🌟",
-      country: "Vugo Yıldızları",
-      profilePic: "/zeynep.jpg",
-      verified: true,
-      emoji: "🌟",
-    },
-    {
-      name: "BARBİE",
-      age: 27,
-      flag: "🇹🇷",
-      country: "Türkiye",
-      profilePic: "/barbie.jpg",
-      verified: true,
-      emoji: "💋",
-    },
-    {
-      name: "Zeynep",
-      age: 24,
-      flag: "🌟",
-      country: "Vugo Yıldızları",
-      profilePic: "/zeynep.jpg",
-      verified: true,
-      emoji: "🌟",
-    },
-    {
-      name: "BARBİE",
-      age: 27,
-      flag: "🇹🇷",
-      country: "Türkiye",
-      profilePic: "/barbie.jpg",
-      verified: true,
-      emoji: "💋",
-    },
-    {
-      name: "Zeynep",
-      age: 24,
-      flag: "🌟",
-      country: "Vugo Yıldızları",
-      profilePic: "/zeynep.jpg",
-      verified: true,
-      emoji: "🌟",
-    },
-    {
-      name: "BARBİE",
-      age: 27,
-      flag: "🇹🇷",
-      country: "Türkiye",
-      profilePic: "/barbie.jpg",
-      verified: true,
-      emoji: "💋",
-    },
-    {
-      name: "Zeynep",
-      age: 24,
-      flag: "🌟",
-      country: "Vugo Yıldızları",
-      profilePic: "/zeynep.jpg",
-      verified: true,
-      emoji: "🌟",
-    },
-    {
-      name: "BARBİE",
-      age: 27,
-      flag: "🇹🇷",
-      country: "Türkiye",
-      profilePic: "/barbie.jpg",
-      verified: true,
-      emoji: "💋",
-    },
-    {
-      name: "Zeynep",
-      age: 24,
-      flag: "🌟",
-      country: "Vugo Yıldızları",
-      profilePic: "/zeynep.jpg",
-      verified: true,
-      emoji: "🌟",
-    },
-    {
-      name: "BARBİE",
-      age: 27,
-      flag: "🇹🇷",
-      country: "Türkiye",
-      profilePic: "/barbie.jpg",
-      verified: true,
-      emoji: "💋",
-    },
-    {
-      name: "Zeynep",
-      age: 24,
-      flag: "🌟",
-      country: "Vugo Yıldızları",
-      profilePic: "/zeynep.jpg",
-      verified: true,
-      emoji: "🌟",
-    },
-  ];
+  const filebaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
+  const router = useRouter();
+  const apiUser = useAppSelector((state) => state.apiUser.apiUser);
+  const [hosts, setHosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    getBlockedProfiles(apiUser.id,0,25).then((response) => {
+      setHosts(response.data.data);
+      setLoading(false);
+    }).catch((err) => console.log(err));
+  }, []); 
+  if (loading) {
+    return <Loading></Loading>
+  }
+  const handleRemoveBlock = (hostId) => {
+    unblockHost(apiUser.id,hostId).then((response) => {
+      setHosts(hosts.filter((host) => host.id !== hostId));
+    }).catch((err) => console.log(err));
+
+  }
 
   return (
     <div className="flex flex-col items-center justify-start bg-black text-secondary ">
@@ -124,16 +39,15 @@ const BlocksList = () => {
 
       {/* Followers List */}
       <div className="w-full flex-1 overflow-y-auto max-h-[80vh]">
-        {users.map((user, index) => (
+        {hosts.length >0 ? hosts.map((host, index) => (
           <div
             key={index}
             className="flex items-center bg-slate-900 p-4 mb-4 rounded-lg shadow"
+            onClick={() => router.push(`/profile/?userId=${host.id}`)}
           >
             <Image
-              src={
-                "https://static.vecteezy.com/system/resources/thumbnails/037/281/091/small_2x/ai-generated-minimalist-vivid-advertisment-background-with-handsome-girl-with-books-and-copy-space-free-photo.jpeg"
-              }
-              alt={`${user.name}'s profile`}
+                src={host.profileimages?filebaseUrl+user?.profileimages: host.images ? filebaseUrl+host.images[0].image :'/profile-placeholder.png'}
+              alt={`${host.fullName}'s profile`}
               width={0}
               height={0}
               sizes="100vw"
@@ -141,10 +55,10 @@ const BlocksList = () => {
             />
             <div className="flex flex-col flex-1">
               <div className="flex items-center">
-                <h2 className="text-lg font-bold mr-2">{user.name}</h2>
-                <span>{user.emoji}</span>
-                <span className="ml-1 text-lg">{user.age}</span>
-                {user.verified && (
+                <h2 className="text-lg font-bold mr-2">{host.fullName}</h2>
+                <span>{host.emoji}</span>
+                <span className="ml-1 text-lg">{host.age}</span>
+                {host.is_host && (
                   <Image
                     className="ml-1"
                     src={"/verified.png"}
@@ -155,12 +69,13 @@ const BlocksList = () => {
                 )}
               </div>
               <div className="text-sm text-gray-500">
-                <span>{user.flag}</span> <span>{user.country}</span>
+                <span>{host.flag}</span> <span>{host.country}</span>
               </div>
             </div>
-            <CustomButton  className="text-[10px]  !py-2 leading-none w-fit rounded-full  bg-red-300 text-red-500 hover:bg-red-400" >engeli kaldır</CustomButton>
+            <CustomButton onClick={()=>handleRemoveBlock(host.id)}  className="text-[10px]  !py-2 leading-none w-fit rounded-full  bg-red-300 text-red-500 hover:bg-red-400" >engeli kaldır</CustomButton>
           </div>
-        ))}
+        )):<div className='text-center text-white'>Engellenen Kullanıcı Bulunamadı</div>}
+        
       </div>
     </div>
   );

@@ -1,14 +1,23 @@
 "use client";
-import { useState } from "react";
+import { getCountryList } from "@/lib/services/api-service";
+import { useEffect, useMemo, useState } from "react";
 import { FiGlobe, FiChevronDown, FiFilter } from "react-icons/fi"; // React Icons'dan iconlar
 import { TbCategoryFilled } from "react-icons/tb";
-export default function TabComponent({activeTab,setActiveTab}) {
- 
+export default function TabComponent({activeTab,setActiveTab,setCategory}) {
+  const [categories, setCategories] = useState([]);
+  const [activeCategory, setActiveCategory] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false); // Dropdown'un açık olup olmadığını kontrol ediyoruz
-
+  useEffect(() => {
+    getCountryList().then((response) => {
+      setCategories(response.data.data);
+    }).catch((err)=>console.log(err));
+  },[]);
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen); // Dropdown durumunu değiştir
   };
+  useMemo(()=>{
+    activeCategory && setCategory(activeCategory.id);
+  },[activeCategory]);
 
   return (
     <div className="flex items-center py-4 space-x-4 text-sm justify-between ">
@@ -54,13 +63,14 @@ export default function TabComponent({activeTab,setActiveTab}) {
         {/* Dropdown Menüsü: Eğer `dropdownOpen` true ise gösterilir */}
         {dropdownOpen && (
           <div className="absolute z-10 right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg">
-            <div className="px-4 py-2 flex gap-x-3 items-center text-black hover:bg-gray-100">
-              Global
-              <FiGlobe className="text-black" size={18} />
+            {categories.map((category) => (
+              <div className="px-4 py-2 flex gap-x-3 items-center text-black hover:bg-gray-100" onClick={()=>{
+                setActiveCategory(category);
+              }}>
+                <span>{category.country_name}</span>
             </div>
-            <div className="px-4 py-2 flex gap-x-3 items-center text-black hover:bg-gray-100">
-              Yerel <FiFilter className="text-black" size={18} />
-            </div>
+            ))}
+          
           </div>
         )}
       </div>

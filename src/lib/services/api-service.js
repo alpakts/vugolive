@@ -3,6 +3,8 @@
 import axios from 'axios';
 import ApiName from './constants/api-names';
 import ApiParams from './constants/api-params';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../../firebaseConfig';
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL, // API'nin temel URL'sini buraya yazın
   headers: {
@@ -17,6 +19,22 @@ apiClient.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+apiClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response) {
+      if (error.response.status === 401  || error.response.status === 403) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        signOut(auth);
+        window.location.href = '/auth?callbackUrl=' + window.location.pathname + window.location.search;
+      }
+    }
     return Promise.reject(error);
   }
 );

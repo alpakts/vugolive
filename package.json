@@ -13,6 +13,7 @@
     "agora-rtc-react": "^2.3.0",
     "agora-rtc-sdk-ng": "^4.22.1",
     "axios": "^1.7.7",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
     "firebase": "^10.13.1",
     "formik": "^2.4.6",

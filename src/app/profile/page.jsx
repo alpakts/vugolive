@@ -52,13 +52,11 @@ const Profile = () => {
     if (!userId) {
       window.location.href = "/";
     }
-    if (apiUser) {
-      getHostProfile(apiUser.id,userId)
+      getHostProfile(apiUser?.id??250,userId)
       .then((res) =>{
         setHost(res.data.data);
         setIsFavorite(res.data.data.save?true:false);
       })
-    }
    
     
   }, [apiUser]);

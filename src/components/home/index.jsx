@@ -9,9 +9,10 @@ import { getExploreProfiles } from "@/lib/services/api-service";
 
 export default function HomeIndex() {
   const [users, setUsers] = useState(null);
+  const [category, setCategory] = useState(null);
   const [activeTab, setActiveTab] = useState("Profiller");
   useEffect(() => {
-    getExploreProfiles(0,250).then((response) => {
+    getExploreProfiles(category??0,250).then((response) => {
       setUsers(response.data.data);
     }
     ).catch((err)=>console.log(err));
@@ -20,7 +21,7 @@ export default function HomeIndex() {
 
   return  ( 
     <div className="p-4">
-      <TabComponent activeTab={activeTab} setActiveTab={setActiveTab} />
+      <TabComponent activeTab={activeTab} setCategory={setCategory} setActiveTab={setActiveTab} />
   
       <h1 className="text-base font-bold mb-4 border-b border-primary pb-3">
         Sizin İçin Önerilenler

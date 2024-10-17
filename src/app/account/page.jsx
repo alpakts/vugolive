@@ -8,7 +8,6 @@ import AccountHeader from "@/components/account/account-header";
 
 const Page = () => {
   const apiUser = useSelector((state) => state.apiUser?.apiUser);
-  debugger;
   if (!apiUser) {
     return <Loading></Loading>;
   }

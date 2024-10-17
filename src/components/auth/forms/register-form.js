@@ -67,7 +67,7 @@ const RegisterForm = ({ setPage }) => {
       await signInWithCredential(auth, userCredential);
       localStorage.setItem("user", JSON.stringify(registerResponse.data.data));
       localStorage.setItem("token", registerResponse.data.data.auth_token);
-      router.push("/account");
+      window.location.href=("/account");
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
         setError("Bu email adresi zaten kullanımda!");

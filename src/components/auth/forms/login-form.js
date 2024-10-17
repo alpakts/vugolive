@@ -42,7 +42,7 @@ const LoginForm = ({setPage}) => {
       var registerResponse = await registerUser(registerData);
       localStorage.setItem('user', JSON.stringify(registerResponse.data.data));
       localStorage.setItem('token', registerResponse.data.data.auth_token);
-      router.push("/account");
+      window.location.href=("/account");
     } catch (err) {
       setError("Kullanıcı adı veya şifre yanlış!");
     }
