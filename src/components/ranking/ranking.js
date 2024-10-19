@@ -2,7 +2,7 @@
 import LeaderboardItem from "@/components/ranking/leader";
 import RankingCard from "@/components/ranking/ranking-card";
 import SecondRank from "@/components/ranking/seconds";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TabComponentRank from "./tab-select-rank";
 
 const rankingData = [
@@ -15,7 +15,9 @@ const rankingData = [
 ];
 
 const Ranking = () => {
-    const [activeTab, setActiveTab] = useState("Profiller");
+  const [listData,setListData] = useState([]);
+  const [activeTab, setActiveTab] = useState("Profiller");
+
   return (
     <div className="relative w-full bg-fixed bg-cover bg-no-repeat bg-center p-4">
       {/* Overlay to darken the background for better visibility */}

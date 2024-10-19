@@ -1,19 +1,31 @@
 // components/DiamondPage.js
-import { FiChevronLeft } from 'react-icons/fi';
+'use client';
 import Image from 'next/image';
 import CustomButton from '@/components/web-components/button/button';
+import { getDiamondPurchaseList, getUserProfile } from '@/lib/services/api-service';
+import { useEffect, useState } from 'react';
+import Loading from '@/app/loading';
 
-const DiamondPage = () => {
-  const diamonds = [
-    { amount: 20000, price: 1750 },
-    { amount: 10000, price: 875 },
-    { amount: 6000, price: 525 },
-    { amount: 2000, price: 175 },
-    { amount: 400, price: 35 },
-  ];
-
+const DiamondPage = async () => {
+  const [diamondList,setDiamondList] = useState([]);
+  const [loading,setLoading] = useState(true);
+  const [apiUser,setApiUser] = useState({});
+  useEffect(() => {
+    const userId=localStorage.getItem('userId');
+    getDiamondPurchaseList().then((response) => {
+      setDiamondList(response.data.data);
+    });
+    getUserProfile(userId).then((response) => {
+      setApiUser(response.data.data);
+      setLoading(false);
+    });
+    },[]);
+    if (loading) {
+      return <Loading></Loading>;
+      
+    }
   return (
-    <div className=" bg-black text-white">
+    <div className=" bg-black text-white p-4">
       {/* Header */}
       <div className="flex items-center justify-center px-4 py-2">
         <h1 className="font-bold text-lg">VUGO | CÜZDAN</h1>
@@ -28,7 +40,7 @@ const DiamondPage = () => {
           width={50}
           height={50}
         />
-        <h2 className="text-4xl font-bold">5641</h2>
+        <h2 className="text-4xl font-bold">{apiUser?.diamond}</h2>
        </div>
         <p className="text-lg">ELMASLARIN</p>
       </div>
@@ -44,9 +56,9 @@ const DiamondPage = () => {
 
         {/* Diamond Purchase Options */}
         <div className="space-y-4 overflow-auto max-h-[30vh]">
-          {diamonds.map((diamond, index) => (
+          {diamondList.map((diamond, index) => (
             <div
-              key={index}
+              key={diamond.id}
               className="flex justify-between items-center bg-secondary text-black p-4 rounded-lg"
             >
               <div className="flex items-center space-x-2">
@@ -56,7 +68,7 @@ const DiamondPage = () => {
                   width={30}
                   height={30}
                 />
-                <span className="text-lg font-bold">{diamond.amount}</span>
+                <span className="text-lg font-bold">{diamond.diamond}</span>
               </div>
               <CustomButton className="bg-black text-white font-bold py-2 px-4 rounded-full">
                 ₺ {diamond.price}

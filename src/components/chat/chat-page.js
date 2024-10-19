@@ -4,7 +4,7 @@ import withAuth from '@/hocs/with-auth';
 import { getUserProfile } from '@/lib/services/api-service';
 import { useEffect, useRef, useState } from 'react';
 import { auth } from '../../../firebaseConfig';
-import { getTotalMessageCountBetweenUsers, listenToMessagesBetweenUsers } from '@/lib/services/firebase-service'; // Firestore function ayrı dosyaya alınabilir
+import { getTotalMessageCountBetweenUsers, listenToMessagesBetweenUsers, markMessageAsRead } from '@/lib/services/firebase-service'; // Firestore function ayrı dosyaya alınabilir
 import ChatMessages from './chat-messages';
 import ChatHeader from './chat-header';
 import ChatMessageInput from './message-input';
@@ -41,6 +41,7 @@ function ChatPage() {
           setMessageToUser(userProfileResponse.data.data);
           const messageCount = await getTotalMessageCountBetweenUsers(userEmail, userProfileResponse.data.data.identity);
           setTotalMessageCount(messageCount);
+          markMessageAsRead(userEmail,userProfileResponse.data.data.identity);
           unsubscribe = await listenToMessagesBetweenUsers(userEmail, userProfileResponse.data.data.identity, setMessages, pageSize);
         } catch (error) {
           console.error("Error fetching chat data:", error);

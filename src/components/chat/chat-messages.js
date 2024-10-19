@@ -93,8 +93,8 @@ const ChatMessages = ({ messages, userEmail, fileBaseUrl, pageSize, setPageSize,
                       <div
                         className={
                           msg.senderUser?.userid === userEmail
-                            ? "bg-primary text-black px-4 py-2 rounded-lg max-w-xs"
-                            : "bg-gray-900 text-white px-4 py-2 rounded-lg max-w-xs"
+                            ? "bg-primary text-black px-4 py-2 rounded-lg max-w-xs flex flex-col justify-center items-center"
+                            : "bg-gray-900 text-white px-4 py-2 rounded-lg max-w-xs flex flex-col justify-center items-center"
                         }
                       >
                         <Image
@@ -104,6 +104,14 @@ const ChatMessages = ({ messages, userEmail, fileBaseUrl, pageSize, setPageSize,
                           height={100}
                           className="rounded-lg aspect-auto"
                         />
+                          <Image
+                          src={'/diamond.png'}
+                          alt="Mesaj"
+                          width={20}
+                          height={20}
+                          className="rounded-lg aspect-auto"
+                        />
+                        <span> {msg.msg}</span>
                       </div>
                     )}
                     {/* Saat ve dakika */}

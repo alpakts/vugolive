@@ -1,6 +1,7 @@
 // components/FollowersList.js
 'use client';
 import CustomButton from "@/components/web-components/button/button";
+import { useAppSelector } from "@/lib/hooks";
 import { getExploreProfilesByGender } from "@/lib/services/api-service";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -8,11 +9,13 @@ import { useEffect, useState } from "react";
 const ForYou = () => {
   const filebaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   const [users, setUsers] = useState([]);
+  const apiUser =useAppSelector((state) => state.apiUser.apiUser);
   useEffect(() => {
-    getExploreProfilesByGender(250,0).then((response) => {
+    const userId=localStorage.getItem("userId");
+    getExploreProfilesByGender(userId??250,apiUser?.gender??0).then((response) => {
       setUsers(response.data.data);
     }).catch((err) => console.log(err));
-  }, []); 
+  }, [apiUser]); 
 
 
   return (

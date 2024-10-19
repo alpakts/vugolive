@@ -11,10 +11,11 @@ import { useDispatch } from "react-redux";
 
 const UpdateProfile = () => {
   const fileInputRef = useRef(null);
-  const [username, setUsername] = useState("alper");
+  const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   const dispatch = useDispatch();
-  const [profileImage, setProfileImage] = useState("/profile-placeholder.png"); // Default profile image
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
+  const [username, setUsername] = useState(apiUser?.fullName);
+  const [profileImage, setProfileImage] = useState(apiUser?.profileimages?fileBaseUrl+apiUser?.profileimages:"/profile-placeholder.png"); // Default profile image
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {

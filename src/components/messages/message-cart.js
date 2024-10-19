@@ -2,7 +2,8 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { timeAgo } from '@/lib/utils/utils';
-import { FaCircle } from 'react-icons/fa';
+import { FaCircle, FaImage } from 'react-icons/fa';
+import { useAppSelector } from '@/lib/hooks';
 
 const ProfileCard = ({ message }) => {
     const router = useRouter();
@@ -27,11 +28,13 @@ const ProfileCard = ({ message }) => {
       </div>}
       <div className="flex-1">
         <div className="flex items-center space-x-2">
-          <h2 className="text-lg font-bold">{user.username}</h2>
+          <h2 className="text-base font-bold">{user.username}</h2>
           <span className="text-gray-300">{user.age}</span>
           {user.is_host&& <Image src={'/verified.png'} height={24} width={24} ></Image>}
         </div>
-        <p className="text-secondary  max-h-5 overflow-hidden ">{message.lastMsg}</p>
+        <p className="text-secondary  max-h-5 overflow-hidden ">{message.lastMsg != "" ?message.lastMsg: (<>
+          <FaImage />
+        </>)}</p>
       </div>
       <span className="text-gray-400 text-sm">{date}</span>
     </div>

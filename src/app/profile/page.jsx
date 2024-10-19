@@ -154,12 +154,14 @@ const Profile = () => {
                 >
                   <AiFillMessage size={30} color="black" />
                 </div>
+               {host.is_video_call == 1 &&
                 <div
                   className="flex gap-2 items-center  bg-white rounded-full p-2 hover:bg-primary"
                   onClick={startVideoCall}
                 >
                   <IoVideocamSharp size={30} color="black" />
                 </div>
+               }
               </div>
             </Swiper>
             <div className="px-2">

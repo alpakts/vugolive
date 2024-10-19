@@ -9,10 +9,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { FaMailBulk } from 'react-icons/fa';
 import { setUser } from '@/lib/slices/userSlice';
 import { registerUser } from '@/lib/services/api-service';
+import { setApiUser } from '@/lib/slices/api-user-slice';
 
 const AuthHome = () => {
     const dispatch = useDispatch();
-    const router = useRouter();
     const params = useSearchParams();
     const handleLogin = async () => {
         try {
@@ -31,9 +31,9 @@ const AuthHome = () => {
             one_signal_id:'123'
           }
           var registerResponse = await registerUser(registerData);
-          localStorage.setItem('user', JSON.stringify(registerResponse.data.data));
+          localStorage.setItem('userId',registerResponse.data.data.id);
           localStorage.setItem('token', registerResponse.data.data.auth_token);
-          dispatch(setUser(registerResponse.data.data));
+          dispatch(setApiUser(registerResponse.data.data));
           window.location.href=(params.get('callbackUrl') ??'/account');
         } catch (error) {
           console.error('Error during login:', error);

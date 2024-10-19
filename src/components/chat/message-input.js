@@ -1,23 +1,46 @@
-import { sendMessageBetweenUsers } from '@/lib/services/firebase-service';
-import { useState } from 'react';
-import { FiSend, FiGift, FiFile } from 'react-icons/fi';
+import { sendMessageBetweenUsers } from "@/lib/services/firebase-service";
+import { useEffect, useRef, useState } from "react";
+import { FiFile, FiGift, FiSend } from "react-icons/fi";
+import SlidingModal from "../web-components/modals/sliding-modal";
+import { getGifsList } from "@/lib/services/api-service";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
-const ChatMessageInput = ({messageToUser,userEmail,apiUser }) => {
+const ChatMessageInput = ({ messageToUser, userEmail, apiUser }) => {
+  const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
+  const router = useRouter();
   const [newMessage, setNewMessage] = useState("");
-  const HandlesendMessage = () => {
+  const slidingModalRef = useRef(null);
+  const [giftList, setGiftList] = useState([]);
+  useEffect(() => {
+    getGifsList().then((res) => {
+      setGiftList(res.data.data);
+    }
+    );
+  }, []);
+  const closeModal = () => {
+    if (slidingModalRef.current) {
+      slidingModalRef.current.closeModal();
+    }
+  };
+  const handlesendMessage = (msgType = 'text',gift) => {
+    if (newMessage.trim() === "" && msgType != 'gift') {
+      return;
+    }
     if (newMessage.trim() !== "") {
       setNewMessage("");
     }
-    sendMessageBetweenUsers(userEmail, messageToUser.identity, newMessage,apiUser,messageToUser,'text', {
-      age: apiUser.age,
-      city: apiUser.city,
-      image: null,
-      is_host: apiUser.is_host,
-      userid: apiUser.id,
-      username: apiUser.fullName,
-    });
-
+    sendMessageBetweenUsers(
+      userEmail,
+      messageToUser.identity,
+      gift ? gift.diamond: newMessage,
+      apiUser,
+      messageToUser,
+      msgType,
+      gift,
+    )
   };
+
   return (
     <div className="flex items-center mb-4 space-x-2 p-2 bg-gray-800 rounded-full">
       <input
@@ -27,12 +50,44 @@ const ChatMessageInput = ({messageToUser,userEmail,apiUser }) => {
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
       />
-      <button onClick={HandlesendMessage}>
+      <button onClick={()=>{
+        handlesendMessage();
+      }}>
         <FiSend size={24} />
       </button>
-     {messageToUser?.is_host &&  <button>
-        <FiGift size={24} />
-      </button>}
+      {messageToUser?.is_host == 2 && (
+          <SlidingModal modalTitle={''} ref={slidingModalRef} OpenButton={<FiGift size={24} />}>
+          <div className="flex gap-2 p-2">
+            <div className="bg-gray-900 w-fit px-4 py-3 rounded-full flex gap-2 items-center">
+              <Image src={'/diamond.png'} className="aspect-square w-6 h-5" width={24} height={24} /> {apiUser?.diamond}
+            </div>
+            <div className="bg-gray-900 w-fit px-4 py-3 rounded-full flex gap-2 items-center" onClick={()=>{
+              closeModal();
+              router.push('/account/charge'); 
+            }}>
+              ekle <span className="text-lg">Elmaslar</span>
+            </div>
+          </div>
+           <div className="grid grid-cols-4 mx-auto w-fit gap-3">
+           {giftList.map((gift, index) => {
+              return (
+                <div key={index} className="flex items-center flex-col justify-between bg-gray-800 p-2 rounded-md mb-2 " onClick={()=>{
+                  handlesendMessage('gift',gift);
+                  closeModal();
+                }}>
+                  <div className="flex items-center">
+                    <Image src={fileBaseUrl+gift.images} alt="gift" width={50} height={50} ></Image>
+                  </div>
+                  <div className="flex items-center">
+                  <Image src={'/diamond.png'} className="aspect-square w-4 h-3" width={24} height={24} /> <span className="text-white">{gift.diamond}</span>
+                    </div>
+                </div>
+              );
+
+            })}
+           </div>
+          </SlidingModal>
+      )}
       <button>
         <FiFile size={24} />
       </button>

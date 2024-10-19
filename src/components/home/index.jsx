@@ -12,12 +12,13 @@ export default function HomeIndex() {
   const [category, setCategory] = useState(null);
   const [activeTab, setActiveTab] = useState("Profiller");
   useEffect(() => {
-    getExploreProfiles(category??0,250).then((response) => {
+    const apiUser = localStorage.getItem("userId");
+    getExploreProfiles(category??0,apiUser??250).then((response) => {
       setUsers(response.data.data);
     }
     ).catch((err)=>console.log(err));
 
-  },[activeTab]);
+  },[activeTab,category]);
 
   return  ( 
     <div className="p-4">

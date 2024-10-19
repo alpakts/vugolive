@@ -88,6 +88,12 @@ export const getExploreProfilesByGender = async ( uId, gender) => {
     gender,
   });
 };
+export const getCupList = async ( uId, gender) => {
+  return await apiClient.post(ApiName.fetchHostProfilesByGender, {
+    [ApiParams.user_id]: uId,
+    gender,
+  });
+};
 
 export const getPurchaseTransactions = async (userID, userType, operationType, order_by_date_type) => {
   return await apiClient.post(ApiName.getPurchaseTransactions, {

@@ -8,6 +8,7 @@ import CustomButton from "@/components/web-components/button/button";
 import Image from "next/image";
 import { auth,requestForToken } from "../../../../firebaseConfig";
 import { registerUser } from "@/lib/services/api-service";
+import { useDispatch } from "react-redux";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -21,6 +22,7 @@ const validationSchema = Yup.object({
 const LoginForm = ({setPage}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
   const router = useRouter();
   
 
@@ -40,8 +42,9 @@ const LoginForm = ({setPage}) => {
         one_signal_id:'123'
       }
       var registerResponse = await registerUser(registerData);
-      localStorage.setItem('user', JSON.stringify(registerResponse.data.data));
+      localStorage.setItem('userId',registerResponse.data.data.id);
       localStorage.setItem('token', registerResponse.data.data.auth_token);
+      dispatch(setApiUser(registerResponse.data.data));
       window.location.href=("/account");
     } catch (err) {
       setError("Kullanıcı adı veya şifre yanlış!");

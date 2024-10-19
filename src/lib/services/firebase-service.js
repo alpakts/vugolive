@@ -8,14 +8,11 @@ import {
   onSnapshot,
   orderBy,
   query,
-  serverTimestamp,
   setDoc,
-  Timestamp,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { addDiamonds, getAppSettings, minusDiamonds } from "./api-service";
-
 export const listenToMessagesBetweenUsers = async (
   userEmail1,
   userEmail2,
@@ -79,9 +76,10 @@ export const sendMessageBetweenUsers = async (
   messageContent,
   senderDetails,
   reveiverDetails,
-  msgType = "text"
+  msgType = "text",
+  gift = null,
 ) => {
-  const transaction = await transactDiamonds(senderDetails ,reveiverDetails);
+  const transaction = await transactDiamonds(senderDetails ,reveiverDetails,gift);
   if (transaction == false) {
     return false;
   }
@@ -93,7 +91,7 @@ export const sendMessageBetweenUsers = async (
     id: Date.now(),
     msg: messageContent,
     msgType: msgType,
-    image: null,
+    image: gift ? gift.images : null,
     not_deleted_identities: [userEmail1, userEmail2],
     senderUser: {
       age: senderDetails.age || "",
@@ -101,7 +99,7 @@ export const sendMessageBetweenUsers = async (
       date: Date.now(),
       image:
         senderDetails.images?.length > 0
-          ? senderDetails.image[0].image
+          ? senderDetails.images[0].image
           : senderDetails.profileimages || null,
       is_host: (senderDetails.is_host == 2 && true) || false,
       is_new_msg: true,
@@ -193,11 +191,77 @@ export const sendMessageBetweenUsers = async (
   }
   return true;
 };
+export const fetchUserChatList = async (userEmail) => {
+  try {
+    const userDocRef = doc(db, "userchatlist", userEmail);
 
-const transactDiamonds = async (sender, receiver) => {
+    const userChatListRef = collection(userDocRef, "userlist");
+    const userChatListQuery = query(userChatListRef, orderBy("time", "desc"));
+    const querySnapshot = await getDocs(userChatListQuery);
+    const chatList = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return chatList;
+  } catch (error) {
+    console.error("Error fetching user chat list: ", error);
+  }
+};
+export const listenToUserChatList = (userEmail, setMessages) => {
+  const userDocRef = doc(db, "userchatlist", userEmail);
+
+  const userChatListRef = collection(userDocRef, "userlist");
+  const userChatListQuery = query(userChatListRef, orderBy("time", "desc"));
+  const unsubscribe = onSnapshot(userChatListQuery, (snapshot) => {
+    const chatList = snapshot.docs.map((doc) => ({
+      id: doc.id, 
+      ...doc.data(), 
+    }));
+
+    setMessages(chatList); // Burada UI'yı güncelliyoruz
+    console.log("Anlık güncellenen mesajlar:", chatList);
+  });
+
+  return unsubscribe;
+};
+export const initChat = (userEmail, setMessages) => {
+  const unsubscribe = listenToUserChatList(userEmail, setMessages);
+
+  return () => unsubscribe();
+};
+export const markMessageAsRead = async (userEmail, messageId) => {
+  try {
+    const userDocRef = doc(db, "userchatlist", userEmail, "userlist", messageId);
+    
+    await updateDoc(userDocRef, {
+      newMsg: false,
+    });
+
+    console.log(`Message ${messageId} marked as read.`);
+  } catch (error) {
+    console.error("Error updating message status: ", error);
+  }
+};
+export const checkHasNewMessage = (userEmail,setHasNewMessages) => {
+  const userDocRef = doc(db, "userchatlist", userEmail);
+  const userChatListRef = collection(userDocRef, "userlist");
+  const userChatListQuery = query(userChatListRef, orderBy("time", "desc"));
+
+  const unsubscribe = onSnapshot(userChatListQuery, (snapshot) => {
+    const hasNewMessages = snapshot.docs.some((doc) => doc.data().newMsg === true);
+    setHasNewMessages(hasNewMessages); 
+  });
+
+  return unsubscribe;
+};
+const transactDiamonds = async (sender, receiver,gift) => {
     const response = await getAppSettings();
     const appsettings = response.data.data.app;
-    const transactResponse = await minusDiamonds(sender.id, appsettings.user_message_charge??26);
+    let amount = appsettings.user_message_charge??26;
+    if (gift) {
+        amount = gift.diamond;
+    }
+    const transactResponse = await minusDiamonds(sender.id, amount);
     if (transactResponse.data.message == "diamoand minush") {
         if (sender.is_host != 2 && receiver.is_host == 2) {
             await addDiamonds(receiver.id, appsettings.user_message_charge??26,1);

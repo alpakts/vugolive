@@ -13,6 +13,8 @@ import CustomButton from "@/components/web-components/button/button";
 import Image from "next/image";
 import { auth, requestForToken } from "../../../../firebaseConfig";
 import { registerUser } from "@/lib/services/api-service";
+import { setApiUser } from "@/lib/slices/api-user-slice";
+import { useDispatch } from "react-redux";
 
 // Form doğrulama şeması: Full Name ve Şifreyi Tekrar Yaz alanları eklendi
 const validationSchema = Yup.object({
@@ -37,6 +39,7 @@ const validationSchema = Yup.object({
 const RegisterForm = ({ setPage }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
   const router = useRouter();
 
   const handleRegister = async (values) => {
@@ -65,8 +68,9 @@ const RegisterForm = ({ setPage }) => {
       };
       var registerResponse = await registerUser(registerData);
       await signInWithCredential(auth, userCredential);
-      localStorage.setItem("user", JSON.stringify(registerResponse.data.data));
-      localStorage.setItem("token", registerResponse.data.data.auth_token);
+      localStorage.setItem('userId',registerResponse.data.data.id);
+      localStorage.setItem('token', registerResponse.data.data.auth_token);
+      dispatch(setApiUser(registerResponse.data.data));
       window.location.href=("/account");
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {

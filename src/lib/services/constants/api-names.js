@@ -43,7 +43,8 @@ const ApiName = {
     reportReson: 'reportReson',
     logOut: 'logOut',
     minusCoins: 'minusCoins',
-    fetchHostProfilesByGender:'fetchHostProfilesByGender'
+    fetchHostProfilesByGender:'fetchHostProfilesByGender',
+    'getCupList': 'getCupList',
   };
   
   export default ApiName;
