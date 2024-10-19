@@ -341,7 +341,7 @@ export const updateUserCallStatus = async (data) => {
 
 export const updateIsVideoCall = async (myUserId, callStatus) => {
   return await apiClient.post(ApiName.onOff_video_call, {
-    [ApiParams.my_user_id]: myUserId,
+    [ApiParams.user_id]: myUserId,
     [ApiParams.is_video_call]: callStatus,
   });
 };

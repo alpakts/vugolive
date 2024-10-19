@@ -88,7 +88,7 @@ const Profile = () => {
       throw error;
     }
   }
-
+  debugger;
   return (
     <div className="p-4 min-h-screen text-white">
       {host != null ? (

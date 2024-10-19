@@ -4,7 +4,7 @@ import Image from 'next/image';
 import CustomButton from '@/components/web-components/button/button';
 import { getDiamondPurchaseList, getUserProfile } from '@/lib/services/api-service';
 import { useEffect, useState } from 'react';
-import Loading from '@/app/loading';
+import Loading from '@/app/(app)/loading';
 
 const DiamondPage = async () => {
   const [diamondList,setDiamondList] = useState([]);

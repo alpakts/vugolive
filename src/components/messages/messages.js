@@ -2,7 +2,7 @@
 import withAuth from "@/hocs/with-auth";
 import ProfileCard from "./message-cart";
 import { useEffect, useState } from "react";
-import Loading from "@/app/loading";
+import Loading from "@/app/(app)/loading";
 import {  initChat } from "@/lib/services/firebase-service";
 import { useAppSelector } from "@/lib/hooks";
 

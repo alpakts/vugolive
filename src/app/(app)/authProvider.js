@@ -4,7 +4,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { auth } from "../../firebaseConfig";
+import { auth } from "../../../firebaseConfig";
 import { setUser } from "@/lib/slices/userSlice";
 import { setApiUser } from "@/lib/slices/api-user-slice";
 import { getUserProfile } from "@/lib/services/api-service";

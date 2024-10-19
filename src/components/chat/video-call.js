@@ -21,7 +21,7 @@ import {
   BsMicMute,
 } from "react-icons/bs";
 import { MdCallEnd, MdCameraswitch } from "react-icons/md";
-import Loading from "@/app/loading";
+import Loading from "@/app/(app)/loading";
 
 async function Call(props) {
   if (!window) {

@@ -5,7 +5,7 @@ import CustomButton from "@/components/web-components/button/button";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
-import Loading from "@/app/loading";
+import Loading from "@/app/(app)/loading";
 import { getBlockedProfiles, unblockHost } from "@/lib/services/api-service";
 
 const BlocksList = () => {

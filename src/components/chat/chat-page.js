@@ -1,5 +1,5 @@
 'use client';
-import Loading from '@/app/loading';
+import Loading from '@/app/(app)/loading';
 import withAuth from '@/hocs/with-auth';
 import { getUserProfile } from '@/lib/services/api-service';
 import { useEffect, useRef, useState } from 'react';

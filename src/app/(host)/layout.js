@@ -1,9 +1,9 @@
-import { AuthProvider } from "@/app/authProvider";
-import Loading from "@/app/loading";
-import { StoreProvider } from "@/app/store-provider";
-import Header from "@/components/layout/header";
+import { AuthProvider } from "@/app/(app)/authProvider";
+import Loading from "@/app/(app)/loading";
+import { StoreProvider } from "@/app/(app)/store-provider";
 import { Inter } from "next/font/google";
 import { Suspense } from "react";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 export const metadata = {

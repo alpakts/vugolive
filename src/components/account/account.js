@@ -11,6 +11,7 @@ import DiamondPage from './components/diamond';
 import PublisherApplicationForm from './components/publisher-form';
 import { useAppSelector } from '@/lib/hooks';
 const AccounHome = () => {
+  const apiUser = useAppSelector((state) => state.apiUser.apiUser);
   const handleLogout = () => {
     signOut(auth).then(() => {
       localStorage.removeItem('user');
@@ -32,7 +33,11 @@ const AccounHome = () => {
     {/* Uygulamayı Paylaş */}
     <MenuItem icon={<FaShareAlt />} text="Uygulamayı Paylaş" />
     {/* Yayıncı Ol */}
-    <SlidingModal  OpenButton={<MenuItem icon={<FaUserPlus />} text="Yayıncı Ol" />} > <PublisherApplicationForm/></SlidingModal>
+    {apiUser.is_host==2 ? <MenuItem icon={<FaUserPlus />} text="Yayıncı Gösterge Paneli" onClick={()=>{
+      window.location.href = '/account/host-panel'
+    }} /> :
+      <SlidingModal  OpenButton={<MenuItem icon={<FaUserPlus />} text="Yayıncı Ol" />} > <PublisherApplicationForm/></SlidingModal>
+    }
     {/* Kullanım Koşulları */}
     <MenuItem icon={<FaFileAlt />} text="Kullanım Koşulları" />
     {/* Gizlilik Politikası */}

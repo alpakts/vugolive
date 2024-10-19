@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import {getSavedProfiles } from '@/lib/services/api-service';
 import { useAppSelector } from '@/lib/hooks';
-import Loading from '@/app/loading';
+import Loading from '@/app/(app)/loading';
 import { useRouter } from 'next/navigation';
 
 const FollowersList = () => {
