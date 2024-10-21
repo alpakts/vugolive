@@ -45,6 +45,7 @@ const ApiName = {
     minusCoins: 'minusCoins',
     fetchHostProfilesByGender:'fetchHostProfilesByGender',
     'getCupList': 'getCupList',
+    getPurchaseTransactions: 'getPurchaseTransactions',
   };
   
   export default ApiName;

@@ -8,9 +8,11 @@ import { updateIsVideoCall } from '@/lib/services/api-service';
 import Loading from '@/app/(host)/loading';
 import { useDispatch } from 'react-redux';
 import { setApiUser } from '@/lib/slices/api-user-slice';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardTab() {
   const popupModalRef = useRef(null);
+  const router = useRouter();
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
   const dispacth = useDispatch();
   const [isVideoCall, setIsVideoCall] = useState(apiUser?.is_video_call);
@@ -78,8 +80,10 @@ export default function DashboardTab() {
         </div>
         <div className="text-4xl font-bold mb-2">{apiUser?.diamond}</div>
         <p className="text-sm text-gray-400">Minimum Çekim Miktarı: 10000</p>
-        <button disabled={apiUser?.diamond<10000} className="bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold mt-4 w-full">
-          ÇEKİMTALEBİ VER
+        <button onClick={()=>{
+          router.push('/account/host-panel/request-refund');
+        }} disabled={apiUser?.diamond<10000} className="bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold mt-4 w-full">
+          ÇEKİM TALEBİ VER
         </button>
       </div>
 

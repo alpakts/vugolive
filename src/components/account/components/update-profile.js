@@ -2,7 +2,7 @@
 "use client";
 import CustomButton from "@/components/web-components/button/button";
 import { useAppSelector } from "@/lib/hooks";
-import { getUserProfile, saveProfile, updateUserProfile } from "@/lib/services/api-service";
+import { getUrl, getUserProfile, saveProfile, updateUserProfile } from "@/lib/services/api-service";
 import { setApiUser } from "@/lib/slices/api-user-slice";
 import { useRef, useState } from "react";
 import { FaPen } from "react-icons/fa";
@@ -29,10 +29,12 @@ const UpdateProfile = () => {
   };
   
   const handleUpdate = async () => {
+    const file =fileInputRef.current.files[0];
+    const File= await getUrl(file);
     const updateResult =  await updateUserProfile({
       user_id:apiUser.id,
       fullName: username,
-    },fileInputRef.current.files[0]);
+    },File.data.url);
     if (updateResult.data.status) {
       getUserProfile(apiUser.id).then((res) => {
         dispatch(setApiUser(res.data.data));

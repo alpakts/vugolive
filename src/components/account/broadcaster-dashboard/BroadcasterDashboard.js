@@ -3,8 +3,10 @@ import { useState } from 'react';
 import { FiChevronLeft, FiHome, FiMessageSquare, FiUser } from 'react-icons/fi';
 import DashboardTab from './dashboard-tab';
 import Messages from '@/components/messages/messages';
+import withAuth from '@/hocs/with-auth';
+import ProfileForm from './profile-tab';
 
-export default function BroadcasterDashboard() {
+ function BroadcasterDashboard() {
   // State to manage the active tab
   const [activeTab, setActiveTab] = useState('dashboard');
 
@@ -33,7 +35,7 @@ export default function BroadcasterDashboard() {
       {activeTab === 'profile' && (
         <div className="px-4 py-4">
           <h2 className="text-lg font-bold mb-2">Profil</h2>
-          <p>Profil bilgileri burada görünecek...</p>
+          <ProfileForm></ProfileForm>
         </div>
       )}
 
@@ -73,3 +75,4 @@ export default function BroadcasterDashboard() {
     </div>
   );
 }
+export default withAuth(BroadcasterDashboard);

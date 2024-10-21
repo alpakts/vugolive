@@ -66,7 +66,7 @@ export const getReportReason = async () => {
 export const updateUserProfile = async (data, image) => {
   const formData = new FormData();
   Object.keys(data).forEach((key) => formData.append(ApiParams[key], data[key]));
-  formData.append('image', image);
+  formData.append('file', image);
 
   return await apiClient.post(ApiName.userProfileUpdate, formData, {
     headers: {
@@ -95,11 +95,11 @@ export const getCupList = async ( uId, gender) => {
   });
 };
 
-export const getPurchaseTransactions = async (userID, userType, operationType, order_by_date_type) => {
+export const getPurchaseTransactions = async (userID, user_type, operation_type, order_by_date_type) => {
   return await apiClient.post(ApiName.getPurchaseTransactions, {
     [ApiParams.user_id]: userID,
-    userType,
-    operationType,
+    user_type,
+    operation_type,
     order_by_date_type,
   });
 };
@@ -194,11 +194,23 @@ export const blockHost = async (uId, hId) => {
 
 export const makeUserHost = async (data, images, videos) => {
   const formData = new FormData();
-  Object.keys(data).forEach((key) => formData.append(ApiParams[key], data[key]));
+  Object.keys(data).forEach((key) => formData.append(key, data[key]));
   images.forEach((image) => formData.append(ApiParams.imagesArray, image));
   videos.forEach((video) => formData.append(ApiParams.videosArray, video));
 
   return await apiClient.post(ApiName.applyForHost, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+export const updateHostProfile = async (data, images, videos) => {
+  const formData = new FormData();
+  Object.keys(data).forEach((key) => formData.append(key, data[key]));
+  images.forEach((image) => formData.append(ApiParams.imagesArray, image));
+  videos.forEach((video) => formData.append(ApiParams.videosArray, video));
+
+  return await apiClient.post(ApiName.hostProfileUpdate, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -230,7 +242,7 @@ export const reportUser = async (reason, description, uId) => {
 
 export const getUrl = async (media) => {
   const formData = new FormData();
-  formData.append('media', media);
+  formData.append('file', media);
   return await apiClient.post(ApiName.storeFileGivePath, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',

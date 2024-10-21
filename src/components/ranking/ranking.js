@@ -4,6 +4,8 @@ import RankingCard from "@/components/ranking/ranking-card";
 import SecondRank from "@/components/ranking/seconds";
 import React, { useEffect, useState } from "react";
 import TabComponentRank from "./tab-select-rank";
+import { getPurchaseTransactions } from "@/lib/services/api-service";
+import { useAppSelector } from "@/lib/hooks";
 
 const rankingData = [
   { name: "Cem Filiz", rank: 1, points: 7730, avatarUrl: "/girl.png" },
@@ -17,6 +19,21 @@ const rankingData = [
 const Ranking = () => {
   const [listData,setListData] = useState([]);
   const [activeTab, setActiveTab] = useState("Profiller");
+  const apiUser = useAppSelector((state) => state.apiUser.apiUser);
+  useEffect(() => {
+    if (apiUser == null) {
+      return;
+    }
+    // userType  : 2 yayıncı , 0/ 1 kullanıcı ,
+    // opeation type : 0 elmas kazanan , 1 elmas harcayan 
+    // 0 daily , 1 weekly , 2 monthly
+    getPurchaseTransactions(apiUser.id,2,0,2).then((response) => {
+      setListData(response.data.data);
+      console.log(response.data.data);
+    });
+  }
+  , [apiUser]);
+
 
   return (
     <div className="relative w-full bg-fixed bg-cover bg-no-repeat bg-center p-4">
