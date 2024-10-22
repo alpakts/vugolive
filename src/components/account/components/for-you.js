@@ -31,6 +31,10 @@ const ForYou = () => {
           <div
             key={index}
             className="flex items-center bg-slate-900 p-4 mb-4 rounded-lg shadow relative"
+            onClick={() => {
+              window.location.href = `/profile?userId=${user.id}`
+            }
+            }
           >
             <Image
               src={user.profileimages?filebaseUrl+user?.profileimages:'/profile-placeholder.png'}

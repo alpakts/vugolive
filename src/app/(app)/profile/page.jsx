@@ -22,7 +22,7 @@ import { AiFillMessage } from "react-icons/ai";
 import { useAppSelector } from "@/lib/hooks";
 import { getHostProfile, saveProfile,removeFromSaved } from "@/lib/services/api-service";
 import PopupComp from "@/components/web-components/popup/popup";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaUser } from "react-icons/fa";
 import { CiCircleRemove } from "react-icons/ci";
 import SlidingModal from "@/components/web-components/modals/sliding-modal";
 import ReportUser from "@/components/account/components/report-user";
@@ -55,10 +55,10 @@ const Profile = () => {
       getHostProfile(apiUser?.id??250,userId)
       .then((res) =>{
         setHost(res.data.data);
-        setIsFavorite(res.data.data.save?true:false);
+        if (apiUser &&apiUser.save_profile?.includes(res.data.data.id)) {
+          setIsFavorite(true);
+        }
       })
-   
-    
   }, [apiUser]);
   const handleShowPopup = (icon,children) => {
     if (popupRef.current) {
@@ -117,7 +117,7 @@ const Profile = () => {
                 },
               }}
             >
-              {host?.images.map((image, index) => (
+              {host.is_host == 2 && host?.images.map((image, index) => (
                 <SwiperSlide key={index}>
                   <Image
                     src={fileBaseUrl + image.image}
@@ -128,6 +128,23 @@ const Profile = () => {
                     sizes="(min-width:768px) 50vw, 100vw"
                     className="w-full h-auto aspect-square object-cover rounded-3xl"
                   />
+                </SwiperSlide>
+              ))}
+              {host.is_host != 2 && [host?.profileimages].map((image, index) => (
+                <SwiperSlide key={index}>
+                  {image ? (
+                    <Image
+                      src={fileBaseUrl + image}
+                      alt={host?.fullName}
+                      width={500}
+                      height={500}
+                      loading="lazy"
+                      sizes="(min-width:768px) 50vw, 100vw"
+                      className="w-full h-auto aspect-square object-cover rounded-3xl"
+                    />
+                  ) : (
+                    <FaUser className="w-full h-auto aspect-square object-cover rounded-3xl" color="white" />
+                  )}
                 </SwiperSlide>
               ))}
               <div
@@ -164,19 +181,21 @@ const Profile = () => {
               </div>
             </Swiper>
             <div className="px-2">
-              <h1 className="text-xl flex items-center gap-2 font-bold mt-4 capitalize text-white lg:text-3xl">
-                {host?.fullName} <span className="text-2xl"> {host.age}</span>{" "}
+              <h1 className="text-base flex items-center gap-2 font-bold mt-4 capitalize text-white lg:text-3xl">
+                {host?.fullName} <span className="text-sm"> {host.age}</span>{" "}
                 <Image src="/verified.png" width={20} height={20} />
               </h1>
               <div className="flex gap-x-2 text-sm items-center lg:text-lg">
-                <Image src="/turkey.png" width={20} height={20} />
-                <span className="opacity-75">Türkiye</span>
+                
+                <span className="opacity-75">{host.country_data ? host.country_data.country_name == '🇹🇷' ? <Image src="/turkey.png" width={20} height={20} /> :  host.country_data.country_name:''}</span>
               </div>
               <div className="text-sm opacity-75 flex gap-x-2 my-2 lg:text-base">
                 {host.about}
               </div>
 
-              <h2 className="text-lg lg:text-xl mt-4">Video Galeri</h2>
+             {host?.video.length > 0 && 
+             <>
+              <h2 className="text-sm lg:text-xl mt-4">Video Galeri</h2>
               <div className="videos my-4">
                 <Swiper
                   modules={[Navigation]}
@@ -213,10 +232,14 @@ const Profile = () => {
                   ))}
                 </Swiper>
               </div>
+             </>}
 
-              <div className="py-2 text-lg lg:text-xl">İlgi Alanları</div>
+             {
+                host.intrests?.length > 0 &&
+                <>
+                <div className="py-2 text-sm lg:text-xl">İlgi Alanları</div>
               <div className="flex flex-wrap gap-2">
-                {host.intrests.map((item, index) => (
+                {host.intrests?.map((item, index) => (
                   <span
                     key={index}
                     className="bg-gray-900 text-white font-bold px-2 py-1 rounded-full text-xs lg:text-base mr-2"
@@ -225,10 +248,12 @@ const Profile = () => {
                   </span>
                 ))}
               </div>
+                </>
+             }
 
               <div className="flex flex-col gap-2 my-8 lg:my-12">
                 <CustomButton
-                  className="bg-gray-900 text-base text-white "
+                  className="bg-gray-900 text-xs text-white "
                   onClick={() => {
                     router.push(`/chat/${host.id}`);
                   }}
@@ -236,7 +261,7 @@ const Profile = () => {
                   SOHBETİ BAŞLAT {host?.fullName}
                 </CustomButton>
                 <CustomButton
-                  className="bg-gray-900 text-base text-white "
+                  className="bg-gray-900 text-xs text-white "
                   onClick={() => {
                     const shareData = {
                       title: "Vugo",
@@ -251,7 +276,7 @@ const Profile = () => {
                 <SlidingModal
                   ref={slidingModalRef}
                   OpenButton={
-                    <CustomButton className="bg-gray-900 text-base text-white w-full">
+                    <CustomButton className="bg-gray-900 text-xs text-white w-full">
                       ŞİKAYET ET {host?.fullName}
                     </CustomButton>
                   }

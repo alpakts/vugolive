@@ -20,11 +20,11 @@ const ChatHeader = ({ messageToUser, fileBaseUrl }) => {
             className={`rounded-full object-contain aspect-square ${messageToUser.profileimages ? "" : "bg-secondary"}`}
           />
           <div>
-            <h2 className="text-lg font-bold flex gap-2 items-center">
+            <h2 className="text-base font-bold flex gap-2 items-center">
               {messageToUser.fullName} <span className="text-sm">{messageToUser.age}</span>
               {messageToUser?.is_host ? <Image src="/verified.png" alt="Doğrulama" width={24} height={24} /> : null}
             </h2>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 text-sm">
               <span className="text-gray-400">{messageToUser.bio}</span>
             </div>
           </div>

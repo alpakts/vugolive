@@ -9,6 +9,7 @@ import Image from "next/image";
 import { auth,requestForToken } from "../../../../firebaseConfig";
 import { registerUser } from "@/lib/services/api-service";
 import { useDispatch } from "react-redux";
+import { setApiUser } from "@/lib/slices/api-user-slice";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -23,10 +24,10 @@ const LoginForm = ({setPage}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  const router = useRouter();
   
 
   const handleLogin = async (values) => {
+
     setError(null);
     try {
       const googleResult = await signInWithEmailAndPassword(auth, values.email, values.password);

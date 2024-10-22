@@ -44,8 +44,8 @@ const DiamondPage = async () => {
        </div>
         <p className="text-lg">ELMASLARIN</p>
       </div>
-        <CustomButton className="font-bold text-lg w-full bg-white py-2 text-black text-center rounded-lg mb-6">
-          Elmas Kazanmak İçin Tıkla
+        <CustomButton className="font-bold !text-lg w-full bg-white py-2 text-black text-center rounded-lg mb-6">
+          ELMAS BAYİİ : +905312983233
         </CustomButton>
 
       <div className="px-4 text-center">

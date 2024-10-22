@@ -11,10 +11,13 @@ export default function HomeIndex() {
   const [users, setUsers] = useState(null);
   const [category, setCategory] = useState(null);
   const [activeTab, setActiveTab] = useState("Profiller");
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
+    setLoading(true);
     const apiUser = localStorage.getItem("userId");
     getExploreProfiles(category??0,apiUser??250).then((response) => {
       setUsers(response.data.data);
+      setLoading(false);
     }
     ).catch((err)=>console.log(err));
 
@@ -22,12 +25,12 @@ export default function HomeIndex() {
 
   return  ( 
     <div className="p-4">
-      <TabComponent activeTab={activeTab} setCategory={setCategory} setActiveTab={setActiveTab} />
+      <TabComponent activeTab={activeTab} category={category} setCategory={setCategory} setActiveTab={setActiveTab} />
   
       <h1 className="text-base font-bold mb-4 border-b border-primary pb-3">
         Sizin İçin Önerilenler
       </h1>
-      {users?.length>0 ?(
+      {!loading ?(
         <div className="grid grid-cols-2 gap-4 relative">
           {users.map((item, index) => (
             <List key={index} activeTab={activeTab} item={item} />

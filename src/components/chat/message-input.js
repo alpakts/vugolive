@@ -2,13 +2,15 @@ import { sendMessageBetweenUsers } from "@/lib/services/firebase-service";
 import { useEffect, useRef, useState } from "react";
 import { FiFile, FiGift, FiSend } from "react-icons/fi";
 import SlidingModal from "../web-components/modals/sliding-modal";
-import { getGifsList } from "@/lib/services/api-service";
+import { getGifsList, getUrl } from "@/lib/services/api-service";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const ChatMessageInput = ({ messageToUser, userEmail, apiUser }) => {
   const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   const router = useRouter();
+  const [file , setFile] = useState(null);
+  const fileInputRef = useRef(null);
   const [newMessage, setNewMessage] = useState("");
   const slidingModalRef = useRef(null);
   const [giftList, setGiftList] = useState([]);
@@ -23,12 +25,17 @@ const ChatMessageInput = ({ messageToUser, userEmail, apiUser }) => {
       slidingModalRef.current.closeModal();
     }
   };
-  const handlesendMessage = (msgType = 'text',gift) => {
-    if (newMessage.trim() === "" && msgType != 'gift') {
+  const handlesendMessage = async (msgType = 'text',gift,photo) => {
+    if (newMessage.trim() === "" && msgType != 'gift'&& msgType != 'image' && msgType != 'video') {
       return;
     }
     if (newMessage.trim() !== "") {
       setNewMessage("");
+    }
+    let photoUrl = null;
+    if (msgType == 'image' || msgType == 'video') {
+      const fileResponse = await getUrl(photo);
+      photoUrl = fileResponse.data.url;
     }
     sendMessageBetweenUsers(
       userEmail,
@@ -38,6 +45,7 @@ const ChatMessageInput = ({ messageToUser, userEmail, apiUser }) => {
       messageToUser,
       msgType,
       gift,
+      photoUrl
     )
   };
 
@@ -89,7 +97,25 @@ const ChatMessageInput = ({ messageToUser, userEmail, apiUser }) => {
           </SlidingModal>
       )}
       <button>
-        <FiFile size={24} />
+        <FiFile size={24} onClick={()=>{
+          fileInputRef.current.click();
+        }} />
+       <input
+  className="hidden"
+  ref={fileInputRef}
+  type="file"
+  accept="image/*,video/*"
+  onChange={(event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileType = file.type.startsWith('image') ? 'image' : file.type.startsWith('video') ? 'video' : null;
+      if (fileType) {
+        handlesendMessage(fileType, null, file);
+        event.target.value = null;
+      }
+    }
+  }}
+/>
       </button>
     </div>
   );

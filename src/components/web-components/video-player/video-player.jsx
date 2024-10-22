@@ -2,6 +2,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import "./styles.css";
 import { IoMdClose } from "react-icons/io";
+import { FaPauseCircle, FaPlayCircle } from "react-icons/fa";
 
 const VideoPlayer = (props) => {
   const { user, src, open, callback } = props;
@@ -103,13 +104,13 @@ const VideoPlayer = (props) => {
 
           {showControls && (
             <button
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primary  p-3 rounded-full"
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black  p-1 rounded-full"
               onClick={closeVideo}
             >
               {isPlaying ? (
-                <Image src={"pause.svg"} width={30} height={30} />
+                <FaPauseCircle size={24} color={"white"} />
               ) : (
-                <Image src={"/play.svg"} width={30} height={30} />
+                <FaPlayCircle size={24} color={"white"} />
               )}
             </button>
           )}

@@ -16,7 +16,6 @@ export default function History() {
             
         }
         getPaymentHistory(apiUser.id,0,20).then((response) => {
-            debugger;
             setHistory(response.data.data);
         });
         

@@ -78,6 +78,7 @@ export const sendMessageBetweenUsers = async (
   reveiverDetails,
   msgType = "text",
   gift = null,
+  photoUrl = null
 ) => {
   const transaction = await transactDiamonds(senderDetails ,reveiverDetails,gift);
   if (transaction == false) {
@@ -87,11 +88,12 @@ export const sendMessageBetweenUsers = async (
   let chatDocRef = doc(db, "chat", combinedEmail);
 
   const chatMessagesRef = collection(chatDocRef, "chat");
+  const image = (msgType == "image" || msgType == "video") ? photoUrl : msgType == "gift" ? gift.images : null;
   const newMessage = {
     id: Date.now(),
     msg: messageContent,
     msgType: msgType,
-    image: gift ? gift.images : null,
+    image: image,
     not_deleted_identities: [userEmail1, userEmail2],
     senderUser: {
       age: senderDetails.age || "",
