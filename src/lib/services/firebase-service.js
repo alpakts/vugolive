@@ -22,7 +22,6 @@ export const listenToMessagesBetweenUsers = async (
   const combinedEmail = [userEmail1, userEmail2].sort().join("");
   let chatDocRef = doc(db, "chat", combinedEmail);
   const chatMessagesRef = collection(chatDocRef, "chat");
-
   const chatMessagesQuery = query(
     chatMessagesRef,
     orderBy("time", "desc"),
@@ -38,7 +37,8 @@ export const listenToMessagesBetweenUsers = async (
         pageSize
       );
     }
-    setMessages(messages);
+    const filteredMessages = messages.filter((message) => message.not_deleted_identities.includes(userEmail1));
+    setMessages(filteredMessages);
   });
 
   return unsubscribe;
@@ -78,19 +78,30 @@ export const sendMessageBetweenUsers = async (
   reveiverDetails,
   msgType = "text",
   gift = null,
-  photoUrl = null
+  photoUrl = null,
+  free = false
 ) => {
-  const transaction = await transactDiamonds(senderDetails ,reveiverDetails,gift);
-  if (transaction == false) {
+  const transaction = await transactDiamonds(
+    senderDetails,
+    reveiverDetails,
+    gift,
+    free
+  );
+  if (transaction == false ) {
     return false;
   }
   const combinedEmail = [userEmail1, userEmail2].sort().join("");
   let chatDocRef = doc(db, "chat", combinedEmail);
 
   const chatMessagesRef = collection(chatDocRef, "chat");
-  const image = (msgType == "image" || msgType == "video") ? photoUrl : msgType == "gift" ? gift.images : null;
+  const image =
+    msgType == "image" || msgType == "video"
+      ? photoUrl
+      : msgType == "gift"
+      ? gift.images
+      : null;
   const newMessage = {
-    id: Date.now(),
+    id: Date.now().toString(),
     msg: messageContent,
     msgType: msgType,
     image: image,
@@ -131,7 +142,6 @@ export const sendMessageBetweenUsers = async (
     newMsg: false,
     conversationId: combinedEmail,
     isDeleted: false,
-    deletedId: "",
     time: Date.now(), // Ekstra bir zaman damgası eklenebilir
     user: {
       age: reveiverDetails.age || null,
@@ -216,8 +226,8 @@ export const listenToUserChatList = (userEmail, setMessages) => {
   const userChatListQuery = query(userChatListRef, orderBy("time", "desc"));
   const unsubscribe = onSnapshot(userChatListQuery, (snapshot) => {
     const chatList = snapshot.docs.map((doc) => ({
-      id: doc.id, 
-      ...doc.data(), 
+      id: doc.id,
+      ...doc.data(),
     }));
 
     setMessages(chatList); // Burada UI'yı güncelliyoruz
@@ -233,8 +243,14 @@ export const initChat = (userEmail, setMessages) => {
 };
 export const markMessageAsRead = async (userEmail, messageId) => {
   try {
-    const userDocRef = doc(db, "userchatlist", userEmail, "userlist", messageId);
-    
+    const userDocRef = doc(
+      db,
+      "userchatlist",
+      userEmail,
+      "userlist",
+      messageId
+    );
+
     await updateDoc(userDocRef, {
       newMsg: false,
     });
@@ -244,34 +260,175 @@ export const markMessageAsRead = async (userEmail, messageId) => {
     console.error("Error updating message status: ", error);
   }
 };
-export const checkHasNewMessage = (userEmail,setHasNewMessages) => {
+export const checkHasNewMessage = (userEmail, setHasNewMessages) => {
   const userDocRef = doc(db, "userchatlist", userEmail);
   const userChatListRef = collection(userDocRef, "userlist");
   const userChatListQuery = query(userChatListRef, orderBy("time", "desc"));
 
   const unsubscribe = onSnapshot(userChatListQuery, (snapshot) => {
-    const hasNewMessages = snapshot.docs.some((doc) => doc.data().newMsg === true);
-    setHasNewMessages(hasNewMessages); 
+    const hasNewMessages = snapshot.docs.some(
+      (doc) => doc.data().newMsg === true
+    );
+    setHasNewMessages(hasNewMessages);
   });
 
   return unsubscribe;
 };
-const transactDiamonds = async (sender, receiver,gift) => {
-    const response = await getAppSettings();
-    const appsettings = response.data.data.app;
-    let amount = appsettings.user_message_charge??26;
-    if (gift) {
-        amount = gift.diamond;
+const transactDiamonds = async (sender, receiver, gift,free) => {
+  if (free) {
+    return true;
+  }
+  var isMessageFree = checkMessageIsFree(sender, receiver);
+  if (isMessageFree.isFee == false) {
+    return true;
+  }
+
+  const response = await getAppSettings();
+  const appsettings = response.data.data.app;
+  let amount = appsettings.user_message_charge ?? 26;
+  if (gift) {
+    amount = gift.diamond;
+  }
+  const transactResponse = await minusDiamonds(sender.id, amount);
+  if (transactResponse.data.message == "diamoand minush") {
+    if (isMessageFree.paymentToHost) {
+      await addDiamonds(receiver.id, appsettings.user_message_charge ?? 26, 1);
+      return true
     }
-    const transactResponse = await minusDiamonds(sender.id, amount);
-    if (transactResponse.data.message == "diamoand minush") {
-        if (sender.is_host != 2 && receiver.is_host == 2) {
-            await addDiamonds(receiver.id, appsettings.user_message_charge??26,1);
-        }
-    }else{
-        window.location.href = "/account/charge";
-        return false;
+  } else {
+    window.location.href = "/account/charge";
+    return false;
+  }
+};
+const checkMessageIsFree = (sender, receiver) => {
+  if (
+    sender.save_profile?.includes(receiver.id) &&
+    receiver.save_profile?.includes(sender.id)
+  ) {
+    return {
+      paymentToHost: false,
+      isFee: false,
+    };
+  } else if (sender.is_host != 2 && receiver.is_host == 2) {
+    return {
+      paymentToHost: true,
+      isFee: true,
+    };
+  } else if (sender.is_host == 2 && receiver.is_host != 2) {
+    return {
+      paymentToHost: false,
+      isFee: false,
+    };
+  } else if (sender.is_host == 2 && receiver.is_host == 2) {
+    return {
+      paymentToHost: false,
+      isFee: true,
+    };
+  }
+  return {
+    paymentToHost: true,
+    isFee: true,
+  };
+};
+export const deleteMessage = async (userEmail, messageId) => {
+  try {
+    const userDocRef = doc(
+      db,
+      "userchatlist",
+      userEmail,
+      "userlist",
+      messageId
+    );
+
+    await updateDoc(userDocRef, {
+      isDeleted: true,
+      deletedId: userEmail,
+    });
+
+    console.log(`Message ${messageId} deleted.`);
+  } catch (error) {
+    console.error("Error deleting message: ", error);
+  }
+};
+
+export const updateChatBetweenUsers = async (
+  userEmail1,
+  userEmail2,
+  updateValue
+) => {
+  try {
+    const chatDocRef = doc(db, "userchatlist", userEmail1,'userlist', userEmail2);
+
+    await updateDoc(chatDocRef, updateValue);
+
+    return true;
+  } catch (error) {
+    console.error("Error updating message: ", error);
+    return false;
+  }
+};
+export const updateMessageBetweenUsers = async (
+  userEmail1,
+  userEmail2,
+  messageId,
+) => {
+  try {
+    const combinedEmail = [userEmail1, userEmail2].sort().join("");
+    const chatDocRef = doc(db, "chat", combinedEmail, "chat", messageId);
+    const chatDocSnap = await getDoc(chatDocRef);
+    if (!chatDocSnap.exists()) {
+      console.error("Message not found.");
+      return false;
     }
-   
-   
-}
+    const existingData = chatDocSnap.data();
+    const updatedMessage = {
+     
+      time: Date.now(), // Mesajın düzenlendiği zamanı belirtmek için güncelleniyor
+    };
+
+    await updateDoc(chatDocRef, updatedMessage);
+
+    console.log(`Message ${messageId} updated successfully.`);
+    return true;
+  } catch (error) {
+    console.error("Error updating message: ", error);
+    return false;
+  }
+};
+export const updateAllMessagesBetweenUsers = async (
+  userEmail1,
+  userEmail2,
+) => {
+  try {
+    // Kullanıcıların birleşik email'ine göre chat referansını oluşturuyoruz
+    const combinedEmail = [userEmail1, userEmail2].sort().join("");
+    const chatMessagesRef = collection(db, "chat", combinedEmail, "chat");
+
+    // Tüm mesajları almak için getDocs kullanıyoruz
+    const chatMessagesSnapshot = await getDocs(chatMessagesRef);
+
+    if (chatMessagesSnapshot.empty) {
+      console.log("No messages found.");
+      return false;
+    }
+
+    // Her mesajı güncelle
+    const updatePromises = chatMessagesSnapshot.docs.map(async (messageDoc) => {
+      const messageData=messageDoc.data();
+      const notDeletedIdentities = messageData.not_deleted_identities?.filter(identity=>identity!=userEmail1);
+      const messageRef = doc(db, "chat", combinedEmail, "chat", messageDoc.id);
+      await updateDoc(messageRef, {
+        not_deleted_identities: notDeletedIdentities, // Belirli bir alanı yeni değerle güncelle
+      });
+    });
+
+    // Bütün güncellemeler tamamlandığında devam et
+    await Promise.all(updatePromises);
+
+    console.log(`All messages between ${userEmail1} and ${userEmail2} updated successfully.`);
+    return true;
+  } catch (error) {
+    console.error("Error updating all messages: ", error);
+    return false;
+  }
+};

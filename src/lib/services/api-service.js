@@ -65,7 +65,7 @@ export const getReportReason = async () => {
 
 export const updateUserProfile = async (data, image) => {
   const formData = new FormData();
-  Object.keys(data).forEach((key) => formData.append(ApiParams[key], data[key]));
+  Object.keys(data).forEach((key) => formData.append(key, data[key]));
   formData.append('file', image);
 
   return await apiClient.post(ApiName.userProfileUpdate, formData, {

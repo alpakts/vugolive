@@ -21,7 +21,7 @@ const ChatHeader = ({ messageToUser, fileBaseUrl }) => {
           />
           <div>
             <h2 className="text-base font-bold flex gap-2 items-center">
-              {messageToUser.fullName} <span className="text-sm">{messageToUser.age}</span>
+              {messageToUser.fullName?.split(' ').slice(0,1).join(' ')} <span className="text-xs">{messageToUser.age}</span>
               {messageToUser?.is_host ? <Image src="/verified.png" alt="Doğrulama" width={24} height={24} /> : null}
             </h2>
             <div className="flex items-center gap-1 text-sm">

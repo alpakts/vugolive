@@ -26,6 +26,7 @@ import { FaHeart, FaUser } from "react-icons/fa";
 import { CiCircleRemove } from "react-icons/ci";
 import SlidingModal from "@/components/web-components/modals/sliding-modal";
 import ReportUser from "@/components/account/components/report-user";
+import { sendMessageBetweenUsers } from "@/lib/services/firebase-service";
 const Profile = () => {
   const slidingModalRef = useRef(null);
 
@@ -72,6 +73,8 @@ const Profile = () => {
         setIsFavorite(true);
         handleShowPopup(<FaHeart/>,'Takip edildi');
       }
+      await sendMessageBetweenUsers(apiUser.identity,host.identity,'Seni takip Ettim. Birbirimizi takip ettikten sonra arkadaş olabiliriz.',apiUser,host,'text',null,null,true);
+      router.push(`/chat/${host.id}`);
       return res;
     } catch (error) {
       throw error;
