@@ -21,6 +21,16 @@ export default function Header() {
       if (apiUser && user != -1) {
         unsubscribe = checkHasNewMessage(apiUser?.identity,setHasNewMessage);
       }
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("/firebase-messaging-sw.js")
+          .then((registration) => {
+            console.log("Service Worker kaydedildi:", registration);
+          })
+          .catch((error) => {
+            console.error("Service Worker kaydedilemedi:", error);
+          });
+      }
     return () => {
       unsubscribe();
     };
