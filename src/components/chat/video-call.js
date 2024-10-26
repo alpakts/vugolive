@@ -186,23 +186,48 @@ function Videos(props) {
   // Aranıyor ekranı
   if (isCalling) {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-screen bg-gray-800 text-white">
-         {host?.profileimages || host?.images?.length > 0   ?
-              <Image
-              src={host.profileimages?fileBaseUrl+host?.profileimages: host.images ? fileBaseUrl+host.images[0]?.image: '' }
-              alt={`${host.fullName}'s profile`}
-              width={0}
-              height={0}
-              sizes='100vw'
-              className="w-32 h-32 rounded-full object-cover mr-4"
-            /> : <FaUser className="w-12 h-12 rounded-full object-cover mr-4" />}
-        <p className="text-2xl mb-4">Aranıyor...</p>
-        <div className="flex justify-center items-center space-x-4">
-          <MdCallEnd size={50} className="cursor-pointer" color="red" onClick={()=>{
-            window.location.href='/'
-          }} />
-        </div>
-      </div>
+<div className="flex flex-col items-center justify-center w-full h-screen bg-black text-white relative">
+  {/* Dalga Efektleri */}
+  {host?.profileimages || host?.images?.length > 0 ? (
+    <div className="relative flex items-center justify-center">
+      {/* Dalga efektleri */}
+      <div className="absolute w-32 h-32  rounded-full bg-secondary opacity-30 animate-wave transform left-0 top-0"></div>
+      <div className="absolute w-32 h-32 rounded-full bg-secondary opacity-30 animate-wave transform left-0 top-0 animation-delay-1"></div>
+      <div className="absolute w-32 h-32 rounded-full bg-secondary opacity-30 animate-wave transform left-0 top-0 animation-delay-2"></div>
+
+      {/* Profil Resmi */}
+      <Image
+        src={
+          host.profileimages
+            ? fileBaseUrl + host.profileimages
+            : fileBaseUrl + host.images[0]?.image
+        }
+        alt={`${host.fullName}'s profile`}
+        width={128}
+        height={128}
+        className="w-32 h-32 rounded-full object-cover z-10"
+      />
+    </div>
+  ) : (
+    <FaUser className="w-32 h-32 rounded-full object-cover z-10" />
+  )}
+
+  {/* Aranıyor... Metni */}
+  <p className="text-2xl mb-4 z-10 mt-5">Aranıyor...</p>
+
+  {/* Çağrıyı Sonlandır Butonu */}
+  <div className="flex justify-center items-center space-x-4 z-10">
+    <MdCallEnd
+      size={50}
+      className="cursor-pointer"
+      color="red"
+      onClick={() => {
+        window.location.href = "/";
+      }}
+    />
+  </div>
+</div>
+
     );
   }
 

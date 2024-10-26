@@ -1,6 +1,6 @@
 
 import admin from 'firebase-admin';
-import serviceAccount from './firebase-admin.json'; 
+import serviceAccount from './firebase-admin.json'; // İndirdiğiniz dosya
 
 if (!admin.apps.length) {
   admin.initializeApp({
