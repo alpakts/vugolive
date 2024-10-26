@@ -42,7 +42,7 @@ const Profile = () => {
   const userId = params.get("userId");
   const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   const startVideoCall = () =>{
-    router.push(`/chat/channel/${host.id+currentUser?.email}`);
+    router.push(`/chat/channel/${host.id}and${apiUser.id}?calledUser=${host.id}`);
   }
   const closeModal = () => {
     if (slidingModalRef.current) {
@@ -186,7 +186,7 @@ const Profile = () => {
             <div className="px-2">
               <h1 className="text-base flex items-center gap-2 font-bold mt-4 capitalize text-white lg:text-3xl">
                 {host?.fullName} <span className="text-sm"> {host.age}</span>{" "}
-                <Image src="/verified.png" width={20} height={20} />
+                {host.is_host == 2 && (<Image src="/verified.png" width={20} height={20} />)}
               </h1>
               <div className="flex gap-x-2 text-sm items-center lg:text-lg">
                 

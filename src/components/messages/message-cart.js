@@ -31,7 +31,7 @@ const ProfileCard = ({ message }) => {
           <span className="text-gray-300 text-sm">{user.age}</span>
           {user.is_host&& <Image src={'/verified.png'} height={24} width={24} ></Image>}
         </div>
-        <p className="text-secondary text-xs  max-h-5 overflow-hidden ">{message.lastMsg.length > 0 ?message.lastMsg: message.msgType == 'image' || message.msgType == 'video' ? (<>
+        <p className="text-secondary text-xs  max-h-4 overflow-hidden ">{message.lastMsg.length > 0 ?message.lastMsg: message.msgType == 'image' || message.msgType == 'video' ? (<>
           <FaImage /> 
         </>): ''}</p>
       </div>

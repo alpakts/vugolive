@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import AgoraRTC, {
   AgoraRTCProvider,
-  LocalAudioTrack,
   LocalVideoTrack,
   RemoteUser,
   useJoin,
@@ -22,6 +21,12 @@ import {
 } from "react-icons/bs";
 import { MdCallEnd, MdCameraswitch } from "react-icons/md";
 import Loading from "@/app/(app)/loading";
+import Image from "next/image";
+import {  getUserProfile} from "@/lib/services/api-service";
+import { useAppSelector } from "@/lib/hooks";
+import { FaUser } from "react-icons/fa";
+import { sendNotification, transactVideoCallDiamonds } from "@/lib/services/firebase-service";
+import { set } from "date-fns";
 
 async function Call(props) {
   if (!window) {
@@ -33,28 +38,30 @@ async function Call(props) {
 
   return (
     <AgoraRTCProvider client={client}>
-      <Videos channelName={props.channelName} AppID={props.appId} />
+      <Videos channelName={props.channelName} AppID={props.appId} calledUser={props.calledUser} />
     </AgoraRTCProvider>
   );
 }
 
 function Videos(props) {
-
-  const { AppID, channelName } = props;
-  const { isLoading: isLoadingMic, localMicrophoneTrack } =
-    useLocalMicrophoneTrack();
+  const { AppID, channelName, calledUser } = props;
+  const { isLoading: isLoadingMic, localMicrophoneTrack } = useLocalMicrophoneTrack();
   const { isLoading: isLoadingCam, localCameraTrack } = useLocalCameraTrack();
   const [availableCameras, setAvailableCameras] = useState([]);
   const [currentCameraIndex, setCurrentCameraIndex] = useState(0);
+  const [host,setHost] = useState(null);
+  const apiUser = useAppSelector((state) => state.apiUser.apiUser);
   const remoteUsers = useRemoteUsers();
   const { audioTracks } = useRemoteAudioTracks(remoteUsers);
-
+  const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
-
+  const [isCalling, setIsCalling] = useState(true); 
+  const [isNotificationSent, setIsNotificationSent] = useState(false);
+  const intervalRef = useRef(null);
   const inactivityTimeout = useRef(null);
-
+  const [firstPayment, setFirstPayment] = useState(false);
   usePublish([localMicrophoneTrack, localCameraTrack]);
   useJoin({
     appid: AppID,
@@ -70,15 +77,57 @@ function Videos(props) {
     window.addEventListener("touchstart", resetInactivityTimerOnClick);
     window.addEventListener("click", resetInactivityTimerOnClick);
 
+    // Kullanıcı katılma durumu
+    if (remoteUsers.length > 0) {
+      setIsCalling(false);
+    } else {
+      setIsCalling(true); // Katılmadıysa aranıyor ekranı göster
+    }
+
     return () => {
       window.removeEventListener("touchstart", resetInactivityTimerOnClick);
       window.removeEventListener("click", resetInactivityTimerOnClick);
-
+     
+    };
+  }, [remoteUsers]);
+  useEffect(() => {
+    if (apiUser && host && apiUser.id != calledUser && !isCalling && !firstPayment) {
+      transactVideoCallDiamonds(apiUser,host);
+      setFirstPayment(true);
+        intervalRef.current = setInterval(async () => {
+          transactVideoCallDiamonds(apiUser,host);
+        }, 60000); 
+    }else{
+      if (intervalRef.current) {
+        setFirstPayment(false);
+        clearInterval(intervalRef.current);
+      }
+    }
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
       if (inactivityTimeout.current) {
         clearTimeout(inactivityTimeout.current);
       }
-    };
-  }, []);
+    }
+  }, [isCalling,host]);
+  useEffect(() => {
+    if (apiUser && calledUser && apiUser.id != calledUser) {
+      getUserProfile(calledUser).then((response) => {
+        setHost(response.data.data);
+      });
+      
+    }
+  }, [apiUser]);
+  useEffect(() => {
+    
+   if (host) {
+    sendNotification(host.deviceToken, 'Gelen Arama', host.fullName,{url:window.location.origin+'/chat/channel/'+channelName+'?calledUser='+host.id});
+    setIsNotificationSent(true);
+    
+   }
+  }, [host]);
 
   const resetInactivityTimer = () => {
     if (inactivityTimeout.current) {
@@ -101,20 +150,19 @@ function Videos(props) {
   const deviceLoading = isLoadingMic || isLoadingCam;
 
   if (deviceLoading) {
-    return (
-      <Loading></Loading>
-    );
+    return <Loading />;
   }
+
   const switchCamera = async () => {
     if (availableCameras.length > 1) {
-      const nextCameraIndex =
-        (currentCameraIndex + 1) % availableCameras.length;
+      const nextCameraIndex = (currentCameraIndex + 1) % availableCameras.length;
       const newCameraDeviceId = availableCameras[nextCameraIndex].deviceId;
       localCameraTrack.setDevice(newCameraDeviceId);
 
       setCurrentCameraIndex(nextCameraIndex);
     }
   };
+
   const handleMute = () => {
     if (isMuted) {
       localMicrophoneTrack.setEnabled(true);
@@ -134,6 +182,30 @@ function Videos(props) {
   };
 
   const unit = "minmax(0, 1fr) ";
+  
+  // Aranıyor ekranı
+  if (isCalling) {
+    return (
+      <div className="flex flex-col items-center justify-center w-full h-screen bg-gray-800 text-white">
+         {host?.profileimages || host?.images?.length > 0   ?
+              <Image
+              src={host.profileimages?fileBaseUrl+host?.profileimages: host.images ? fileBaseUrl+host.images[0]?.image: '' }
+              alt={`${host.fullName}'s profile`}
+              width={0}
+              height={0}
+              sizes='100vw'
+              className="w-32 h-32 rounded-full object-cover mr-4"
+            /> : <FaUser className="w-12 h-12 rounded-full object-cover mr-4" />}
+        <p className="text-2xl mb-4">Aranıyor...</p>
+        <div className="flex justify-center items-center space-x-4">
+          <MdCallEnd size={50} className="cursor-pointer" color="red" onClick={()=>{
+            window.location.href='/'
+          }} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col justify-between w-full h-screen p-1">
       <div
@@ -152,7 +224,6 @@ function Videos(props) {
         {/* Local Video Track */}
         <div className="relative w-full h-full">
           {isCameraOff ? (
-            // Kamera kapalıysa ikon göster
             <div className="flex justify-center items-center w-full h-full bg-black relative">
               <BsCameraVideoOff
                 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
@@ -161,7 +232,6 @@ function Videos(props) {
               />
             </div>
           ) : (
-            // Kamera açıksa video oynat
             <LocalVideoTrack
               track={localCameraTrack}
               play={true}
@@ -177,60 +247,41 @@ function Videos(props) {
         </div>
 
         {/* Remote Users Video Tracks */}
-        {remoteUsers.map((remoteUser) => {
-          return (
-            <div key={remoteUser.uid} className="relative w-full h-full">
-              {remoteUser.hasVideo ? (
-                <RemoteUser user={remoteUser} className="w-full h-full">
-                  {!remoteUser.audioTrack && (
-                    <div className="flex justify-center items-center w-full h-full bg-transparent">
-                      <BsMicMute size={80} color="white" />
-                    </div>
-                  )}
-                </RemoteUser>
-              ) : (
-                <div className="flex justify-center items-center w-full h-full bg-black relative">
-                  <BsCameraVideoOff
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                    size={80}
-                    color="white"
-                  />
-                </div>
-              )}
-            </div>
-          );
-        })}
+        {remoteUsers.map((remoteUser) => (
+          <div key={remoteUser.uid} className="relative w-full h-full">
+            {remoteUser.hasVideo ? (
+              <RemoteUser user={remoteUser} className="w-full h-full">
+                {!remoteUser.audioTrack && (
+                  <div className="flex justify-center items-center w-full h-full bg-transparent">
+                    <BsMicMute size={80} color="white" />
+                  </div>
+                )}
+              </RemoteUser>
+            ) : (
+              <div className="flex justify-center items-center w-full h-full bg-black relative">
+                <BsCameraVideoOff
+                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                  size={80}
+                  color="white"
+                />
+              </div>
+            )}
+          </div>
+        ))}
       </div>
 
       {isControlsVisible && (
         <div className="fixed z-10 left-0 right-0 flex justify-center w-fit mx-auto p-4 rounded-2xl bg-gray-900 bottom-5">
-          <button
-            onClick={handleMute}
-            className={` text-base font-medium text-center text-white rounded-lg mx-2`}
-          >
+          <button onClick={handleMute} className="text-base font-medium text-center text-white rounded-lg mx-2">
             {isMuted ? <BsMicMute size={50} /> : <BsMic size={50} />}
           </button>
-          <button
-            onClick={handleCameraToggle}
-            className={` text-base font-medium text-center text-white rounded-lg mx-2`}
-          >
-            {isCameraOff ? (
-              <BsCameraVideoOff size={50} />
-            ) : (
-              <BsCameraVideo size={50} />
-            )}
+          <button onClick={handleCameraToggle} className="text-base font-medium text-center text-white rounded-lg mx-2">
+            {isCameraOff ? <BsCameraVideoOff size={50} /> : <BsCameraVideo size={50} />}
           </button>
-          <button
-            onClick={switchCamera}
-            className={` text-base font-medium text-center text-white rounded-lg mx-2`}
-          >
+          <button onClick={switchCamera} className="text-base font-medium text-center text-white rounded-lg mx-2">
             <MdCameraswitch size={50} />
           </button>
-
-          <a
-            className="text-base font-medium text-center text-white bg-red-400 rounded-lg hover:bg-red-500 mx-2"
-            href="/"
-          >
+          <a href="/" className="text-base font-medium text-center text-white bg-red-400 rounded-lg hover:bg-red-500 mx-2">
             <MdCallEnd size={50} />
           </a>
         </div>

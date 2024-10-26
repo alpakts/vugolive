@@ -285,6 +285,7 @@ const transactDiamonds = async (sender, receiver, gift,free) => {
 
   const response = await getAppSettings();
   const appsettings = response.data.data.app;
+  const messageCharge = appsettings.user_message_charge ?? 26;
   let amount = appsettings.user_message_charge ?? 26;
   if (gift) {
     amount = gift.diamond;
@@ -292,7 +293,7 @@ const transactDiamonds = async (sender, receiver, gift,free) => {
   const transactResponse = await minusDiamonds(sender.id, amount);
   if (transactResponse.data.message == "diamoand minush") {
     if (isMessageFree.paymentToHost) {
-      await addDiamonds(receiver.id, appsettings.user_message_charge ?? 26, 1);
+      await addDiamonds(receiver.id, appsettings.user_message_charge - messageCharge ?? 26, 1);
       return true
     }
   } else {
@@ -429,6 +430,46 @@ export const updateAllMessagesBetweenUsers = async (
     return true;
   } catch (error) {
     console.error("Error updating all messages: ", error);
+    return false;
+  }
+};
+export const sendNotification = async (targetToken, title, body,extraData) => {
+  try {
+    const res = await fetch("/api/send-notification", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: targetToken, // Hedef cihaza ait FCM token
+        title,              // Bildirim başlığı
+        body,               // Bildirim içeriği
+        extraData
+      }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      console.log("Bildirim başarıyla gönderildi:", data.response);
+    } else {
+      console.error("Bildirim gönderme hatası:", data.error);
+    }
+  } catch (error) {
+    console.error("İstek sırasında hata oluştu:", error);
+  }
+};
+export const transactVideoCallDiamonds = async (sender, receiver,free = false) => {
+  if (free) {
+    return true;
+  }
+  let amount =  receiver.diamond_per_min ??0;
+
+  const transactResponse = await minusDiamonds(sender.id, amount);
+  if (transactResponse.data.message == "diamoand minush") {
+      await addDiamonds(receiver.id,amount, 1);
+      return true
+  } else {
+    window.location.href = "/account/charge";
     return false;
   }
 };

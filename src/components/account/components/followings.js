@@ -5,6 +5,7 @@ import {getSavedProfiles } from '@/lib/services/api-service';
 import { useAppSelector } from '@/lib/hooks';
 import Loading from '@/app/(app)/loading';
 import { useRouter } from 'next/navigation';
+import { FaUser } from 'react-icons/fa';
 
 const FollowersList = () => {
   const filebaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
@@ -22,7 +23,6 @@ const FollowersList = () => {
     return <Loading></Loading>
   }
 
-
   return (
     <div className="flex flex-col items-center justify-start bg-black text-secondary">
       {/* Header */}
@@ -38,14 +38,15 @@ const FollowersList = () => {
             className="flex items-center bg-slate-900 p-4 mb-4 rounded-lg shadow"
             onClick={() => router.push(`/profile/?userId=${user.id}`)}
           >
-            <Image
-              src={user.profileimages?filebaseUrl+user?.profileimages: user.images ? filebaseUrl+user.images[0].image :'/profile-placeholder.png'}
+            {user.profileimages || user.images?.length > 0   ?
+              <Image
+              src={user.profileimages?filebaseUrl+user?.profileimages: user.images ? filebaseUrl+user.images[0]?.image: '' }
               alt={`${user.fullName}'s profile`}
               width={0}
               height={0}
               sizes='100vw'
               className="w-12 h-12 rounded-full object-cover mr-4"
-            />
+            /> : <FaUser className="w-12 h-12 rounded-full object-cover mr-4" />}
             <div className="flex flex-col flex-1">
               <div className="flex items-center">
                 <h2 className="text-lg font-bold mr-2">{user.fullName}</h2>

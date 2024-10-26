@@ -10,6 +10,7 @@ import ChatHeader from './chat-header';
 import ChatMessageInput from './message-input';
 import { useParams } from 'next/navigation';
 import { useAppSelector } from '@/lib/hooks';
+import PopupComp from '../web-components/popup/popup';
 
 function ChatPage() {
   const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
@@ -20,8 +21,8 @@ function ChatPage() {
   const [messages, setMessages] = useState(null);
   const [totalMessageCount, setTotalMessageCount] = useState(0);
   const userEmail = auth.currentUser?.email;
+  const popUpRef = useRef(null);
   const {user} = useParams();
-
   useEffect(() => {
     if (chatRef.current) {
       chatRef.current.scroll({ top: chatRef.current.scrollHeight });
@@ -68,7 +69,7 @@ function ChatPage() {
 
   return (
     <div className="max-w-none js-chat-cont bg-black fixed z-[999] left-0 w-screen overflow-hidden top-0 py-4 h-screen max-h-screen text-white flex flex-col">
-      <ChatHeader messageToUser={messageToUser} fileBaseUrl={fileBaseUrl} />
+      <ChatHeader messageToUser={messageToUser} popupRef={popUpRef} fileBaseUrl={fileBaseUrl} />
       <main className="flex-grow p-4 flex overflow-auto flex-col justify-end">
         <ChatMessages
           messages={messages}
@@ -84,6 +85,7 @@ function ChatPage() {
           userEmail={userEmail}
           messageToUser={messageToUser}
         />
+        <PopupComp ref={popUpRef}></PopupComp>
       </main>
     </div>
   );

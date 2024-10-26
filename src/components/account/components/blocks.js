@@ -7,6 +7,7 @@ import { useAppSelector } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
 import Loading from "@/app/(app)/loading";
 import { getBlockedProfiles, unblockHost } from "@/lib/services/api-service";
+import { FaUser } from "react-icons/fa";
 
 const BlocksList = () => {
   const filebaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
@@ -45,19 +46,21 @@ const BlocksList = () => {
             className="flex items-center bg-slate-900 p-4 mb-4 rounded-lg shadow"
             onClick={() => router.push(`/profile/?userId=${host.id}`)}
           >
-            <Image
-                src={host.profileimages?filebaseUrl+user?.profileimages: host.images ? filebaseUrl+host.images[0].image :'/profile-placeholder.png'}
+             {host.profileimages || host.images?.length > 0   ?
+              <Image
+              src={host.profileimages?filebaseUrl+host?.profileimages: host.images ? filebaseUrl+host.images[0]?.image: '' }
               alt={`${host.fullName}'s profile`}
               width={0}
               height={0}
-              sizes="100vw"
+              sizes='100vw'
               className="w-12 h-12 rounded-full object-cover mr-4"
-            />
+            /> : <FaUser className="w-12 h-12 rounded-full object-cover mr-4" />}
+            
             <div className="flex flex-col flex-1">
               <div className="flex items-center">
-                <h2 className="text-lg font-bold mr-2">{host.fullName}</h2>
+                <h2 className="text-base font-bold ">{host.fullName}</h2>
                 <span>{host.emoji}</span>
-                <span className="ml-1 text-lg">{host.age}</span>
+                <span className="ml-1 text-sm">{host.age}</span>
                 {host.is_host && (
                   <Image
                     className="ml-1"

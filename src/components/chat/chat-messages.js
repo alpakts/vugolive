@@ -82,8 +82,6 @@ const ChatMessages = ({
   };
 
   const handleDeleteMessages = () => {
-    debugger;
-    // Burada mesajları silmek için gerekli işlemleri yapabilirsiniz
     console.log("Seçili mesajları sil:", selectedMessages);
     setSelectedMessages([]);
     setLongPressActivated(true);
