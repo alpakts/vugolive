@@ -23,7 +23,7 @@ const Ranking = () => {
     // userType: 2 yayıncı, 0/1 kullanıcı
     // operationType: 0 elmas kazanan, 1 elmas harcayan
     // duration: 0 daily, 1 weekly, 2 monthly
-    getPurchaseTransactions(apiUser.id, activeTab, activeOpType, activeOrder).then((response) => {
+    getPurchaseTransactions(apiUser.id ?? 250, activeTab, activeOpType, activeOrder).then((response) => {
       setListData(response.data.data);
       setLoading(false);
     });
