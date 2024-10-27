@@ -1,15 +1,16 @@
-import { useAppSelector } from '@/lib/hooks';
 import { blockHost, unblockHost } from '@/lib/services/api-service';
 import { setApiUser } from '@/lib/slices/api-user-slice';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import {  FaUser } from 'react-icons/fa';
-import { FiChevronLeft, FiSettings } from 'react-icons/fi';
+import {  FiChevronLeft, FiSettings, FiVideo } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import SlidingModal from '../web-components/modals/sliding-modal';
 import ReportForm from '../account/components/report-user';
 import { MdBlockFlipped, MdOutlineReportProblem } from 'react-icons/md';
+import { useAppSelector } from '@/lib/hooks';
+import { IoVideocamSharp } from 'react-icons/io5';
 
 const ChatHeader = ({ messageToUser, fileBaseUrl,popupRef }) => {
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
@@ -19,29 +20,36 @@ const ChatHeader = ({ messageToUser, fileBaseUrl,popupRef }) => {
   const [menuOpen,setMenuOpen] = useState(false);
   useEffect(() => {
     if (apiUser) {
-      dispatch(setApiUser({...apiUser,is_block_list:[eval(apiUser.is_block_list)]}));
+      dispatch(setApiUser({...apiUser,is_block_list:eval(apiUser.is_block_list)}));
     }
   }, []);
-
-  const handleBlockUser = (userId) => {
+  const handleBlockUser = (userId,apiUser) => {
     blockHost(apiUser.id, userId).then(() => {
       popupRef.current.triggerPopup('Kullanıcı engellendi.',<FaUser/>);
-      dispatch(setApiUser({...apiUser,is_block_list:[...apiUser.is_block_list,userId]}));
+      dispatch(setApiUser({
+        ...apiUser,
+        is_block_list: apiUser.is_block_list?.concat([userId])
+      }));
     }).catch((err) => console.log(err));
   }
-  const handleRemoveBlock = (userId) => {
+  const handleRemoveBlock = (userId,apiUser) => {
     unblockHost(apiUser.id,userId).then(() => {
       popupRef.current.triggerPopup('Kullanıcı engeli kaldırıldı.',<FaUser/>);
-      dispatch(setApiUser({...apiUser,is_block_list:apiUser.is_block_list.filter((id) => id !== userId)}));
+      dispatch(setApiUser({
+        ...apiUser,
+        is_block_list: apiUser.is_block_list.filter((id) => id !== userId)
+      }));
     }).catch((err) => console.log(err));
   }
   return (
     <header className="flex items-center justify-between border-b pb-2 border-gray-700 relative">
       <div className="w-full flex gap-5 items-center ">
-        <button className="text-white" onClick={() => router.back()}>
+        <button className="text-white" onClick={() => router.push()}>
           <FiChevronLeft size={24} />
         </button>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3" onClick={()=>{
+          router.push(`/profile?userId=${messageToUser.id}`);
+        }}>
         {messageToUser.profileimages || messageToUser.images?.length > 0   ?
               <Image
               src={messageToUser.profileimages?fileBaseUrl+messageToUser?.profileimages: messageToUser.images ? fileBaseUrl+messageToUser.images[0]?.image: '' }
@@ -57,12 +65,18 @@ const ChatHeader = ({ messageToUser, fileBaseUrl,popupRef }) => {
               {messageToUser?.is_host ? <Image src="/verified.png" alt="Doğrulama" width={24} height={24} /> : null}
             </h2>
             <div className="flex items-center gap-1 text-sm">
-              <span className="text-gray-400">{messageToUser.bio}</span>
+              <span className="text-gray-400">{messageToUser.country_data?.country_name == '🇹🇷' ? <Image src={'/turkey.png'} width={24} height={24} />:messageToUser.country_data?.country_name }</span>
             </div>
           </div>
          
         </div>
       </div>
+      { messageToUser.is_host == 2 && <button className="text-white px-2 relative">
+        <IoVideocamSharp size={24}  onClick={()=>{
+          router.push(`/chat/channel/${messageToUser.id}and${apiUser.id}?calledUser=${messageToUser.id}`);
+        }} />
+      
+      </button>}
       <button className="text-white px-2 relative">
         <FiSettings size={24}  onClick={()=>setMenuOpen(!menuOpen)} />
       
@@ -85,7 +99,7 @@ const ChatHeader = ({ messageToUser, fileBaseUrl,popupRef }) => {
         className="p-4 hover:bg-gray-700 flex items-center gap-2 cursor-pointer transition-colors duration-200"
         onClick={() => {
           setMenuOpen(false);
-          handleBlockUser(messageToUser.id);
+          handleBlockUser(messageToUser.id,apiUser);
         }}
       >
        <MdBlockFlipped  size={24}  />
@@ -96,7 +110,7 @@ const ChatHeader = ({ messageToUser, fileBaseUrl,popupRef }) => {
         className="p-4 hover:bg-gray-700 flex items-center gap-2 cursor-pointer transition-colors duration-200"
         onClick={() => {
           setMenuOpen(false);
-          handleRemoveBlock(messageToUser.id);
+          handleRemoveBlock(messageToUser.id,apiUser);
         }}
       >
         <MdBlockFlipped  size={24}  />

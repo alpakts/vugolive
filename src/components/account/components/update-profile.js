@@ -131,7 +131,7 @@ const UpdateProfile = () => {
           <label className="block text-gray-400 text-sm font-bold mb-2">
             HAKKIMDA
           </label>
-          <textarea
+          <input
             name="about"
             value={formik.values.about}
             onChange={formik.handleChange}
@@ -146,7 +146,7 @@ const UpdateProfile = () => {
         {/* Interest Input */}
         <div className="mb-4">
           <label className="block text-gray-400 text-sm font-bold mb-2">
-            İLGİ ALANLARI
+            İLGİ ALANLARI (Virgülle ayırarak yazınız)
           </label>
           <input
             type="text"
@@ -162,13 +162,13 @@ const UpdateProfile = () => {
         </div>
 
         {/* Gender Input */}
-       {apiUser.rightChangeGender > 0 &&
         <div className="mb-4">
           <label className="block text-gray-400 text-sm font-bold mb-2">
             CİNSİYET
           </label>
           <select
             name="gender"
+            disabled={apiUser.rightChangeGender == 1 || !apiUser.rightChangeGender}
             value={formik.values.gender}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -182,7 +182,7 @@ const UpdateProfile = () => {
             <div className="text-red-500 text-sm mt-1">{formik.errors.gender}</div>
           )}
         </div>
-       }
+        <div className="w-full">Cinsiyet bir kere değiştirilebilir!</div>
 
         <CustomButton type="submit" className="text-white w-full my-4 bg-gray-950">
           Güncelle

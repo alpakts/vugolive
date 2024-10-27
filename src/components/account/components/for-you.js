@@ -7,6 +7,7 @@ import { sendMessageBetweenUsers } from "@/lib/services/firebase-service";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { FaUser } from "react-icons/fa";
 const hiMessages = [
   "Merhaba Günün nasıl geçiyor.",
   "Merhaba tanışabilir miyiz?",
@@ -52,18 +53,19 @@ const ForYou = () => {
             key={index}
             className="flex items-center bg-slate-900 p-4 mb-4 rounded-lg shadow relative"
             onClick={() => {
-              window.location.href = `/profile?userId=${user.id}`
+              router.push(`/profile?userId=${user.id}`);
             }
             }
           >
-            <Image
-              src={user.profileimages?filebaseUrl+user?.profileimages:'/profile-placeholder.png'}
+           {user.profileimages || user.images?.length > 0   ?
+              <Image
+              src={user.profileimages?filebaseUrl+user?.profileimages: user.images ? filebaseUrl+user.images[0]?.image: '' }
               alt={`${user.fullName}'s profile`}
               width={0}
               height={0}
-              sizes="100vw"
-              className={`w-24 h-auto rounded-full aspect-square object-cover mr-4 ${user.profileimages ? '':'bg-secondary'}`}
-            />
+              sizes='100vw'
+              className="w-12 h-12 rounded-full object-cover mr-4"
+            /> : <FaUser className="w-12 h-12 rounded-full object-cover mr-4" />}
             <div className="flex flex-col flex-1">
               <div className="flex items-center">
                 <h2 className="text-lg font-bold mr-2">{user.fullName}
@@ -80,7 +82,7 @@ const ForYou = () => {
                     alt="verified"
                   />
                 )}
-                <CustomButton className={'p-2 bg-red-200 text-red-400 right-3 top-1/2  translate-y-[-50%] italic absolute '} onClick={(event)=>{
+                <CustomButton className={'!p-1 bg-red-200 text-red-400 right-3 top-1/2  translate-y-[-50%] italic absolute '} onClick={(event)=>{
                   event.stopPropagation();
                   sayHiToUser(apiUser,user);
                 }} >

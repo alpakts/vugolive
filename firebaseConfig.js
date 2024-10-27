@@ -80,7 +80,7 @@ const notifyUser =  (payload) =>{
   const notificationOptions = {
     body: payload.notification.body,
     data: payload.data,
-    icon: "/logo.png",
+    icon: payload.data?.icon ?? '/logo.png',
   };
 
   // Tarayıcı bildirim iznini kontrol edin

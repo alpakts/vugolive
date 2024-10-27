@@ -5,6 +5,7 @@ import DashboardTab from './dashboard-tab';
 import Messages from '@/components/messages/messages';
 import withAuth from '@/hocs/with-auth';
 import ProfileForm from './profile-tab';
+import Link from 'next/link';
 
  function BroadcasterDashboard() {
   // State to manage the active tab
@@ -14,11 +15,9 @@ import ProfileForm from './profile-tab';
     <div className="min-h-screen bg-black text-white pb-20">
       {/* Header section with a back button and title */}
       <div className="flex items-center px-4 py-4 border-b border-gray-700">
-        <button className="text-white mr-4" onClick={()=>{
-          window.location.href = '/account';
-        }}>
+        <Link href='/account' className="text-white mr-4" >
           <FiChevronLeft size={24} />
-        </button>
+        </Link>
         <h1 className="text-lg font-bold">
           {activeTab === 'dashboard' && 'YAYINCI GÖSTERGE PANELİ'}
           {activeTab === 'messages' && 'MESAJLAR'}

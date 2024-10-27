@@ -22,7 +22,7 @@ function Messages() {
   }
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !user == -1) {
       return;
     }
     const unsubscribe = initChat(user.identity, setMessages);

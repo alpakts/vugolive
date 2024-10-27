@@ -10,8 +10,10 @@ import BlocksList from './components/blocks';
 import DiamondPage from './components/diamond';
 import PublisherApplicationForm from './components/publisher-form';
 import { useAppSelector } from '@/lib/hooks';
+import { useRouter } from 'next/navigation';
 const AccounHome = () => {
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
+  const router = useRouter();
   const handleLogout = () => {
     signOut(auth).then(() => {
       localStorage.removeItem('user');
@@ -34,7 +36,7 @@ const AccounHome = () => {
     <MenuItem icon={<FaShareAlt />} text="Uygulamayı Paylaş" />
     {/* Yayıncı Ol */}
     {apiUser.is_host==2 ? <MenuItem icon={<FaUserPlus />} text="Yayıncı Gösterge Paneli" onClick={()=>{
-      window.location.href = '/account/host-panel'
+      router.push('/account/host-panel');
     }} /> :
       <SlidingModal  OpenButton={<MenuItem icon={<FaUserPlus />} text="Yayıncı Ol" />} > <PublisherApplicationForm/></SlidingModal>
     }
@@ -42,7 +44,7 @@ const AccounHome = () => {
     <MenuItem icon={<FaFileAlt />} text="Kullanım Koşulları" />
     {/* Gizlilik Politikası */}
     <MenuItem onClick={()=>{
-      window.location.pathname = '/privacy'
+      router.push('/privacy');
     }} icon={<FaInfoCircle />} text="Gizlilik Politikası" />
     <MenuItem icon={<FaGooglePlay />} text="Uygulamayı indir" />
     <div className='flex  flex-row gap-5 items-center ml-4'>

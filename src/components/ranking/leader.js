@@ -1,4 +1,10 @@
-export default function LeaderboardItem() {
+import Image from "next/image";
+import { FaUser } from "react-icons/fa";
+
+export default function LeaderboardItem({ item }) {
+  const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
+  const user = item?.user;
+  const name = user?.fullName?.split(" ")[0];
   return (
     <div className="relative   text-center w-64  mx-auto">
       <div className="flex justify-center">
@@ -7,22 +13,54 @@ export default function LeaderboardItem() {
             <img src="/crown.png" alt="Crown" className="w-10 " />
           </div>
           <div className="absolute w-28 h-28 flex justify-center items-center">
-            <img src="/golden-leaf.png" alt="Wreath" className="w-[135%]  max-w-none " />
+            <img
+              src="/golden-leaf.png"
+              alt="Wreath"
+              className="w-[135%]  max-w-none "
+            />
           </div>
           <div className="absolute top-full h-65 flex  items-center">
-            <img src="/star.png" alt="start" className="h-5  max-w-none " />
-            <img src="/star.png" alt="start" className="h-10  max-w-none " />
-            <img src="/star.png" alt="start" className="h-5  max-w-none " />
+            <Image
+              src="/star.png"
+              alt="start"
+              width={20}
+              height={20}
+              className="h-5  max-w-none "
+            />
+            <Image
+              src="/star.png"
+              alt="start"
+              width={40}
+              height={40}
+              className="h-10  max-w-none "
+            />
+            <Image
+              src="/star.png"
+              alt="start"
+              width={20}
+              height={20}
+              className="h-5 max-w-none "
+            />
           </div>
-          <img src="/girl.png" alt="Vugo Logo" className="w-full h-full rounded-full" />
+          {user.profileimages ? (
+            <Image
+              src={fileBaseUrl + user?.profileimages}
+              alt={`${name}'s profile`}
+              width={50}
+              height={50}
+              sizes="100vw"
+              className="rounded-full aspect-square w-full h-full border-yellow-400"
+            />
+          ) : (
+            <FaUser className="rounded-full w-full h-full aspect-square border-yellow-400" />
+          )}
         </div>
       </div>
 
       {/* İsim ve Puan */}
-      <h3 className="text-white text-xl font-bold mt-10">Vugo Türkiye</h3>
-      <div className="flex justify-center  text-yellow-400">
-      </div>
-      <p className="text-white ">💎 14177</p>
+      <h3 className="text-white text-xl font-bold mt-10">{name}</h3>
+      <div className="flex justify-center  text-yellow-400"></div>
+      <p className="text-white ">💎 {item.total_diamonds}</p>
     </div>
   );
 }

@@ -52,9 +52,9 @@ const FollowersList = () => {
                 <h2 className="text-lg font-bold mr-2">{user.fullName}</h2>
                 <span>{user.emoji}</span>
                 <span className="ml-1 text-lg">{user.age}</span>
-                {user.is_host && (
+                {user.is_host == 2 &&
                   <Image className='ml-1' src={'/verified.png'} width={16} height={16} alt="verified" />
-                )}
+                }
               </div>
               <div className="text-sm text-gray-500">
                 <span>{user.flag}</span> <span>{user.country}</span>

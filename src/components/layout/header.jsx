@@ -4,7 +4,7 @@ import SidebarMenu from "./sidebar-menu";
 import Image from "next/image";
 import Link from "next/link";
 import SlidingModal from "../web-components/modals/sliding-modal";
-import { FaCompass, FaHeart, FaTrophy } from "react-icons/fa";
+import { FaCompass, FaHeart, FaTrophy, FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import ForYou from "../account/components/for-you";
 import { AiFillMessage } from "react-icons/ai";
@@ -52,28 +52,17 @@ export default function Header() {
           <AiFillMessage  size={24} />
           {hasNewMessage && <div className="w-3 h-3 bg-red-500 rounded-full absolute top-0 right-0"></div>}
         </Link>}
-        <SlidingModal
-          OpenButton={
-            <button className="flex items-center space-x-2 text-lg hover:text-yellow-400">
-              <FaCompass  size={24} />
-            </button>
-          }
-        >
-          <ForYou />
-        </SlidingModal>
         <button >
        <Link href={'/account/charge'}>
        <Image
                 width={24}
                 height={24}
+                className="aspect-square"
                 src="/diamond.png"
                 alt="diamond menu"
               />
        </Link>
         </button>
-        <Link href={"/ranking"}>
-          <FaTrophy className="text-primary" size={24} />
-        </Link>
         {user == -1 ? (
           <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <Image
@@ -85,13 +74,15 @@ export default function Header() {
           </button>
         ) : (
           <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <Image
-              width={24}
-              height={24}
-              src={apiUser?.profileimages ? fileBaseUrl+apiUser.profileimages: "/profile-placeholder.png"}
-              alt="burger menu"
-              className={`rounded-full ${apiUser?.profileimages ? "" : "bg-secondary"}`}
-            />
+          {apiUser?.profileimages || apiUser?.images?.length > 0   ?
+              <Image
+              src={apiUser.profileimages?fileBaseUrl+apiUser?.profileimages: apiUser.images ? fileBaseUrl+apiUser.images[0]?.image: '' }
+              alt={`${apiUser.fullName}'s profile`}
+              width={0}
+              height={0}
+              sizes='100vw'
+              className="w-6 h-6 rounded-full object-cover "
+            /> : <FaUser className="w-6 h-6 rounded-full object-cover " />}
           </button>
         )}{" "}
       </div>

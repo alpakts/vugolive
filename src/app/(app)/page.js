@@ -3,10 +3,9 @@ import HomeIndex from "@/components/home";
 export const metadata = {
   title: 'Vugo Live | Canlı Yayınlar',
   description: 'Vugo Live | Canlı Yayınlar',
+  keywords: 'canlı yayın, Vugo Live, yayın izle, canlı performanslar, etkinlikler'
 }
-// önerilenlere kullanıcıya önerilen profiller koyuyacalak cinsiyete göre
 // canlı yayın listesinde  yine elmas canlı yayın üzerinde görünecek
-// görüntütlü arama kısmı yapılacak dakikalık görüntülü ücret alacak kullanıcıdanda o miktar kadar azalacak
 // hits kısmı en son aşamada anlar olarak değişecek
 // mesaj alanında input alanı aşağıda kalıyor
 // mesaj kısmında görüntülü arama olacak

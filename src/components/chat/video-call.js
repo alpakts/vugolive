@@ -26,7 +26,7 @@ import {  getUserProfile} from "@/lib/services/api-service";
 import { useAppSelector } from "@/lib/hooks";
 import { FaUser } from "react-icons/fa";
 import { sendNotification, transactVideoCallDiamonds } from "@/lib/services/firebase-service";
-import { set } from "date-fns";
+import { useRouter } from "next/navigation";
 
 async function Call(props) {
   if (!window) {
@@ -44,6 +44,7 @@ async function Call(props) {
 }
 
 function Videos(props) {
+  const router = useRouter();
   const { AppID, channelName, calledUser } = props;
   const { isLoading: isLoadingMic, localMicrophoneTrack } = useLocalMicrophoneTrack();
   const { isLoading: isLoadingCam, localCameraTrack } = useLocalCameraTrack();
@@ -222,7 +223,7 @@ function Videos(props) {
       className="cursor-pointer"
       color="red"
       onClick={() => {
-        window.location.href = "/";
+        router.push(`/chat/${host.id}`);
       }}
     />
   </div>

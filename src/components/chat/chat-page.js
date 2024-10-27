@@ -57,12 +57,6 @@ function ChatPage() {
     };
   }, [pageSize,userEmail]);
 
-  const handleSendMessage = async () => {
-    if (newMessage.trim() !== "") {
-      setNewMessage("");
-    }
-  };
-
   if (!userEmail || !messageToUser || !messages) {
     return <Loading />;
   }
@@ -74,6 +68,7 @@ function ChatPage() {
         <ChatMessages
           messages={messages}
           userEmail={userEmail}
+          messagesToId={messageToUser.identity}
           fileBaseUrl={fileBaseUrl}
           pageSize={pageSize}
           totalMessageCount={totalMessageCount}
@@ -84,6 +79,7 @@ function ChatPage() {
           receiver={messageToUser}
           userEmail={userEmail}
           messageToUser={messageToUser}
+          popupRef={popUpRef}
         />
         <PopupComp ref={popUpRef}></PopupComp>
       </main>

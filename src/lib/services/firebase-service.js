@@ -10,6 +10,7 @@ import {
   query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { addDiamonds, getAppSettings, minusDiamonds } from "./api-service";
@@ -51,22 +52,12 @@ export const getTotalMessageCountBetweenUsers = async (
   let chatDocRef = doc(db, "chat", combinedEmail);
   const chatMessagesRef = collection(chatDocRef, "chat");
 
-  const chatMessagesQuery = query(chatMessagesRef);
+  const chatMessagesQuery = query(chatMessagesRef, where("not_deleted_identities", "array-contains", userEmail1));
 
   const querySnapshot = await getDocs(chatMessagesQuery);
 
   let totalMessageCount = querySnapshot.size;
 
-  if (totalMessageCount === 0) {
-    const reversedCombinedEmail = [userEmail2, userEmail1].join("");
-    chatDocRef = doc(db, "chat", reversedCombinedEmail);
-    const reversedChatMessagesRef = collection(chatDocRef, "chat");
-
-    const reversedChatMessagesQuery = query(reversedChatMessagesRef);
-    const reversedQuerySnapshot = await getDocs(reversedChatMessagesQuery);
-
-    totalMessageCount = reversedQuerySnapshot.size;
-  }
 
   return totalMessageCount;
 };
@@ -81,6 +72,7 @@ export const sendMessageBetweenUsers = async (
   photoUrl = null,
   free = false
 ) => {
+  const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   const transaction = await transactDiamonds(
     senderDetails,
     reveiverDetails,
@@ -201,6 +193,19 @@ export const sendMessageBetweenUsers = async (
   } else {
     await setDoc(user2DocRef, chatListUpdateReceiver);
   }
+  sendNotification(
+    reveiverDetails.deviceToken,
+    `${senderDetails.fullName} adlı kullanıcıdan mesaj`,
+    gift ? gift.diamond : messageContent,
+    {
+      url: window.location.origin + "/chat/" + senderDetails.id,
+      icon: senderDetails.profileimages
+        ? fileBaseUrl + senderDetails.profileimages
+        : senderDetails.images
+          ? fileBaseUrl + senderDetails.images[0]?.image
+          : "",
+    }
+  );
   return true;
 };
 export const fetchUserChatList = async (userEmail) => {
@@ -271,7 +276,6 @@ export const checkHasNewMessage = (userEmail, setHasNewMessages) => {
     );
     setHasNewMessages(hasNewMessages);
   });
-
   return unsubscribe;
 };
 const transactDiamonds = async (sender, receiver, gift,free) => {
@@ -396,6 +400,50 @@ export const updateMessageBetweenUsers = async (
     return false;
   }
 };
+export const updateSelectedMessagesBetweenUsers = async (
+  senderEmail,
+  receiverEmail,
+  messagesToDelete
+) => {
+  try {
+    // Kullanıcıların birleşik email'ine göre chat referansını oluşturuyoruz
+    const combinedEmail = [senderEmail, receiverEmail].sort().join("");
+    const chatMessagesRef = collection(db, "chat", combinedEmail, "chat");
+
+    // Tüm mesajları almak için getDocs kullanıyoruz
+    const chatMessagesSnapshot = await getDocs(chatMessagesRef);
+
+    if (chatMessagesSnapshot.empty) {
+      console.log("No messages found.");
+      return false;
+    }
+
+    // Belirtilen mesaj kimliklerini güncelle
+    const updatePromises = chatMessagesSnapshot.docs.map(async (messageDoc) => {
+      const messageData = messageDoc.data();
+
+        // Sadece messagesToDelete içinde olan ve senderEmail tarafından gönderilen mesajları güncelle
+      if (messagesToDelete.includes(messageData.id)) {
+        const notDeletedIdentities = messageData.not_deleted_identities?.filter(
+          identity => identity !== senderEmail
+        );
+        const messageRef = doc(db, "chat", combinedEmail, "chat", messageDoc.id);
+        await updateDoc(messageRef, {
+          not_deleted_identities: notDeletedIdentities, // Belirli bir alanı yeni değerle güncelle
+        });
+      }
+    });
+
+    // Bütün güncellemeler tamamlandığında devam et
+    await Promise.all(updatePromises);
+
+    console.log(`Selected messages sent by ${senderEmail} to ${receiverEmail} updated successfully.`);
+    return true;
+  } catch (error) {
+    console.error("Error updating selected messages: ", error);
+    return false;
+  }
+};
 export const updateAllMessagesBetweenUsers = async (
   userEmail1,
   userEmail2,
@@ -472,4 +520,18 @@ export const transactVideoCallDiamonds = async (sender, receiver,free = false) =
     window.location.href = "/account/charge";
     return false;
   }
+};
+export const listenToNonEmptyHosts = (setHosts) => {
+  const hostListRef = collection(db, "live_host_list");
+  const hostsQuery = query(hostListRef, orderBy("watching_count", "desc"));
+
+  const unsubscribe = onSnapshot(hostsQuery, (snapshot) => {
+    const nonEmptyHosts = snapshot.docs
+      .filter((doc) => doc.exists() && Object.keys(doc.data()).length > 0)
+      .map((doc) => ({ id: doc.id, ...doc.data() }));
+
+    setHosts(nonEmptyHosts);
+  });
+
+  return unsubscribe;
 };

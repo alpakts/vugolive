@@ -9,6 +9,7 @@ import Loading from '@/app/(host)/loading';
 import { useDispatch } from 'react-redux';
 import { setApiUser } from '@/lib/slices/api-user-slice';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function DashboardTab() {
   const popupModalRef = useRef(null);
@@ -90,9 +91,9 @@ export default function DashboardTab() {
       <div className="px-4 py-4">
         <h2 className="text-lg font-bold mb-2">Kazanılan Toplam Elmas</h2>
         <div className="text-2xl font-bold mb-4">0</div>
-        <button className="bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold w-full">
+        <Link href={'/account/host-panel/history'} className="bg-gray-600 text-white py-3 w-full px-6 rounded-lg font-semibold ">
           Çekim Talepleriniz
-        </button>
+        </Link>
       </div>
       <PopupModalComp ref={popupModalRef}>
         <div className='p-4 flex flex-col items-center justify-center '>

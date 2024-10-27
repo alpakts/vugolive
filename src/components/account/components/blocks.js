@@ -61,7 +61,7 @@ const BlocksList = () => {
                 <h2 className="text-base font-bold ">{host.fullName}</h2>
                 <span>{host.emoji}</span>
                 <span className="ml-1 text-sm">{host.age}</span>
-                {host.is_host && (
+                {host.is_host == 2 && (
                   <Image
                     className="ml-1"
                     src={"/verified.png"}

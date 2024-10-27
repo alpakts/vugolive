@@ -6,6 +6,8 @@ import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import VideoPlayer from "../web-components/video-player/video-player";
 import { FaPlayCircle, FaTrash } from "react-icons/fa";
+import { updateAllMessagesBetweenUsers, updateSelectedMessagesBetweenUsers } from "@/lib/services/firebase-service";
+import { useAppSelector } from "@/lib/hooks";
 
 const groupMessagesByDate = (messages) => {
   return messages.reduce((groups, message) => {
@@ -39,6 +41,7 @@ const ChatMessages = ({
   pageSize,
   setPageSize,
   totalMessageCount,
+  messagesToId
 }) => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [selectedMessages, setSelectedMessages] = useState([]);
@@ -46,6 +49,7 @@ const ChatMessages = ({
   const chatRef = useRef(null);
   const longPressTimer = useRef(null);
   const groupedMessages = groupMessagesByDate(messages);
+  const apiUser = useAppSelector((state) => state.apiUser.apiUser);
 
   useEffect(() => {
     if (chatRef.current) {
@@ -61,7 +65,7 @@ const ChatMessages = ({
         handleSelectMessage(msg);
         setLongPressActivated(true);
       }
-    }, 500); // 0.5 saniye basılı tutma süresi
+    }, 500); 
   };
 
   const handleLongPressEnd = () => {
@@ -82,13 +86,14 @@ const ChatMessages = ({
   };
 
   const handleDeleteMessages = () => {
-    console.log("Seçili mesajları sil:", selectedMessages);
+    const selectedMessagesİds = selectedMessages.map((msg) => msg.id);
+    updateSelectedMessagesBetweenUsers(apiUser.identity,messagesToId,selectedMessagesİds);
     setSelectedMessages([]);
     setLongPressActivated(true);
   };
 
   return (
-    <div ref={chatRef} className="space-y-4 flex-grow overflow-auto relative">
+    <div ref={chatRef} className="space-y-4  flex-grow overflow-auto relative">
       {totalMessageCount > pageSize && (
         <button
           className="text-white bg-gray-600 px-3 py-1 rounded w-full"
@@ -99,7 +104,7 @@ const ChatMessages = ({
       )}
 
       {selectedMessages.length > 0 && (
-        <div className="fixed top-0 left-0 right-0 bg-gray-800 p-4 flex items-center justify-between z-10">
+        <div className="fixed top-0 h-[72px] left-0 right-0 bg-gray-800 p-4 flex items-center justify-between z-10">
           <button
             onClick={handleCancelSelection}
             className="text-white text-sm"
@@ -124,8 +129,8 @@ const ChatMessages = ({
                 key={msgIndex}
                 className={
                   msg.senderUser?.user_identity === userEmail
-                    ? "flex justify-end my-1"
-                    : "flex justify-start my-1"
+                    ? "flex justify-end my-1 select-none"
+                    : "flex justify-start my-1 select-none"
                 }
                 onMouseDown={() => handleLongPressStart(msg)}
                 onMouseUp={handleLongPressEnd}
