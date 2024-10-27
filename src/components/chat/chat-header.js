@@ -44,7 +44,7 @@ const ChatHeader = ({ messageToUser, fileBaseUrl,popupRef }) => {
   return (
     <header className="flex items-center justify-between border-b pb-2 border-gray-700 relative">
       <div className="w-full flex gap-5 items-center ">
-        <button className="text-white" onClick={() => router.push()}>
+        <button className="text-white" onClick={() => router.push('/account/messages')}>
           <FiChevronLeft size={24} />
         </button>
         <div className="flex items-center gap-3" onClick={()=>{
