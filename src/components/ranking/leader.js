@@ -1,14 +1,18 @@
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { FaUser } from "react-icons/fa";
 
 export default function LeaderboardItem({ item }) {
   const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
+  const router = useRouter();
   const user = item?.user;
   const name = user?.fullName?.split(" ")[0];
   return (
     <div className="relative   text-center w-64  mx-auto">
       <div className="flex justify-center">
-        <div className="w-28 h-28  rounded-full flex items-center justify-center relative">
+        <div className="w-28 h-28  rounded-full flex items-center justify-center relative" onClick={()=>{
+        router.push(`/profile?userId=${user.id}`);
+      }}>
           <div className="absolute bottom-full">
             <img src="/crown.png" alt="Crown" className="w-10 " />
           </div>

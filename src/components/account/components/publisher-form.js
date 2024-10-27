@@ -1,48 +1,71 @@
 // components/PublisherApplicationForm.js
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CustomButton from "@/components/web-components/button/button"; // CustomButton componentine referans
 import Image from "next/image";
-// Placeholder image and video
-const placeholderImage = "/add100.png"; // Placeholder for images
+import { useAppSelector } from "@/lib/hooks";
+import { getCountryList, getUrl, makeUserHost, updateHostProfile, updateUserProfile } from "@/lib/services/api-service";
+import { useDispatch } from "react-redux";
+import { setApiUser } from "@/lib/slices/api-user-slice";
+import PopupComp from "@/components/web-components/popup/popup";
+import { FaSave } from "react-icons/fa";
+const placeholderImage = "/add100.png";
 
 // Form doğrulama şeması
 const validationSchema = Yup.object({
+  age: Yup.number().min(18, "18 yaşından büyük olmalısınız").required("Bu alan zorunludur"),
+  fullName: Yup.string().required("Bu alan zorunludur"),
+  about: Yup.string().required("Bu alan zorunludur"),
+  intrests: Yup.string().required("Bu alan zorunludur"),
   bio: Yup.string()
     .max(80, "En fazla 80 karakter olmalıdır")
     .required("Bu alan zorunludur"),
-  hoursActive: Yup.number()
+  availabiltyHours: Yup.number()
     .min(1, "Günlük en az 1 saat aktif olmalısınız")
     .required("Bu alan zorunludur"),
-  diamondsPerMinute: Yup.number()
+  diamond_per_min: Yup.number()
     .min(0, "Geçerli bir değer girin")
     .required("Bu alan zorunludur"),
-  country: Yup.string().required("Ülke seçmeniz gerekiyor"),
-  profession: Yup.string().required("Mesleğinizi belirtin"),
-  email: Yup.string().email("Geçerli bir e-posta adresi girin").required("E-posta zorunludur"),
-  agree: Yup.boolean().oneOf([true], "Koşulları kabul etmelisiniz"),
+  country_id: Yup.string().required("Ülke seçmeniz gerekiyor"),
+  billingAddress: Yup.string().required("Fatura Adresi zorunludur"),
+  email: Yup.string()
+    .email("Geçerli bir e-posta adresi girin")
+    .required("E-posta zorunludur"),
 });
 
 const PublisherApplicationForm = () => {
+  const [countries, setCountries] = useState([]);
+  const apiUser = useAppSelector((state) => state.apiUser.apiUser);
   const [uploadedPhotos, setUploadedPhotos] = useState(Array(5).fill(null)); // İlk 5 fotoğraf için yer tutucu
   const [uploadedVideos, setUploadedVideos] = useState(Array(2).fill(null)); // İlk 2 video için yer tutucu
   const [error, setError] = useState(null);
-
-  // Fotoğraf yükleme fonksiyonu
-  const handleImageUpload = (event, index) => {
+  const popupRef = useRef();
+  const triggerPopup = ()=>{
+    popupRef.current.triggerPopup(<FaSave></FaSave>, "Profiliniz başarıyla güncellendi");
+  }
+  const dispatch = useDispatch();
+  useEffect(() => {
+    getCountryList().then((response) => {
+      setCountries(response.data.data);
+    });
+   
+  }, [apiUser]);
+  const handleImageUpload = async (event, index) => {
     const file = event.target.files[0];
     if (file) {
       const newPhotos = [...uploadedPhotos];
       newPhotos[index] = URL.createObjectURL(file); // Resim URL oluştur
       setUploadedPhotos(newPhotos);
 
-      // Eğer 5 fotoğraftan fazla yüklendiyse, yeni bir placeholder ekle (10'a kadar)
-      if (newPhotos.filter(Boolean).length >= 5 && newPhotos.length < 10) {
+      if (newPhotos.length >= 5 && newPhotos.length < 10) {
         newPhotos.push(null);
         setUploadedPhotos(newPhotos);
       }
+
+      // URL oluşturulduğunda serbest bırakma
+      return () => URL.revokeObjectURL(file);
     }
   };
 
@@ -55,18 +78,26 @@ const PublisherApplicationForm = () => {
       setUploadedVideos(newVideos);
 
       // Eğer 2 videodan fazla yüklendiyse, yeni bir placeholder ekle (4'e kadar)
-      if (newVideos.filter(Boolean).length >= 2 && newVideos.length < 4) {
+      if (newVideos.length >= 2 && newVideos.length < 4) {
         newVideos.push(null);
         setUploadedVideos(newVideos);
       }
+
+      // URL oluşturulduğunda serbest bırakma
+      return () => URL.revokeObjectURL(file);
     }
   };
 
   const handleSubmit = async (values) => {
     setError(null);
     try {
-      // Form gönderim işlemleri buraya
-      alert(JSON.stringify(values, null, 2));
+      const imagesToSend = uploadedPhotos.filter((photo) => photo !== null);
+      const videosToSend = uploadedVideos.filter((video) => video !== null);
+      values.user_id=apiUser.id;
+      makeUserHost(values,imagesToSend,videosToSend).then((response) => {
+        dispatch(setApiUser(response.data.data));
+        triggerPopup();
+      });
     } catch (err) {
       setError("Form gönderiminde bir hata oluştu");
     }
@@ -75,19 +106,21 @@ const PublisherApplicationForm = () => {
   return (
     <div className="text-white  flex flex-col gap-6 max-h-[80vh] overflow-auto">
       <div className="w-full max-w-md mx-auto space-y-4">
-        <h2 className="text-center text-xl font-normal text-white">
+      <h2 className="text-center text-xl font-normal text-white">
           Yayıncılık İçin Başvuru Formu
         </h2>
-
         <Formik
           initialValues={{
-            bio: '',
-            hoursActive: '',
-            diamondsPerMinute: '',
-            country: '',
-            profession: '',
-            email: '',
-            agree: false,
+            age: "",
+            fullName: "",
+            about: "",
+            intrests: "",
+            bio: "",
+            availabiltyHours:"",
+            diamond_per_min: "",
+            country_id:"",
+            billingAddress:"",
+            email: "",
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
@@ -97,7 +130,9 @@ const PublisherApplicationForm = () => {
               <div className="rounded-md shadow-sm space-y-5">
                 {/* Fotoğraflar Alanı */}
                 <div>
-                  <label className="block text-gray-700">Fotoğraflar (En az 5, en fazla 10 fotoğraf yükleyin)</label>
+                  <label className="block text-gray-700">
+                    Fotoğraflar (En az 5, en fazla 10 fotoğraf yükleyin)
+                  </label>
                   <div className="flex flex-wrap gap-2">
                     {uploadedPhotos.map((photo, index) => (
                       <div key={index} className="relative">
@@ -122,7 +157,9 @@ const PublisherApplicationForm = () => {
 
                 {/* Videolar Alanı */}
                 <div>
-                  <label className="block text-gray-700">Videolar (En az 2, en fazla 4 video yükleyin)</label>
+                  <label className="block text-gray-700">
+                    Videolar (En az 2, en fazla 4 video yükleyin)
+                  </label>
                   <div className="flex flex-wrap gap-2">
                     {uploadedVideos.map((video, index) => (
                       <div key={index} className="relative">
@@ -132,11 +169,19 @@ const PublisherApplicationForm = () => {
                           onChange={(event) => handleVideoUpload(event, index)}
                           className="absolute inset-0 opacity-0 cursor-pointer"
                         />
-                        <img
-                          src={video || placeholderImage}
-                          alt={`Video ${index + 1}`}
-                          className="w-20 h-20 object-cover rounded-md border border-gray-700"
-                        />
+                        {video ? (
+                          <video
+                            src={video || placeholderImage}
+                            alt={`Video ${index + 1}`}
+                            className="w-20 h-20 object-cover rounded-md border border-gray-700"
+                          />
+                        ) : (
+                          <img
+                            src={placeholderImage}
+                            alt={`Video ${index + 1}`}
+                            className="w-20 h-20 object-cover rounded-md border border-gray-700"
+                          />
+                        )}
                       </div>
                     ))}
                   </div>
@@ -144,7 +189,81 @@ const PublisherApplicationForm = () => {
 
                 {/* Bio */}
                 <div>
-                  <label htmlFor="bio" className="sr-only">Özgeçmiş</label>
+                  <label htmlFor="bio" >
+                    Yaş
+                  </label>
+                  <Field
+                    id="age"
+                    name="age"
+                    type="number"
+                    placeholder="Yaşınız"
+                    className="appearance-none rounded-md w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:outline-none"
+                  />
+                  <ErrorMessage
+                    name="age"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+                 {/* Bio */}
+                 <div>
+                  <label htmlFor="bio" >
+                    Kullanıcı Adı
+                  </label>
+                  <Field
+                    id="fullName"
+                    name="fullName"
+                    type="text"
+                    placeholder="Kullanıcı Adınız"
+                    className="appearance-none rounded-md w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:outline-none"
+                  />
+                  <ErrorMessage
+                    name="fullName"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+                 {/* Bio */}
+                 <div>
+                  <label htmlFor="bio" >
+                    Hakkında
+                  </label>
+                  <Field
+                    id="about"
+                    name="about"
+                    type="text"
+                    placeholder="Kendini Anlat"
+                    className="appearance-none rounded-md w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:outline-none"
+                  />
+                  <ErrorMessage
+                    name="about"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+                 {/* Bio */}
+                 <div>
+                  <label htmlFor="bio" >
+                    İlgi Alanlarınız (Örn: Oyun, Spor, Müzik)
+                  </label>
+                  <Field
+                    id="intrests"
+                    name="intrests"
+                    type="text"
+                    placeholder="Kendinden bahset (0/80)"
+                    className="appearance-none rounded-md w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:outline-none"
+                  />
+                  <ErrorMessage
+                    name="intrests"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+                 {/* Bio */}
+                 <div>
+                  <label htmlFor="bio" >
+                    Özgeçmiş
+                  </label>
                   <Field
                     id="bio"
                     name="bio"
@@ -152,68 +271,102 @@ const PublisherApplicationForm = () => {
                     placeholder="Kendinden bahset (0/80)"
                     className="appearance-none rounded-md w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:outline-none"
                   />
-                  <ErrorMessage name="bio" component="div" className="text-red-500 text-sm" />
+                  <ErrorMessage
+                    name="bio"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
                 </div>
 
                 {/* Kaç Saat Aktif Oluyorsunuz */}
                 <div>
-                  <label htmlFor="hoursActive" className="sr-only">Kaç Saat Aktif Oluyorsunuz?</label>
+                  <label htmlFor="availabiltyHours" >
+                    Kaç Saat Aktif Oluyorsunuz?
+                  </label>
                   <Field
-                    id="hoursActive"
-                    name="hoursActive"
+                    id="availabiltyHours"
+                    name="availabiltyHours"
                     type="number"
                     placeholder="Kaç saat aktif oluyorsunuz? (Günlük)"
                     className="appearance-none rounded-md w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:outline-none"
                   />
-                  <ErrorMessage name="hoursActive" component="div" className="text-red-500 text-sm" />
+                  <ErrorMessage
+                    name="availabiltyHours"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
                 </div>
 
                 {/* Elmaslar */}
                 <div>
-                  <label htmlFor="diamondsPerMinute" className="sr-only">Elmaslar</label>
+                  <label htmlFor="diamond_per_min" >
+                    Elmaslar (Dakika başına)
+                  </label>
                   <Field
-                    id="diamondsPerMinute"
-                    name="diamondsPerMinute"
+                    id="diamond_per_min"
+                    name="diamond_per_min"
                     type="number"
                     placeholder="Dakika başına elmas"
                     className="appearance-none rounded-md w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:outline-none"
                   />
-                  <ErrorMessage name="diamondsPerMinute" component="div" className="text-red-500 text-sm" />
+                  <ErrorMessage
+                    name="diamond_per_min"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
                 </div>
 
                 {/* Ülke */}
                 <div>
-                  <label htmlFor="country" className="sr-only">Ülke</label>
+                  <label htmlFor="country_id" >
+                    Ülke
+                  </label>
                   <Field
                     as="select"
-                    id="country"
-                    name="country"
+                    id="country_id"
+                    name="country_id"
                     className="appearance-none rounded-md w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:outline-none"
                   >
-                    <option value="">Ülke Seç</option>
-                    <option value="Türkiye">Türkiye</option>
-                    <option value="Amerika">Amerika</option>
-                    <option value="İngiltere">İngiltere</option>
+                    <option disabled selected value="">Ülke Seç</option>
+                    {
+                      countries.map((country) => (
+                        <option key={country.id} value={country.id}>
+                          {country.country_name}
+                        </option>
+                      ))
+                    }
                   </Field>
-                  <ErrorMessage name="country" component="div" className="text-red-500 text-sm" />
+                  <ErrorMessage
+                    name="country_id"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
                 </div>
 
                 {/* Meslek */}
                 <div>
-                  <label htmlFor="profession" className="sr-only">Mesleğiniz</label>
+                  <label htmlFor="billingAddress" >
+                    Fatura Adresi
+                  </label>
                   <Field
-                    id="profession"
-                    name="profession"
+                    id="billingAddress"
+                    name="billingAddress"
                     type="text"
                     placeholder="Mesleğiniz"
                     className="appearance-none rounded-md w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:outline-none"
                   />
-                  <ErrorMessage name="profession" component="div" className="text-red-500 text-sm" />
+                  <ErrorMessage
+                    name="billingAddress"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
                 </div>
 
                 {/* E-posta */}
                 <div>
-                  <label htmlFor="email" className="sr-only">E-posta</label>
+                  <label htmlFor="email" >
+                    E-posta
+                  </label>
                   <Field
                     id="email"
                     name="email"
@@ -221,22 +374,13 @@ const PublisherApplicationForm = () => {
                     placeholder="İletişim E-posta"
                     className="appearance-none rounded-md w-full px-3 py-2 border border-gray-700 bg-gray-800 text-white placeholder-gray-500 focus:outline-none"
                   />
-                  <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
-                </div>
-
-                {/* Koşullar Checkbox */}
-                <div className="flex items-center">
-                  <Field
-                    id="agree"
-                    name="agree"
-                    type="checkbox"
-                    className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="text-red-500 text-sm"
                   />
-                  <label htmlFor="agree" className="ml-2 block text-sm text-gray-400">
-                    Kabul ediyorum. <span className="text-primary">Şartlar ve Koşullar</span>
-                  </label>
                 </div>
-                  <ErrorMessage name="agree" component="div" className="text-red-500 text-sm ml-4" />
+             
               </div>
 
               {/* Gönder Button */}
@@ -245,7 +389,7 @@ const PublisherApplicationForm = () => {
                   type="submit"
                   className="bg-secondary hover:bg-secondary text-black w-full py-2 rounded-md"
                 >
-                  Gönder
+                  bAŞVUR
                 </CustomButton>
               </div>
             </Form>
@@ -254,6 +398,7 @@ const PublisherApplicationForm = () => {
 
         {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
       </div>
+      <PopupComp ref={popupRef} />
     </div>
   );
 };

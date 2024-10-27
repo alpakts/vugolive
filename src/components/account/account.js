@@ -35,7 +35,7 @@ const AccounHome = () => {
     {/* Uygulamayı Paylaş */}
     <MenuItem icon={<FaShareAlt />} text="Uygulamayı Paylaş" />
     {/* Yayıncı Ol */}
-    {apiUser.is_host==2 ? <MenuItem icon={<FaUserPlus />} text="Yayıncı Gösterge Paneli" onClick={()=>{
+    {apiUser.is_host==0 ? <MenuItem icon={<FaUserPlus />} text="Yayıncı Gösterge Paneli" onClick={()=>{
       router.push('/account/host-panel');
     }} /> :
       <SlidingModal  OpenButton={<MenuItem icon={<FaUserPlus />} text="Yayıncı Ol" />} > <PublisherApplicationForm/></SlidingModal>
@@ -47,11 +47,10 @@ const AccounHome = () => {
       router.push('/privacy');
     }} icon={<FaInfoCircle />} text="Gizlilik Politikası" />
     <MenuItem icon={<FaGooglePlay />} text="Uygulamayı indir" />
+    <MenuItem onClick={handleLogout} icon={<FaChevronLeft  />} text="Çıkış Yap" />
     <div className='flex  flex-row gap-5 items-center ml-4'>
     <Image  src={'/logo.png'} width={50} height={50} alt='logo' /> <span>1.4</span>
     </div>
-    <MenuItem onClick={handleLogout} icon={<FaChevronLeft  />} text="Çıkış Yap" />
-
   </div>
   )
 }
