@@ -1,8 +1,8 @@
 [{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "com.vugolive.test.twa",
-        "sha256_cert_fingerprints": ["4F:FB:C7:0D:75:45:12:BB:87:E5:C2:89:39:FC:ED:AC:24:2B:95:6D:CC:4D:5B:92:D1:A6:B5:BA:7A:6A:66:F1"]
-      }
-    }]
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.vugolive.test.twa",
+    "sha256_cert_fingerprints": ["EC:DF:E1:BA:02:F8:17:3F:F0:64:AA:26:89:1B:F9:3A:E1:3A:55:81:7E:FC:69:56:2C:DE:51:C9:68:52:D5:08"]
+  }
+}]
