@@ -23,7 +23,8 @@
   ],
   "theme_color": "#000000",
   "background_color": "#000000",
-  "start_url": "/",
+  "start_url": "/?utm_source=pwa",
   "display": "standalone",
+  "display_override": ["standalone", "fullscreen"],
   "orientation": "portrait"
 }
