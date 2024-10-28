@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.vugolive.test.twa",
+        "sha256_cert_fingerprints": ["4F:FB:C7:0D:75:45:12:BB:87:E5:C2:89:39:FC:ED:AC:24:2B:95:6D:CC:4D:5B:92:D1:A6:B5:BA:7A:6A:66:F1"]
+      }
+    }]
