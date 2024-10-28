@@ -36,3 +36,10 @@ yarn-error.log*
 next-env.d.ts
 .env
 firebase-admin.json
+public/sw.js
+public/sw.js.map
+public/workbox-7144475a.js
+public/workbox-7144475a.js.map
+public/sw.js
+public/sw.js
+public/workbox-f1770938.js

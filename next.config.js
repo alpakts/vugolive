@@ -2,6 +2,7 @@
 const withPWA = require("@ducanh2912/next-pwa").default({
     dest: "public",
     extendDefaultRuntimeCaching: true,
+    customWorkerSrc:"/firebase-messaging-sw.js",
     workboxOptions: {
       runtimeCaching: [
       ],
