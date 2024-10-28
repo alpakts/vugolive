@@ -9,12 +9,12 @@
       "purpose": "any maskable"
     },
     {
-      "src": "/logo.png",
+      "src": "/logo384x384.png",
       "sizes": "384x384",
       "type": "image/png"
     },
     {
-      "src": "/logo.png",
+      "src": "/logo500x500.png",
       "sizes": "512x512",
       "type": "image/png"
     }
