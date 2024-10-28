@@ -5,11 +5,14 @@ import CustomButton from '@/components/web-components/button/button';
 import { getDiamondPurchaseList, getUserProfile } from '@/lib/services/api-service';
 import { useEffect, useState } from 'react';
 import Loading from '@/app/(app)/loading';
+import { GrDocumentText } from "react-icons/gr";
+import { useRouter } from 'next/navigation';
 
 const DiamondPage = async () => {
   const [diamondList,setDiamondList] = useState([]);
   const [loading,setLoading] = useState(true);
   const [apiUser,setApiUser] = useState({});
+  const router = useRouter();
   useEffect(() => {
     const userId=localStorage.getItem('userId');
     getDiamondPurchaseList().then((response) => {
@@ -27,8 +30,14 @@ const DiamondPage = async () => {
   return (
     <div className=" bg-black text-white p-4">
       {/* Header */}
-      <div className="flex items-center justify-center px-4 py-2">
-        <h1 className="font-bold text-lg">VUGO | CÜZDAN</h1>
+      <div className="flex items-center justify-center px-4 py-2 w-full relative">
+        <h1 className="font-bold text-lg">VUGO | CÜZDAN</h1> 
+        <div className='absolute right-0 flex-col flex justify-center items-center' onClick={()=>{
+          router.push('/account/diamond-history');
+        }}>
+          <GrDocumentText size={24} /> 
+          <p className='text-sm w-9'>Elmas Kaydı</p>
+        </div>
       </div>
 
       {/* Diamonds Section */}
