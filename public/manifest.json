@@ -1,0 +1,22 @@
+{
+    "name": "Vugolive Canlı Yayınlar",
+    "short_name": "Vugolive",
+    "description": "Vugolive Canlı Yayınlar",
+    "icons": [
+      {
+        "src": "/logo.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "logo500x500.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "start_url": "/",
+    "background_color": "#ffffff",
+    "display": "standalone",
+    "theme_color": "#000000"
+  }
+  
