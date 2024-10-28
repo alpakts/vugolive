@@ -36,6 +36,14 @@ export default function Header() {
     };
   }
   , [apiUser]);
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .register('/sw.js')
+        .then((reg) => console.log('Service Worker registered'))
+        .catch((err) => console.error('Service Worker registration failed', err));
+    }
+  }, []);
   return (
     <header
       className={`sticky top-0 left-0 w-full z-50 relative'
