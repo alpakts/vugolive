@@ -35,7 +35,7 @@ const AccounHome = () => {
     {/* Uygulamayı Paylaş */}
     <MenuItem icon={<FaShareAlt />} text="Uygulamayı Paylaş" />
     {/* Yayıncı Ol */}
-    {apiUser.is_host==0 ? <MenuItem icon={<FaUserPlus />} text="Yayıncı Gösterge Paneli" onClick={()=>{
+    {apiUser.is_host== 2 ? <MenuItem icon={<FaUserPlus />} text="Yayıncı Gösterge Paneli" onClick={()=>{
       router.push('/account/host-panel');
     }} /> :
       <SlidingModal  OpenButton={<MenuItem icon={<FaUserPlus />} text="Yayıncı Ol" />} > <PublisherApplicationForm/></SlidingModal>
