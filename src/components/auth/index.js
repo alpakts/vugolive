@@ -19,6 +19,7 @@ const AuthHome = () => {
           const result = await signInWithPopup(auth, provider);
           const user = result.user;
           dispatch(setUser(user))
+          debugger;
           const deviceToken = await requestForToken();
           const registerData = {
             email: result.user.email,
