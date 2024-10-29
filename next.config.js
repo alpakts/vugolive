@@ -1,17 +1,5 @@
-// next.config.js
-const withPWA = require("@ducanh2912/next-pwa").default({
-    dest: "public",
-    extendDefaultRuntimeCaching: true,
-    importScripts: ['/firebase-messaging-sw.js'],
-    workboxOptions: {
-      runtimeCaching: [
-      ],
-    },
-  });
-  
-
 /** @type {import('next').NextConfig} */
-const nextConfig = withPWA({
+const nextConfig ={
     reactStrictMode: false,
     images: {
         remotePatterns: [
@@ -21,6 +9,6 @@ const nextConfig = withPWA({
             },
         ],
     },
-});
+};
 
 module.exports = nextConfig;
