@@ -90,15 +90,15 @@ export default function DashboardTab() {
 
       <div className="px-4 py-4">
         <h2 className="text-lg font-bold mb-2">Kazanılan Toplam Elmas</h2>
-        <div className="text-2xl font-bold mb-4">0</div>
+        <div className="text-2xl font-bold mb-4">{apiUser?.total_diamond}</div>
         <Link href={'/account/host-panel/history'} className="bg-gray-600 text-white py-3 w-full px-6 rounded-lg font-semibold ">
           Çekim Talepleriniz
         </Link>
       </div>
       <PopupModalComp ref={popupModalRef}>
         <div className='p-4 flex flex-col items-center justify-center '>
-        <div>Canlı yayın başlatmak için uygulamayı indirebilirsinizr</div>
-        <CustomButton target="_blank" href='https://www.google.com/' className="bg-black text-white my-2 mx-auto" >Uygulamayı indir</CustomButton>
+        <div>Canlı yayın başlatmak için uygulamayı indirebilirsiniz</div>
+        <CustomButton target="_blank" href={process.env.NEXT_PUBLIC_APP_PUBLIC_URL} className="bg-black text-white my-2 mx-auto" >Uygulamayı indir</CustomButton>
         </div>
       </PopupModalComp>
     </>

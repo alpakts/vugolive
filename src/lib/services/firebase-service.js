@@ -196,7 +196,7 @@ export const sendMessageBetweenUsers = async (
   sendNotification(
     reveiverDetails.deviceToken,
     `${senderDetails.fullName} adlı kullanıcıdan mesaj`,
-    gift ? gift.diamond : messageContent,
+    gift ? gift.diamond.toString() : messageContent,
     {
       url: window.location.origin + "/chat/" + senderDetails.id,
       icon: senderDetails.profileimages
@@ -289,16 +289,17 @@ const transactDiamonds = async (sender, receiver, gift,free) => {
 
   const response = await getAppSettings();
   const appsettings = response.data.data.app;
-  const messageCharge = appsettings.user_message_charge ?? 26;
+  const messageCharge = appsettings.host_message_charge ?? 1;
   let amount = appsettings.user_message_charge ?? 26;
   if (gift) {
     amount = gift.diamond;
   }
-  const transactResponse = await minusDiamonds(sender.id, amount);
+  const messageType = gift ? 1 : 0;
+  const transactResponse = await minusDiamonds(sender.id, amount,sender.is_host,1,messageType,receiver.id);
   if (transactResponse.data.message == "diamoand minush") {
     if (isMessageFree.paymentToHost) {
-      await addDiamonds(receiver.id, appsettings.user_message_charge - messageCharge ?? 26, 1);
-      return true
+      await addDiamonds(receiver.id,amount- messageCharge,0,receiver.is_host,0,messageType,sender.id);
+      return true;
     }
   } else {
     window.location.href = "/account/charge";
@@ -507,14 +508,14 @@ export const sendNotification = async (targetToken, title, body,extraData) => {
   }
 };
 export const transactVideoCallDiamonds = async (sender, receiver,free = false) => {
+  debugger;
   if (free) {
     return true;
   }
   let amount =  receiver.diamond_per_min ??0;
-
-  const transactResponse = await minusDiamonds(sender.id, amount);
+  const transactResponse = await minusDiamonds(sender.id,amount,sender.is_host,1,0,receiver.id);
   if (transactResponse.data.message == "diamoand minush") {
-      await addDiamonds(receiver.id,amount, 1);
+      await addDiamonds(receiver.id,amount,2,receiver.is_host,0,0,sender.id);
       return true
   } else {
     window.location.href = "/account/charge";

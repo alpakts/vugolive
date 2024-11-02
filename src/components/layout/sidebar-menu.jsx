@@ -7,7 +7,7 @@ import ForYou from "../account/components/for-you";
 import { FaCompass, FaHeart, FaStar, FaTrophy, FaUser } from "react-icons/fa";
 import { RiCustomerServiceFill } from "react-icons/ri";
 export default function SidebarMenu({ isOpen, closeMenu }) {
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.apiUser.apiUser);
   return (
     <div
       className={`fixed top-0 right-0 w-full z-50 h-full bg-black text-white transform ${
@@ -22,7 +22,7 @@ export default function SidebarMenu({ isOpen, closeMenu }) {
         <div className="text-2xl font-bold">Vugo Live</div>
 
         <nav className="flex flex-col space-y-2">
-        {user != -1 && (
+        {(user != -1 && user) && (
        <>
        <Link
             href="/account"
@@ -61,7 +61,10 @@ export default function SidebarMenu({ isOpen, closeMenu }) {
             <ForYou />
           </SlidingModal>
           <Link
-            href="/hits"
+            href="/?at=2"
+            onClick={()=>{
+              closeMenu();
+            }}
             className="flex items-center space-x-2 text-lg hover:text-yellow-400"
           >
             <FaStar size={24} className='text-primary' />
@@ -81,7 +84,7 @@ export default function SidebarMenu({ isOpen, closeMenu }) {
             <RiCustomerServiceFill size={24} className='text-secondary' />
             <span>Yardım Merkezi</span>
           </Link>
-        {user == -1 && (
+        {(user == -1 || !user ) && (
           <Link
             className="bg-white text-black text-center px-4 py-2 rounded hover:bg-yellow-400"
             href="/auth"

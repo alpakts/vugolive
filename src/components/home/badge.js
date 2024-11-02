@@ -11,12 +11,13 @@ const Badges = () => {
     <div className=" pb-4 grid grid-cols-3 gap-2">
       {/* Top Yayıncılar Badge */}
       <div className="flex flex-col items-centertext-center rounded-lg  shadow-md"  onClick={()=>{
-        router.push('/ranking')
+        router.push('/ranking?at=2')
       }}>
         <video
           muted
           autoPlay
           loop
+          
           className="w-full h-full rounded-lg"
         >
           <source src="/top-stream-vid.mp4" type="video/mp4" />
@@ -26,7 +27,7 @@ const Badges = () => {
 
       {/* Top Destekçiler Badge */}
       <div className="flex flex-col items-centertext-center rounded-lg  shadow-md" onClick={()=>{
-        router.push('/ranking')
+        router.push('/ranking?at=0')
       }}>
         <video
           muted

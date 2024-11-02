@@ -38,8 +38,8 @@ const ChatMessageInput = ({ messageToUser, userEmail, apiUser, popupRef }) => {
       messageToUserParams?.is_block_list?.includes(apiUserParam.id)
     ) {
       popupRef.current?.triggerPopup(
-        "Bu kullanıcıya mesaj gönderemezsiniz",
-        <MdBlock size={24} />
+        <MdBlock size={24} />,
+        "Bu kullanıcıya mesaj gönderemezsiniz"
       );
       return;
     }
@@ -70,13 +70,20 @@ const ChatMessageInput = ({ messageToUser, userEmail, apiUser, popupRef }) => {
   };
 
   return (
-    <div className="flex items-center mb-4 space-x-2 p-2 bg-gray-800 rounded-full">
+    <div className="flex items-center  space-x-2 p-2 bg-gray-800 rounded-full">
       <input
         type="text"
         placeholder="Buraya yaz."
         className="bg-gray-800 text-white w-full px-4 py-2 rounded-full focus:outline-none"
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            e.stopPropagation();
+            handlesendMessage();
+        }
+      }}
       />
       <button
         onClick={(event) => {

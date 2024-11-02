@@ -2,7 +2,7 @@ import React from 'react'
 
 const Kvkk = () => {
   return (
-  <main className="text-white brightness-75 my-5 px-4 ">
+  <main className="text-white brightness-75 my-5 px-4 max-h-screen overflow-auto ">
   <article className="post-entry post-entry-type-page post-entry-520" itemScope="itemscope" itemType="https://schema.org/CreativeWork">
     <div className="entry-content-wrapper clearfix">
       <header className="entry-content-header" /><div className="entry-content" itemProp="text">

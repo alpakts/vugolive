@@ -15,11 +15,12 @@ import { AiFillMessage } from "react-icons/ai";
 import { useAppSelector } from "@/lib/hooks";
 import { getHostProfile, saveProfile, removeFromSaved } from "@/lib/services/api-service";
 import PopupComp from "@/components/web-components/popup/popup";
-import { FaHeart, FaUser } from "react-icons/fa";
+import { FaCopy, FaHeart, FaUser } from "react-icons/fa";
 import { CiCircleRemove } from "react-icons/ci";
 import SlidingModal from "@/components/web-components/modals/sliding-modal";
 import ReportUser from "@/components/account/components/report-user";
 import { sendMessageBetweenUsers } from "@/lib/services/firebase-service";
+import { IoIosFemale, IoIosMale } from "react-icons/io";
 
 const Profile = () => {
   const slidingModalRef = useRef(null);
@@ -171,6 +172,14 @@ const Profile = () => {
                 {host.fullName} <span className="text-sm"> {host.age}</span>
                 {host.is_host === 2 && <Image src="/verified.png" width={20} height={20} />}
               </h1>
+              <div className="flex gap-x-2 text-sm items-center lg:text-lg">
+                <span className="opacity-75 flex gap-2 items-center">{host.id} <FaCopy onClick={()=>{
+                  navigator.clipboard.writeText(host.id);
+                  handleShowPopup(<FaCopy />, "Kopyalandı");
+                }}/>
+                  {host.gender == 1 ? <IoIosFemale className="text-pink-500 text-lg" />: <IoIosMale className="text-blue-500 text-lg" />}
+                </span>
+              </div>
               <div className="flex gap-x-2 text-sm items-center lg:text-lg">
                 <span className="opacity-75">{host.country_data ? host.country_data.country_name === '🇹🇷' ? <Image src="/turkey.png" width={20} height={20} /> : host.country_data.country_name : ''}</span>
               </div>

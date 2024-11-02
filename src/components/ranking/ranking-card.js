@@ -31,7 +31,7 @@ export default function RankingCard({ rank, item }) {
         )}
         <h3 className="text-sm font-bold text-white mb-2">{name}</h3>
       </div>
-      <p className="text-sm text-white ">💎 {item?.total_diamonds} Puan</p>
+      <p className="text-sm text-white ">💎 {item?.total_diamonds}</p>
     </div>
   );
 }

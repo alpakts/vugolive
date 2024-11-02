@@ -38,9 +38,13 @@ const validationSchema = Yup.object({
 const ProfileForm = () => {
   const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   const [countries, setCountries] = useState([]);
+  const  [imageError, setImageError] = useState(null);
+  const [videoError, setVideoError] = useState(null);
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
   const [uploadedPhotos, setUploadedPhotos] = useState(Array(5).fill(null)); // İlk 5 fotoğraf için yer tutucu
   const [uploadedVideos, setUploadedVideos] = useState(Array(2).fill(null)); // İlk 2 video için yer tutucu
+  const [videosToDelete,setVideosToDelete] = useState([]);
+  const [imagesToDelete,setImagesToDelete] = useState([]);
   const [error, setError] = useState(null);
   const popupRef = useRef();
   const triggerPopup = ()=>{
@@ -51,21 +55,23 @@ const ProfileForm = () => {
     getCountryList().then((response) => {
       setCountries(response.data.data);
     });
-    const videos = apiUser?.video ? apiUser.video.map((video) => fileBaseUrl + video.video) : [];
-    if (videos.length <= 2) videos.push(null);
+    if (apiUser) {
+    const videos = [...(apiUser?.video || [])];
+    if (videos.length < 4) videos.push(null);
 
-    const images = apiUser?.images ? apiUser.images.map((image) => fileBaseUrl + image.image) : [];
-    if (images.length <= 5) images.push(null);
+    const images = [...(apiUser?.images || [])];
+    if (images.length < 10) images.push(null);
 
     setUploadedPhotos(images);
     setUploadedVideos(videos);
+    }
   }, [apiUser]);
   // Fotoğraf yükleme fonksiyonu
   const handleImageUpload = async (event, index) => {
     const file = event.target.files[0];
     if (file) {
       const newPhotos = [...uploadedPhotos];
-      newPhotos[index] = URL.createObjectURL(file); // Resim URL oluştur
+      newPhotos[index] = file; 
       setUploadedPhotos(newPhotos);
 
       // Eğer 5 fotoğraftan fazla yüklendiyse, yeni bir placeholder ekle (10'a kadar)
@@ -84,9 +90,8 @@ const ProfileForm = () => {
     const file = event.target.files[0];
     if (file) {
       const newVideos = [...uploadedVideos];
-      newVideos[index] = URL.createObjectURL(file); // Video URL oluştur
+      newVideos[index] = file; 
       setUploadedVideos(newVideos);
-
       // Eğer 2 videodan fazla yüklendiyse, yeni bir placeholder ekle (4'e kadar)
       if (newVideos.length >= 2 && newVideos.length < 4) {
         newVideos.push(null);
@@ -98,41 +103,94 @@ const ProfileForm = () => {
     }
   };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     setError(null);
+    setSubmitting(true);
+  
     try {
-      const imagesToSend = uploadedPhotos.filter((photo) => photo !== null);
-      const videosToSend = uploadedVideos.filter((video) => video !== null);
-      values.user_id=apiUser.id;
-      updateHostProfile(values,imagesToSend,videosToSend).then((response) => {
-        dispatch(setApiUser(response.data.data));
-        triggerPopup();
-      });
+      const imagesToSend = uploadedPhotos.filter((image) => image instanceof File);
+      const videosToSend = uploadedVideos.filter((video) => video instanceof File);
+  
+      values.user_id = apiUser.id;
+  
+      if (uploadedVideos.filter((video) => video).length < 2) {
+        setVideoError("En az 2 video yüklemeniz gerekiyor");
+        setError("En az 2 video yüklemeniz gerekiyor");
+        setSubmitting(false);
+        return;
+      }
+  
+      if (uploadedPhotos.filter((photo) => photo).length < 5) {
+        setImageError("En az 5 fotoğraf yüklemeniz gerekiyor");
+        setError("En az 5 fotoğraf yüklemeniz gerekiyor");
+        setSubmitting(false);
+        return;
+      }
+  
+      // Clear previous errors
+      setImageError(null);
+      setVideoError(null);
+  
+      const response = await updateHostProfile(values, imagesToSend, videosToSend, imagesToDelete, videosToDelete);
+      
+      // Dispatch API user data update and show success popup
+      dispatch(setApiUser(response.data.data));
+      triggerPopup();
     } catch (err) {
       setError("Form gönderiminde bir hata oluştu");
+    } finally {
+      setSubmitting(false); 
     }
   };
+  const handleImageDelete = (index,photo) => {
+     const newPhotos = uploadedPhotos.filter((photo) => photo !== uploadedPhotos[index]);
+    setUploadedPhotos(newPhotos);
+    if (uploadedPhotos.length <10 && newPhotos.filter((photo) => photo == null).length <2) {
+      newPhotos.push(null);
+      
+    }
+    if (photo instanceof File) {
+      return;
+    }
+    setImagesToDelete([...imagesToDelete,photo.id]);
+  }
+  const handleVideoDelete = (index,video) => {
+    const newVideos = uploadedVideos.filter((video) => video !== uploadedVideos[index]);
+   setUploadedVideos(newVideos);
+   if (uploadedVideos.length < 4 && uploadedVideos.filter((video) => video == null).length <2) {
+    newVideos.push(null);
+    setUploadedVideos(newVideos);
+   }
+   if (video instanceof File) {
+    return;
+  }
+  ;
+  setVideosToDelete([...imagesToDelete,video.id]);
+ }
+  
 
   return (
     <div className="text-white  flex flex-col gap-6 max-h-[80vh] overflow-auto">
+    
       <div className="w-full max-w-md mx-auto space-y-4">
         <Formik
           initialValues={{
-            age: apiUser.age || "",
-            fullName: apiUser.fullName || "",
-            about: apiUser.about || "",
-            intrests: apiUser.intrests?.join(',') || "",
-            bio: apiUser.bio || "",
-            availabiltyHours: apiUser.availabiltyHours || "",
-            diamond_per_min: apiUser.diamond_per_min || "",
-            country_id: apiUser.country_data?.id || "",
-            billingAddress: apiUser.billingAddress || "",
-            email: apiUser.email || "",
+            age: apiUser?.age || "",
+            fullName: apiUser?.fullName || "",
+            about: apiUser?.about || "",
+            intrests: apiUser?.intrests?.join(',') || "",
+            bio: apiUser?.bio || "",
+            availabiltyHours: apiUser?.availabiltyHours || "",
+            diamond_per_min: apiUser?.diamond_per_min || "",
+            country_id: apiUser?.country_data?.id || "",
+            billingAddress: apiUser?.billingAddress || "",
+            email: apiUser?.email || "",
           }}
+          enableReinitialize
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {() => (
+          {({isSubmitting}) => (
             <Form className="space-y-6">
               <div className="rounded-md shadow-sm space-y-5">
                 {/* Fotoğraflar Alanı */}
@@ -141,25 +199,29 @@ const ProfileForm = () => {
                     Fotoğraflar (En az 5, en fazla 10 fotoğraf yükleyin)
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {uploadedPhotos.map((photo, index) => (
-                      <div key={index} className="relative">
+                    {uploadedPhotos.map((photo, index) =>{
+                      return(
+                        <div key={index} className="relative">
                         <input
                           type="file"
                           accept="image/*"
                           onChange={(event) => handleImageUpload(event, index)}
-                          className="absolute inset-0 opacity-0 cursor-pointer"
+                          className={`absolute inset-0 opacity-0 cursor-pointer ${photo ? 'hidden' : ''}`}
                         />
                         <Image
-                          src={photo || placeholderImage}
+                          src={ photo !=null ? photo instanceof File ? URL.createObjectURL(photo) : fileBaseUrl + photo?.image :placeholderImage}
                           alt={`Fotoğraf ${index + 1}`}
                           width={0}
                           sizes="100vw"
+                          onClick={()=>handleImageDelete(index,photo)}
                           height={0}
-                          className="w-20 h-20 object-cover rounded-md border border-gray-700"
+                          className={`w-20 h-20 object-cover  rounded-md border border-gray-700`}
                         />
                       </div>
-                    ))}
+                      )
+                    })}
                   </div>
+                  {imageError && <div className="text-red-500 text-sm mt-2">{imageError}</div>}
                 </div>
 
                 {/* Videolar Alanı */}
@@ -174,12 +236,13 @@ const ProfileForm = () => {
                           type="file"
                           accept="video/*"
                           onChange={(event) => handleVideoUpload(event, index)}
-                          className="absolute inset-0 opacity-0 cursor-pointer"
+                          className={`absolute inset-0 opacity-0 cursor-pointer ${video ? 'hidden' : ''}`}
                         />
                         {video ? (
                           <video
-                            src={video || placeholderImage}
+                            src={video instanceof File ? URL.createObjectURL(video) :fileBaseUrl+ video?.video || placeholderImage}
                             alt={`Video ${index + 1}`}
+                            onClick={()=>handleVideoDelete(index,video)}
                             className="w-20 h-20 object-cover rounded-md border border-gray-700"
                           />
                         ) : (
@@ -192,6 +255,7 @@ const ProfileForm = () => {
                       </div>
                     ))}
                   </div>
+                  {videoError && <div className="text-red-500 text-sm mt-2">{videoError}</div>}
                 </div>
 
                 {/* Bio */}
@@ -285,7 +349,6 @@ const ProfileForm = () => {
                   />
                 </div>
 
-                {/* Kaç Saat Aktif Oluyorsunuz */}
                 <div>
                   <label htmlFor="availabiltyHours" >
                     Kaç Saat Aktif Oluyorsunuz?
@@ -304,7 +367,6 @@ const ProfileForm = () => {
                   />
                 </div>
 
-                {/* Elmaslar */}
                 <div>
                   <label htmlFor="diamond_per_min" >
                     Elmaslar (Dakika başına)
@@ -323,7 +385,6 @@ const ProfileForm = () => {
                   />
                 </div>
 
-                {/* Ülke */}
                 <div>
                   <label htmlFor="country_id" >
                     Ülke
@@ -350,7 +411,6 @@ const ProfileForm = () => {
                   />
                 </div>
 
-                {/* Meslek */}
                 <div>
                   <label htmlFor="billingAddress" >
                     Fatura Adresi
@@ -369,7 +429,6 @@ const ProfileForm = () => {
                   />
                 </div>
 
-                {/* E-posta */}
                 <div>
                   <label htmlFor="email" >
                     E-posta
@@ -390,14 +449,26 @@ const ProfileForm = () => {
              
               </div>
 
-              {/* Gönder Button */}
               <div>
-                <CustomButton
-                  type="submit"
-                  className="bg-secondary hover:bg-secondary text-black w-full py-2 rounded-md"
-                >
-                  PROFİLİ GÜNCELLE
-                </CustomButton>
+              {
+                isSubmitting ? (
+                  <CustomButton
+                    type="button"
+                    className="bg-secondary hover:bg-secondary text-black w-full py-2 rounded-md"
+                    disabled
+                  >
+                    GÜNCELLENİYOR
+                  </CustomButton>
+                ) : (
+                  <CustomButton
+                    type="submit"
+                    className="bg-secondary hover:bg-secondary text-black w-full py-2 rounded-md"
+                  >
+                    PROFİLİ GÜNCELLE
+                  </CustomButton>
+                )
+              }
+              
               </div>
             </Form>
           )}

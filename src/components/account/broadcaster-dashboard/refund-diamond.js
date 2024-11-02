@@ -15,10 +15,10 @@ import { FiChevronLeft } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 
-const RequestSchema = (minThresh) => Yup.object().shape({
+const RequestSchema = (minThresh,maxdiamond) => Yup.object().shape({
   bank: Yup.string().required('Banka seçimi zorunludur.'),
   accountInfo: Yup.string().required('Hesap bilgisi zorunludur.'),
-  diamond: Yup.number().min(minThresh, `Elmas miktarı eşit ya da yüksek olmalıdır: ${minThresh}`).required('Elmas miktarı zorunludur.'),
+  diamond: Yup.number().min(minThresh, `Elmas miktarı eşit ya da yüksek olmalıdır: ${minThresh}`).max(maxdiamond,'Elmas miktarı sahip olunandan yüksek olamaz').required('Elmas miktarı zorunludur.'),
 });
 
 
@@ -78,9 +78,6 @@ function RefundDiamond() {
                   <p className="text-xs text-gray-400 mt-1">
                     Minimum Çekim Miktarı: {appSettings?.app?.min_thershold}
                   </p>
-                  <p className="text-xs text-gray-400">
-                    1000 Elmas = 1$ → ₺ 0.001
-                  </p>
                 </div>
                 <img className="h-12" src="/logo.png" alt="Vugo Logo" />
               </div>
@@ -89,7 +86,7 @@ function RefundDiamond() {
 
           <Formik
             initialValues={{ bank: "", accountInfo: "" }}
-            validationSchema={RequestSchema(appSettings?.app?.min_thershold)}
+            validationSchema={RequestSchema(appSettings?.app?.min_thershold,apiUser?.diamond)}
             onSubmit={handleSubmit}
           >
             {({ errors, touched, isSubmitting }) => (

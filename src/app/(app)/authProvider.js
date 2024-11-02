@@ -40,5 +40,5 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("user");
   };
 
-  return <>{children}</>;
+  return <>{children} </>;
 }

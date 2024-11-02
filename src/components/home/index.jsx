@@ -6,13 +6,16 @@ import SkeletonImage from "../web-components/skeleton/skeloton-image";
 import { getExploreProfiles } from "@/lib/services/api-service";
 import LiveHostList from "./list/live-hosts";
 import Badges from "./badge";
+import { useSearchParams } from "next/navigation";
 
 
 
-export default function HomeIndex() {
+export default function HomeIndex(params) {
   const [users, setUsers] = useState(null);
+  const searchParams = useSearchParams();
   const [category, setCategory] = useState(null);
-  const [activeTab, setActiveTab] = useState("Profiller");
+  const [activeTab, setActiveTab] = useState(searchParams.get('at') == 2 ? "Canlı": "Profiller");
+
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     setLoading(true);
@@ -24,7 +27,10 @@ export default function HomeIndex() {
     ).catch((err)=>console.log(err));
 
   },[activeTab,category]);
-
+  useEffect(() => {
+    setActiveTab(searchParams.get('at') == 2 ? "Canlı": "Profiller");
+  }
+  , [searchParams]);
   return  ( 
     <div className="p-4">
       <TabComponent activeTab={activeTab} category={category} setCategory={setCategory} setActiveTab={setActiveTab} />

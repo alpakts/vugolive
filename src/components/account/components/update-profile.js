@@ -24,23 +24,19 @@ const UpdateProfile = () => {
     intrests: yup.string().max(200, "İlgi alanları en fazla 200 karakter olabilir"),
     gender: yup.number().oneOf([0, 1], "Geçerli bir cinsiyet seçiniz"),
   });
-
   const formik = useFormik({
     initialValues: {
       fullName: apiUser?.fullName || "",
       about: apiUser?.about || "",
-      intrests: apiUser?.interest || "",
+      intrests: apiUser?.intrests && apiUser?.intrests.join(',') || "",
       gender: apiUser?.gender || "",
     },
     validationSchema: profileSchema,
     onSubmit: async (values) => {
       try {
+        debugger;
         const file = fileInputRef.current.files[0];
-        let fileUrl = null;
-        if (file) {
-          const File = await getUrl(file);
-          fileUrl = File?.data?.url;
-        }
+     
         if (apiUser.gender != values.gender) {
           values.rightChangeGender = 0;
         }
@@ -49,16 +45,16 @@ const UpdateProfile = () => {
             user_id: apiUser.id,
             ...values,
           },
-          fileUrl
+          file
         );
         if (updateResult.data.status) {
           getUserProfile(apiUser.id).then((res) => {
             dispatch(setApiUser(res.data.data));
           });
         }
-        popupRef.current.triggerPopup("Profil güncellendi: " + values.fullName,<FaSave size={24} />);
+        popupRef.current.triggerPopup( values.fullName,<FaSave size={24} />,"Profil güncellendi: ");
       } catch (error) {
-        alert(error.message);
+        console.log(error.message);
       }
     },
   });
@@ -157,7 +153,7 @@ const UpdateProfile = () => {
             className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 text-gray-200 leading-tight focus:outline-none focus:shadow-outline bg-gray-800"
           />
           {formik.touched.intrests && formik.errors.intrests && (
-            <div className="text-red-500 text-sm mt-1">{formik.errors.interest}</div>
+            <div className="text-red-500 text-sm mt-1">{formik.errors.intrests}</div>
           )}
         </div>
 

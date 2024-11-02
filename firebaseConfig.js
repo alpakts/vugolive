@@ -75,8 +75,9 @@ export const requestForToken = async () => {
 };
 
 const notifyUser =  (payload) =>{
+  debugger;
   console.log('Message received. ', payload);
-  const notificationTitle = payload.notification.title;
+  const notificationTitle = payload.notification?.title??'Bildirim';
   const notificationOptions = {
     body: payload.notification.body,
     data: payload.data,

@@ -27,7 +27,6 @@ function DiamondHistory() {
   if (apiUser == null) {
     return <Loading></Loading>;
   }
-  console.log(history);
   return (
     <div className="min-h-screen bg-black text-white pb-20">
       {/* Header section with a back button and title */}
@@ -46,21 +45,22 @@ function DiamondHistory() {
             return (
               <div
                 key={index}
-                className="bg-red-300 p-4 rounded-lg shadow-md mb-4"
+                className={` p-4 rounded-lg shadow-md mb-4 ${item.operation_type == 0 ? "bg-green-400" : "bg-red-400"}`}
               >
                 <div className="flex items-center justify-between">
-                  <div>
+                  <div className=" w-full">
                     <h2 className="text-base gap-2  font-bold flex">
-                      <div className=" bg-red-400 text-sm text-red-600 rounded-full px-2">
+                      <div className={`  text-sm  rounded-full px-2  ${item.operation_type == 0 ? "bg-green-600 text-green-400" : "bg-red-400 text-red-600"}` } >
                   {spendingTypes[item.diamond_spending_type]}
                 </div>
                     </h2>
                     <p className="text-sm font-extrabold mt-1">
                       Elmas : {item.diamond_amount}
                     </p>
-                    <p className="text-xs  mt-1">
-                      Tarih : {new Date(item.created_at).toLocaleString()}
-                    </p>
+                    <div className="text-xs  mt-1 flex flex-row justify-between w-full" >
+                     <p> Tarih : {new Date(item.created_at).toLocaleString()}</p> 
+                     <p>{item.operation_type == 0 ? item.from_user_fullname : item.to_user_fullname }</p>
+                    </div>
                   </div>
                 </div>
               </div>

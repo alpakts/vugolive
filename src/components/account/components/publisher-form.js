@@ -1,4 +1,4 @@
-// components/PublisherApplicationForm.js
+
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import CustomButton from "@/components/web-components/button/button"; // CustomButton componentine referans
 import Image from "next/image";
 import { useAppSelector } from "@/lib/hooks";
-import { getCountryList, getUrl, makeUserHost, updateHostProfile, updateUserProfile } from "@/lib/services/api-service";
+import { getCountryList, makeUserHost} from "@/lib/services/api-service";
 import { useDispatch } from "react-redux";
 import { setApiUser } from "@/lib/slices/api-user-slice";
 import PopupComp from "@/components/web-components/popup/popup";
@@ -36,7 +36,10 @@ const validationSchema = Yup.object({
 });
 
 const PublisherApplicationForm = () => {
+  const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   const [countries, setCountries] = useState([]);
+  const  [imageError, setImageError] = useState(null);
+  const [videoError, setVideoError] = useState(null);
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
   const [uploadedPhotos, setUploadedPhotos] = useState(Array(5).fill(null)); // İlk 5 fotoğraf için yer tutucu
   const [uploadedVideos, setUploadedVideos] = useState(Array(2).fill(null)); // İlk 2 video için yer tutucu
@@ -50,13 +53,20 @@ const PublisherApplicationForm = () => {
     getCountryList().then((response) => {
       setCountries(response.data.data);
     });
-   
-  }, [apiUser]);
+    const videos =Array(2).fill(null);
+    if (videos.length < 4) videos.push(null);
+
+    const images = Array(5).fill(null);
+    if (images.length < 10) images.push(null);
+
+    setUploadedPhotos(images);
+    setUploadedVideos(videos);
+  }, []);
   const handleImageUpload = async (event, index) => {
     const file = event.target.files[0];
     if (file) {
       const newPhotos = [...uploadedPhotos];
-      newPhotos[index] = URL.createObjectURL(file); // Resim URL oluştur
+      newPhotos[index] = file; 
       setUploadedPhotos(newPhotos);
 
       if (newPhotos.length >= 5 && newPhotos.length < 10) {
@@ -64,68 +74,102 @@ const PublisherApplicationForm = () => {
         setUploadedPhotos(newPhotos);
       }
 
-      // URL oluşturulduğunda serbest bırakma
       return () => URL.revokeObjectURL(file);
     }
   };
 
-  // Video yükleme fonksiyonu
   const handleVideoUpload = (event, index) => {
     const file = event.target.files[0];
     if (file) {
       const newVideos = [...uploadedVideos];
-      newVideos[index] = URL.createObjectURL(file); // Video URL oluştur
+      newVideos[index] = file; 
       setUploadedVideos(newVideos);
-
-      // Eğer 2 videodan fazla yüklendiyse, yeni bir placeholder ekle (4'e kadar)
       if (newVideos.length >= 2 && newVideos.length < 4) {
         newVideos.push(null);
         setUploadedVideos(newVideos);
       }
 
-      // URL oluşturulduğunda serbest bırakma
       return () => URL.revokeObjectURL(file);
     }
   };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     setError(null);
+    setSubmitting(true);
     try {
-      const imagesToSend = uploadedPhotos.filter((photo) => photo !== null);
-      const videosToSend = uploadedVideos.filter((video) => video !== null);
-      values.user_id=apiUser.id;
-      makeUserHost(values,imagesToSend,videosToSend).then((response) => {
-        dispatch(setApiUser(response.data.data));
-        triggerPopup();
-      });
+      const imagesToSend = uploadedPhotos.filter((image) => image instanceof File);
+      const videosToSend = uploadedVideos.filter((video) => video instanceof File);
+  
+      values.user_id = apiUser.id;
+  
+      if (uploadedVideos.filter((video) => video).length < 2) {
+        setVideoError("En az 2 video yüklemeniz gerekiyor");
+        setError("En az 2 video yüklemeniz gerekiyor");
+        setSubmitting(false);
+        return;
+      }
+  
+      if (uploadedPhotos.filter((photo) => photo).length < 5) {
+        setImageError("En az 5 fotoğraf yüklemeniz gerekiyor");
+        setError("En az 5 fotoğraf yüklemeniz gerekiyor");
+        setSubmitting(false);
+        return;
+      }
+  
+      setImageError(null);
+      setVideoError(null);
+      values.id = apiUser.id;
+      const response = await makeUserHost(values, imagesToSend, videosToSend);
+      
+      dispatch(setApiUser(response.data.data));
+      triggerPopup();
     } catch (err) {
       setError("Form gönderiminde bir hata oluştu");
+    } finally {
+      setSubmitting(false); 
     }
   };
+  const handleImageDelete = (index) => {
+     const newPhotos = uploadedPhotos.filter((photo) => photo !== uploadedPhotos[index]);
+    setUploadedPhotos(newPhotos);
+    if (uploadedPhotos.length <10 && newPhotos.filter((photo) => photo == null).length <2) {
+      newPhotos.push(null);
+      setUploadedPhotos(newPhotos);
+
+    }
+  }
+  const handleVideoDelete = (index) => {
+    const newVideos = uploadedVideos.filter((video) => video !== uploadedVideos[index]);
+   setUploadedVideos(newVideos);
+   if (uploadedVideos.length < 4 && uploadedVideos.filter((video) => video == null).length <2) {
+    newVideos.push(null);
+    setUploadedVideos(newVideos);
+   }
+ }
+  
 
   return (
     <div className="text-white  flex flex-col gap-6 max-h-[80vh] overflow-auto">
+    
       <div className="w-full max-w-md mx-auto space-y-4">
-      <h2 className="text-center text-xl font-normal text-white">
-          Yayıncılık İçin Başvuru Formu
-        </h2>
         <Formik
           initialValues={{
             age: "",
-            fullName: "",
+            fullName:"",
             about: "",
-            intrests: "",
+            intrests:"",
             bio: "",
-            availabiltyHours:"",
+            availabiltyHours: "",
             diamond_per_min: "",
             country_id:"",
             billingAddress:"",
             email: "",
           }}
+          enableReinitialize
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {() => (
+          {({isSubmitting}) => (
             <Form className="space-y-6">
               <div className="rounded-md shadow-sm space-y-5">
                 {/* Fotoğraflar Alanı */}
@@ -134,25 +178,29 @@ const PublisherApplicationForm = () => {
                     Fotoğraflar (En az 5, en fazla 10 fotoğraf yükleyin)
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {uploadedPhotos.map((photo, index) => (
-                      <div key={index} className="relative">
+                    {uploadedPhotos.map((photo, index) =>{
+                      return(
+                        <div key={index} className="relative">
                         <input
                           type="file"
                           accept="image/*"
                           onChange={(event) => handleImageUpload(event, index)}
-                          className="absolute inset-0 opacity-0 cursor-pointer"
+                          className={`absolute inset-0 opacity-0 cursor-pointer ${photo ? 'hidden' : ''}`}
                         />
                         <Image
-                          src={photo || placeholderImage}
+                          src={ photo !=null ? photo instanceof File ? URL.createObjectURL(photo) : fileBaseUrl + photo?.image :placeholderImage}
                           alt={`Fotoğraf ${index + 1}`}
                           width={0}
                           sizes="100vw"
+                          onClick={()=>handleImageDelete(index)}
                           height={0}
-                          className="w-20 h-20 object-cover rounded-md border border-gray-700"
+                          className={`w-20 h-20 object-cover  rounded-md border border-gray-700`}
                         />
                       </div>
-                    ))}
+                      )
+                    })}
                   </div>
+                  {imageError && <div className="text-red-500 text-sm mt-2">{imageError}</div>}
                 </div>
 
                 {/* Videolar Alanı */}
@@ -167,12 +215,13 @@ const PublisherApplicationForm = () => {
                           type="file"
                           accept="video/*"
                           onChange={(event) => handleVideoUpload(event, index)}
-                          className="absolute inset-0 opacity-0 cursor-pointer"
+                          className={`absolute inset-0 opacity-0 cursor-pointer ${video ? 'hidden' : ''}`}
                         />
                         {video ? (
                           <video
-                            src={video || placeholderImage}
+                            src={video instanceof File ? URL.createObjectURL(video) :fileBaseUrl+ video?.video || placeholderImage}
                             alt={`Video ${index + 1}`}
+                            onClick={()=>handleVideoDelete(index)}
                             className="w-20 h-20 object-cover rounded-md border border-gray-700"
                           />
                         ) : (
@@ -185,6 +234,7 @@ const PublisherApplicationForm = () => {
                       </div>
                     ))}
                   </div>
+                  {videoError && <div className="text-red-500 text-sm mt-2">{videoError}</div>}
                 </div>
 
                 {/* Bio */}
@@ -278,7 +328,6 @@ const PublisherApplicationForm = () => {
                   />
                 </div>
 
-                {/* Kaç Saat Aktif Oluyorsunuz */}
                 <div>
                   <label htmlFor="availabiltyHours" >
                     Kaç Saat Aktif Oluyorsunuz?
@@ -297,7 +346,6 @@ const PublisherApplicationForm = () => {
                   />
                 </div>
 
-                {/* Elmaslar */}
                 <div>
                   <label htmlFor="diamond_per_min" >
                     Elmaslar (Dakika başına)
@@ -316,7 +364,6 @@ const PublisherApplicationForm = () => {
                   />
                 </div>
 
-                {/* Ülke */}
                 <div>
                   <label htmlFor="country_id" >
                     Ülke
@@ -343,7 +390,6 @@ const PublisherApplicationForm = () => {
                   />
                 </div>
 
-                {/* Meslek */}
                 <div>
                   <label htmlFor="billingAddress" >
                     Fatura Adresi
@@ -362,7 +408,6 @@ const PublisherApplicationForm = () => {
                   />
                 </div>
 
-                {/* E-posta */}
                 <div>
                   <label htmlFor="email" >
                     E-posta
@@ -383,14 +428,26 @@ const PublisherApplicationForm = () => {
              
               </div>
 
-              {/* Gönder Button */}
               <div>
-                <CustomButton
-                  type="submit"
-                  className="bg-secondary hover:bg-secondary text-black w-full py-2 rounded-md"
-                >
-                  bAŞVUR
-                </CustomButton>
+              {
+                isSubmitting ? (
+                  <CustomButton
+                    type="button"
+                    className="bg-secondary hover:bg-secondary text-black w-full py-2 rounded-md"
+                    disabled
+                  >
+                    GÜNCELLENİYOR
+                  </CustomButton>
+                ) : (
+                  <CustomButton
+                    type="submit"
+                    className="bg-secondary hover:bg-secondary text-black w-full py-2 rounded-md"
+                  >
+                    PROFİLİ GÜNCELLE
+                  </CustomButton>
+                )
+              }
+              
               </div>
             </Form>
           )}

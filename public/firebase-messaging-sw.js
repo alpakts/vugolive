@@ -25,7 +25,7 @@ messaging.onBackgroundMessage((payload) => {
     },
   };
   
-
+  console.log('gelen bildirim', notificationTitle);
   self.registration.showNotification(notificationTitle, notificationOptions);
 });
 self.addEventListener('notificationclick', (event) => {
@@ -37,7 +37,6 @@ self.addEventListener('notificationclick', (event) => {
 
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
-      // Eğer sayfa zaten açık ise, odağı oraya taşı
       for (let i = 0; i < clientList.length; i++) {
         const client = clientList[i];
         if (client.url === urlToOpen && "focus" in client) {

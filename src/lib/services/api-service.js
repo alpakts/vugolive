@@ -65,8 +65,16 @@ export const getReportReason = async () => {
 
 export const updateUserProfile = async (data, image) => {
   const formData = new FormData();
-  Object.keys(data).forEach((key) => formData.append(key, data[key]));
-  formData.append('file', image);
+  
+  Object.keys(data).forEach((key) => {
+    if (data[key] !== undefined) {
+      formData.append(key, data[key]);
+    }
+  });
+
+  if (image) {
+    formData.append('profileimages', image, image.name);
+  }
 
   return await apiClient.post(ApiName.userProfileUpdate, formData, {
     headers: {
@@ -195,8 +203,8 @@ export const blockHost = async (uId, hId) => {
 export const makeUserHost = async (data, images, videos) => {
   const formData = new FormData();
   Object.keys(data).forEach((key) => formData.append(key, data[key]));
-  images.forEach((image) => formData.append(ApiParams.imagesArray, image));
-  videos.forEach((video) => formData.append(ApiParams.videosArray, video));
+  images.forEach((image) => formData.append('images[]',image, image.name));
+  videos.forEach((video) => formData.append('video[]',video, video.name));
 
   return await apiClient.post(ApiName.applyForHost, formData, {
     headers: {
@@ -204,12 +212,13 @@ export const makeUserHost = async (data, images, videos) => {
     },
   });
 };
-export const updateHostProfile = async (data, images, videos) => {
+export const updateHostProfile = async (data, images, videos,imagesToDelete,videosToDelete) => {
   const formData = new FormData();
   Object.keys(data).forEach((key) => formData.append(key, data[key]));
-  images.forEach((image) => formData.append(ApiParams.imagesArray, image));
-  videos.forEach((video) => formData.append(ApiParams.videosArray, video));
-
+  images.forEach((image) => formData.append('images[]',image, image.name));
+  videos.forEach((video) => formData.append('video[]',video, video.name));
+  formData.append('image_id', imagesToDelete);
+  formData.append('video_id', videosToDelete);
   return await apiClient.post(ApiName.hostProfileUpdate, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -250,20 +259,30 @@ export const getUrl = async (media) => {
   });
 };
 
-export const addDiamonds = async (uId, count, type) => {
+export const addDiamonds = async (uId, count, type, userType, operationType, diamondSpendingType, fromUserId) => {
   return await apiClient.post(ApiName.diamondPlus, {
-    [ApiParams.user_id]: uId,
-    [ApiParams.diamond]: count,
-    [ApiParams.type]: type,
+    "user_id": uId,
+    "diamond": count,
+    "type": type,
+    "user_type": userType,
+    "operation_type": operationType,
+    "diamond_spending_type": diamondSpendingType,
+    "from_user_id": fromUserId,
   });
 };
 
-export const minusDiamonds = async (uId, count) => {
+
+export const minusDiamonds = async (uId, count, userType, operationType, diamondSpendingType, toUserId) => {
   return await apiClient.post(ApiName.diamondMinus, {
-    [ApiParams.user_id]: uId,
-    [ApiParams.diamond]: count,
+    "user_id": uId,
+    "diamond": count,
+    "user_type": userType,
+    "operation_type": operationType,
+    "diamond_spending_type": diamondSpendingType,
+    "to_user_id": toUserId,
   });
 };
+
 
 export const purchaseCoin = async (uId, type) => {
   return await apiClient.post(ApiName.addCoins, {

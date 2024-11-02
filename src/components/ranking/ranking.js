@@ -6,12 +6,13 @@ import React, { useEffect, useState } from "react";
 import TabComponentRank from "./tab-select-rank";
 import { getPurchaseTransactions } from "@/lib/services/api-service";
 import { useAppSelector } from "@/lib/hooks";
-import { set } from "date-fns";
 import Loading from "@/app/(app)/loading";
+import { useSearchParams } from "next/navigation";
 
 const Ranking = () => {
+  const searchParams = useSearchParams();
   const [listData, setListData] = useState([]);
-  const [activeTab, setActiveTab] = useState(2);
+  const [activeTab, setActiveTab] = useState(searchParams.get('at')  == 0 ? 0 : 2);
   const [activeOrder, setActiveOrder] = useState(0);
   const [activeOpType, setActiveOpType] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -28,6 +29,9 @@ const Ranking = () => {
       setLoading(false);
     });
   }, [apiUser, activeOrder, activeTab]);
+  useEffect(() => {
+    setActiveTab(searchParams.get('at')  == 0 ? 0 : 2);
+  }, [searchParams]);
   return (
     <div className="relative w-full bg-fixed bg-cover bg-no-repeat bg-center px-4">
       <div className="absolute inset-0 bg-black bg-opacity-40 z-0"></div>

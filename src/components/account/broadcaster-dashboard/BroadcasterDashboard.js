@@ -1,21 +1,32 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiChevronLeft, FiHome, FiMessageSquare, FiUser } from 'react-icons/fi';
 import DashboardTab from './dashboard-tab';
 import Messages from '@/components/messages/messages';
 import withAuth from '@/hocs/with-auth';
 import ProfileForm from './profile-tab';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 
  function BroadcasterDashboard() {
   // State to manage the active tab
   const [activeTab, setActiveTab] = useState('dashboard');
+  const searchparams = useSearchParams();
+  const router = useRouter();
+  console.log(searchparams);
+  useEffect(() => {
+    if (searchparams.get('tab')) {
+      setActiveTab(searchparams.get('tab'));
+    }else{
+      setActiveTab('dashboard');
+    }
+  }, [searchparams]);
 
   return (
     <div className="min-h-screen bg-black text-white pb-20">
       {/* Header section with a back button and title */}
       <div className="flex items-center px-4 py-4 border-b border-gray-700">
-        <Link href='/account' className="text-white mr-4" >
+        <Link href={(activeTab == 'messages' || activeTab == 'profile') ? '/account/host-panel' : '/account' } className="text-white mr-4" >
           <FiChevronLeft size={24} />
         </Link>
         <h1 className="text-lg font-bold">
@@ -45,7 +56,10 @@ import Link from 'next/link';
           className={`flex flex-col items-center text-white ${
             activeTab === 'dashboard' ? 'text-primary' : ''
           }`}
-          onClick={() => setActiveTab('dashboard')}
+          onClick={() =>{
+            setActiveTab('dashboard');
+            router.push('/account/host-panel?tab=dashboard');
+          }}
         >
           <FiHome size={24} className="mb-1" />
           Gösterge Paneli
@@ -55,7 +69,10 @@ import Link from 'next/link';
           className={`flex flex-col items-center text-white ${
             activeTab === 'messages' ? 'text-primary' : ''
           }`}
-          onClick={() => setActiveTab('messages')}
+          onClick={() => {
+            setActiveTab('messages');
+            router.push('/account/host-panel?tab=messages');
+          }}
         >
           <FiMessageSquare size={24} className="mb-1" />
           Mesaj
@@ -65,7 +82,10 @@ import Link from 'next/link';
           className={`flex flex-col items-center text-white ${
             activeTab === 'profile' ? 'text-primary' : ''
           }`}
-          onClick={() => setActiveTab('profile')}
+          onClick={() => {
+            setActiveTab('profile');
+            router.push('/account/host-panel?tab=profile');
+          }}
         >
           <FiUser size={24} className="mb-1" />
           Profil

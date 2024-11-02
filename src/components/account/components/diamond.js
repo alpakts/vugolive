@@ -44,7 +44,7 @@ const DiamondPage = async () => {
       <div className="text-center py-3">
        <div className='flex space-x-2 mx-auto justify-center'>
        <Image
-          src="/diamond.png" // Replace with your own image or icon
+          src="/diamond.png"
           alt="Diamond"
           width={50}
           height={50}
@@ -53,8 +53,10 @@ const DiamondPage = async () => {
        </div>
         <p className="text-lg">ELMASLARIN</p>
       </div>
-        <CustomButton className="font-bold !text-lg w-full bg-white py-2 text-black text-center rounded-lg mb-6">
-          ELMAS BAYİİ : +905312983233
+        <CustomButton onClick={()=>{
+          window.open('https://wa.me/05312983233?text=Merhaba%20Elmas%20Fiyat%20Listenizi%20Alabilir%20miyim?%20');
+        }} className="font-bold !text-lg w-full bg-white py-2 text-black text-center rounded-lg mb-6">
+          ELMAS BAYİİ
         </CustomButton>
 
       <div className="px-4 text-center">
@@ -63,7 +65,6 @@ const DiamondPage = async () => {
           tadını çıkarmak için lütfen Elmas satın alın.
         </p>
 
-        {/* Diamond Purchase Options */}
         <div className="space-y-4 overflow-auto max-h-[30vh]">
           {diamondList.map((diamond, index) => (
             <div

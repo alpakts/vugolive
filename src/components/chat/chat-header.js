@@ -25,7 +25,7 @@ const ChatHeader = ({ messageToUser, fileBaseUrl,popupRef }) => {
   }, []);
   const handleBlockUser = (userId,apiUser) => {
     blockHost(apiUser.id, userId).then(() => {
-      popupRef.current.triggerPopup('Kullanıcı engellendi.',<FaUser/>);
+      popupRef.current.triggerPopup(<FaUser/>,'Kullanıcı engellendi.');
       dispatch(setApiUser({
         ...apiUser,
         is_block_list: apiUser.is_block_list?.concat([userId])
@@ -34,7 +34,7 @@ const ChatHeader = ({ messageToUser, fileBaseUrl,popupRef }) => {
   }
   const handleRemoveBlock = (userId,apiUser) => {
     unblockHost(apiUser.id,userId).then(() => {
-      popupRef.current.triggerPopup('Kullanıcı engeli kaldırıldı.',<FaUser/>);
+      popupRef.current.triggerPopup(<FaUser/>,'Kullanıcı engeli kaldırıldı.');
       dispatch(setApiUser({
         ...apiUser,
         is_block_list: apiUser.is_block_list.filter((id) => id !== userId)

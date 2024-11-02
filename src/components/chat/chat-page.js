@@ -31,7 +31,7 @@ function ChatPage() {
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, []);
+  }, [chatRef.current]);
 
   useEffect(() => {
     let unsubscribe;
@@ -62,9 +62,9 @@ function ChatPage() {
   }
 
   return (
-    <div className="max-w-none js-chat-cont bg-black fixed z-[999] left-0 w-screen overflow-hidden top-0 py-4 h-screen max-h-screen text-white flex flex-col">
+    <div className={`max-w-none js-chat-cont bg-black fixed z-[999] left-0 w-screen top-0 py-4  max-h-full text-white flex flex-col overflow-hidden h-screen`}>
       <ChatHeader messageToUser={messageToUser} popupRef={popUpRef} fileBaseUrl={fileBaseUrl} />
-      <main className="flex-grow p-4 flex overflow-auto flex-col justify-end">
+      <main className="flex-grow px-2 flex overflow-auto flex-col justify-end">
         <ChatMessages
           messages={messages}
           userEmail={userEmail}

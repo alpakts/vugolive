@@ -9,6 +9,8 @@ import { useSelector } from "react-redux";
 import ForYou from "../account/components/for-you";
 import { AiFillMessage } from "react-icons/ai";
 import { checkHasNewMessage } from "@/lib/services/firebase-service";
+import NotificationPermission from "../web-components/notification-permission/notification-permission";
+import DownloadAppPrompt from "../web-components/download-app/download-app";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,7 +37,8 @@ export default function Header() {
     }
   }, []);
   return (
-    <header
+  <>
+      <header
       className={`sticky top-0 left-0 w-full z-50 relative'
        transition-all duration-300 ease-in-out
       bg-black shadow-lg
@@ -46,7 +49,7 @@ export default function Header() {
       </div>
 
       <div className="flex flex-row gap-5">
-       {apiUser && <Link href={"/account/messages"} className="relative">
+       {(apiUser != -1 && apiUser) && <Link href={"/account/messages"} className="relative">
           <AiFillMessage  size={24} />
           {hasNewMessage && <div className="w-3 h-3 bg-red-500 rounded-full absolute top-0 right-0"></div>}
         </Link>}
@@ -61,7 +64,7 @@ export default function Header() {
               />
        </Link>
         </button>
-        {user == -1 ? (
+        {(apiUser == -1 || !apiUser) ? (
           <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <Image
               width={24}
@@ -84,8 +87,11 @@ export default function Header() {
           </button>
         )}{" "}
       </div>
-
       <SidebarMenu isOpen={isMenuOpen} closeMenu={() => setIsMenuOpen(false)} />
+
     </header>
+      <NotificationPermission></NotificationPermission>
+      <DownloadAppPrompt></DownloadAppPrompt>
+  </>
   );
 }

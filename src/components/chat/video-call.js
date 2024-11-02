@@ -124,7 +124,7 @@ function Videos(props) {
   useEffect(() => {
     
    if (host) {
-    sendNotification(host.deviceToken, 'Gelen Arama', host.fullName,{url:window.location.origin+'/chat/channel/'+channelName+'?calledUser='+host.id});
+    sendNotification(host.deviceToken, 'Gelen Arama', apiUser.fullName,{url:window.location.origin+'/chat/channel/'+channelName+'?calledUser='+host.id});
     setIsNotificationSent(true);
     
    }

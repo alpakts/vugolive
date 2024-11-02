@@ -19,7 +19,7 @@ const AccountHeader = ({user}) => {
         width={50}
         height={50}
       /> : (
-        <FaUser className="outline rounded-full bg-white outline-gray-900 outline-offset-2 outline-[8px]" size={70} />
+        <FaUser className="outline rounded-full bg-black outline-gray-900 outline-offset-2 outline-[8px]" size={70} />
       )}
     
       <span>{user.fullName}</span>
