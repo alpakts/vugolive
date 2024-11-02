@@ -1,7 +1,7 @@
 "use client";
 import { getCountryList } from "@/lib/services/api-service";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { FiChevronDown } from "react-icons/fi"; // React Icons'dan iconlar
 import { TbCategoryFilled } from "react-icons/tb";
 export default function TabComponent({ activeTab, setActiveTab, setCategory }) {
@@ -18,7 +18,7 @@ export default function TabComponent({ activeTab, setActiveTab, setCategory }) {
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen); // Dropdown durumunu değiştir
   };
-  useMemo(() => {
+  useEffect(() => {
     activeCategory ? setCategory(activeCategory.id) : setCategory(null);
   }, [activeCategory]);
   return (
