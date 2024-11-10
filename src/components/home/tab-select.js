@@ -54,7 +54,7 @@ export default function TabComponent({ activeTab, setActiveTab, setCategory }) {
       {/* Global Dropdown */}
       <div className="relative">
         <button
-          className="flex items-center space-x-2 bg-black text-white py-2 px-4 rounded-full flex"
+          className="flex items-center space-x-2 bg-black text-white py-2 px-4 rounded-full"
           onClick={toggleDropdown} // Dropdown'u aç/kapat
         >
           {activeCategory ? (

@@ -3,10 +3,8 @@ import { useEffect, useState } from "react";
 import SidebarMenu from "./sidebar-menu";
 import Image from "next/image";
 import Link from "next/link";
-import SlidingModal from "../web-components/modals/sliding-modal";
-import { FaCompass, FaHeart, FaTrophy, FaUser } from "react-icons/fa";
+import {FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import ForYou from "../account/components/for-you";
 import { AiFillMessage } from "react-icons/ai";
 import { checkHasNewMessage } from "@/lib/services/firebase-service";
 import NotificationPermission from "../web-components/notification-permission/notification-permission";
@@ -18,6 +16,7 @@ export default function Header() {
   const [hasNewMessage, setHasNewMessage] = useState(false);
   const user = useSelector((state) => state.user.user);
   const apiUser = useSelector((state) => state.apiUser.apiUser);
+  
   useEffect(() => {
     let  unsubscribe = () => {};
       if (apiUser && user != -1) {

@@ -40,7 +40,6 @@ const RegisterForm = ({ setPage }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  const router = useRouter();
 
   const handleRegister = async (values) => {
     setError(null);
@@ -50,28 +49,33 @@ const RegisterForm = ({ setPage }) => {
         values.email,
         values.password
       );
-
+  
       const user = userCredential.user;
+  
       await updateProfile(user, {
         displayName: values.fullName,
       });
+  
       const deviceToken = await requestForToken();
+  
       const registerData = {
-        email: userCredential.user.email,
-        fullName:values.fullName,
+        email: user.email,
+        fullName: values.fullName,
         loginType: "4",
         deviceType: "1",
         rightChangeGender: 1,
-        identity: userCredential.user.email,
+        identity: user.email,
         deviceToken: deviceToken ?? "123",
         one_signal_id: "123",
       };
-      var registerResponse = await registerUser(registerData);
-      await signInWithCredential(auth, userCredential);
-      localStorage.setItem('userId',registerResponse.data.data.id);
-      localStorage.setItem('token', registerResponse.data.data.auth_token);
+  
+      const registerResponse = await registerUser(registerData);
+  
+      localStorage.setItem("userId", registerResponse.data.data.id);
+      localStorage.setItem("token", registerResponse.data.data.auth_token);
+  
       dispatch(setApiUser(registerResponse.data.data));
-      window.location.href=("/account");
+      window.location.href = "/account";
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
         setError("Bu email adresi zaten kullanımda!");
@@ -82,6 +86,7 @@ const RegisterForm = ({ setPage }) => {
       }
     }
   };
+  
 
   return (
     <div className="text-white pt-20 px-4 flex flex-col gap-6 min-h-screen">

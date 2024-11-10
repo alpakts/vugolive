@@ -45,12 +45,12 @@ function DiamondHistory() {
             return (
               <div
                 key={index}
-                className={` p-4 rounded-lg shadow-md mb-4 ${item.operation_type == 0 ? "bg-green-400" : "bg-red-400"}`}
+                className={` p-4 rounded-lg shadow-md mb-4 ${(item.operation_type == 0 || item.operation_type == -1) ? "bg-green-400" : "bg-red-400"}`}
               >
                 <div className="flex items-center justify-between">
                   <div className=" w-full">
                     <h2 className="text-base gap-2  font-bold flex">
-                      <div className={`  text-sm  rounded-full px-2  ${item.operation_type == 0 ? "bg-green-600 text-green-400" : "bg-red-400 text-red-600"}` } >
+                      <div className={`  text-sm  rounded-full px-2  ${(item.operation_type == 0 || item.operation_type == -1)? "bg-green-600 text-green-400" : "bg-red-400 text-red-600"}` } >
                   {spendingTypes[item.diamond_spending_type]}
                 </div>
                     </h2>

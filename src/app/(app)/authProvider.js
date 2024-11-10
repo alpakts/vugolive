@@ -2,15 +2,32 @@
 'use client';
 
 import { onAuthStateChanged } from "firebase/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { auth } from "../../../firebaseConfig";
 import { setUser } from "@/lib/slices/userSlice";
 import { setApiUser } from "@/lib/slices/api-user-slice";
 import { getUserProfile } from "@/lib/services/api-service";
+import { IncomingCallModal } from "@/components/web-components/incoming-call-modal";
+import { useRouter } from "next/navigation";
+import { useIncomingCall } from "@/lib/hooks/use-incoming-call";
 
 export function AuthProvider({ children }) {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const [callData, setCallData] = useState(null);
+
+  useIncomingCall(setCallData);
+
+  const handleAccept = () => {
+    router.push(callData?.callId);
+    setCallData(null);
+  };
+
+  const handleReject = () => {
+    console.log('Çağrı reddedildi.');
+    setCallData(null);
+  };
   useEffect(() => {
     const handleAuthChange = async (currentUser) => {
       try {
@@ -40,5 +57,9 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("user");
   };
 
-  return <>{children} </>;
+  return <>  <IncomingCallModal
+  callData={callData}
+  onAccept={handleAccept}
+  onReject={handleReject}
+/>{children} </>;
 }

@@ -94,7 +94,7 @@ export default function LiveHostList() {
             Canlı yayınlara mobil uygulama üzerinden ulaşabilirsiniz.
             <CustomButton
               className="flex justify-center items-center bg-black capitalize text-white gap-2"
-              href={"https://www.google.com/"}
+              href={process.env.NEXT_PUBLIC_APP_PUBLIC_URL}
               target="blank"
             >
               Uygulamayı İndir{" "}

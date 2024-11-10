@@ -71,7 +71,7 @@ const ChatHeader = ({ messageToUser, fileBaseUrl,popupRef }) => {
          
         </div>
       </div>
-      { messageToUser.is_host == 2 && <button className="text-white px-2 relative">
+      { messageToUser.is_host == 2 && !apiUser?.is_block_list?.includes(messageToUser.id) && <button className="text-white px-2 relative">
         <IoVideocamSharp size={24}  onClick={()=>{
           router.push(`/chat/channel/${messageToUser.id}and${apiUser.id}?calledUser=${messageToUser.id}`);
         }} />

@@ -282,7 +282,7 @@ const transactDiamonds = async (sender, receiver, gift,free) => {
   if (free) {
     return true;
   }
-  var isMessageFree = checkMessageIsFree(sender, receiver);
+  var isMessageFree = checkMessageIsFree(sender, receiver,gift);
   if (isMessageFree.isFee == false) {
     return true;
   }
@@ -306,7 +306,7 @@ const transactDiamonds = async (sender, receiver, gift,free) => {
     return false;
   }
 };
-const checkMessageIsFree = (sender, receiver) => {
+const checkMessageIsFree = (sender, receiver,gift) => {
   if (
     sender.save_profile?.includes(receiver.id) &&
     receiver.save_profile?.includes(sender.id)
@@ -315,7 +315,7 @@ const checkMessageIsFree = (sender, receiver) => {
       paymentToHost: false,
       isFee: false,
     };
-  } else if (sender.is_host != 2 && receiver.is_host == 2) {
+  } else if (sender.is_host != 2 && receiver.is_host == 2 && !gift) {
     return {
       paymentToHost: true,
       isFee: true,
@@ -324,6 +324,11 @@ const checkMessageIsFree = (sender, receiver) => {
     return {
       paymentToHost: false,
       isFee: false,
+    };
+  } else if (sender.is_host == 2 && receiver.is_host == 2 && gift) {
+    return {
+      paymentToHost: true,
+      isFee: true,
     };
   } else if (sender.is_host == 2 && receiver.is_host == 2) {
     return {
@@ -508,7 +513,6 @@ export const sendNotification = async (targetToken, title, body,extraData) => {
   }
 };
 export const transactVideoCallDiamonds = async (sender, receiver,free = false) => {
-  debugger;
   if (free) {
     return true;
   }

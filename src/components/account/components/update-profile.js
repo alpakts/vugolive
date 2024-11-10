@@ -34,7 +34,6 @@ const UpdateProfile = () => {
     validationSchema: profileSchema,
     onSubmit: async (values) => {
       try {
-        debugger;
         const file = fileInputRef.current.files[0];
      
         if (apiUser.gender != values.gender) {
@@ -70,7 +69,6 @@ const UpdateProfile = () => {
   const handleButtonClick = () => {
     fileInputRef.current.click(); // Butona tıklanınca input'u tetikle
   };
-
   return (
     <div className="flex flex-col items-center justify-center bg-black text-white overflow-auto ">
       {/* Header */}
@@ -164,7 +162,7 @@ const UpdateProfile = () => {
           </label>
           <select
             name="gender"
-            disabled={apiUser.rightChangeGender == 1 || !apiUser.rightChangeGender}
+            disabled={apiUser.rightChangeGender == 0}
             value={formik.values.gender}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}

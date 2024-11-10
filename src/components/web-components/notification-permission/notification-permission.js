@@ -26,7 +26,6 @@ const NotificationPermission = () => {
     ) {
       localStorage.removeItem("notificationsDenied");
       requestForToken().then((token) => {
-        debugger;
         updateUserProfile({ deviceToken: token, user_id: apiUser.id,fullName:apiUser.fullName });
       });
         

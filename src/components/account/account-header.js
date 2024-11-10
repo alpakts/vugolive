@@ -22,7 +22,8 @@ const AccountHeader = ({user}) => {
         <FaUser className="outline rounded-full bg-black outline-gray-900 outline-offset-2 outline-[8px]" size={70} />
       )}
     
-      <span>{user.fullName}</span>
+      <div><span>{user.fullName}</span>
+      <div>ID: {user.id}</div></div>
     </div>
     <SlidingModal  OpenButton={<FaUserEdit  className="flex items-center h-full" size={24} />} ><UpdateProfile></UpdateProfile></SlidingModal>
    
