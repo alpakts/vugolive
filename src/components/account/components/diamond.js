@@ -2,7 +2,7 @@
 'use client';
 import Image from 'next/image';
 import CustomButton from '@/components/web-components/button/button';
-import { getDiamondPurchaseList, getUserProfile } from '@/lib/services/api-service';
+import { getDiamondPurchaseList, getUserProfile, valletRequest } from '@/lib/services/api-service';
 import { useEffect, useState } from 'react';
 import Loading from '@/app/(app)/loading';
 import { GrDocumentText } from "react-icons/gr";
@@ -23,6 +23,13 @@ const DiamondPage = async () => {
       setLoading(false);
     });
     },[]);
+    // const getPaymentForm = (diamond) =>{
+    //  if (apiUser) {
+    //   valletRequest(diamond.price,apiUser.fullName,apiUser.fullName,diamond.diamond,"05333333333",apiUser.email).then((response) => {
+    //     console.log(response.data);
+    //   });
+    //  }
+    // }
     if (loading) {
       return <Loading></Loading>;
       
@@ -70,6 +77,7 @@ const DiamondPage = async () => {
             <div
               key={diamond.id}
               className="flex justify-between items-center bg-secondary text-black p-4 rounded-lg"
+              onClick={()=>getPaymentForm(diamond)}
             >
               <div className="flex items-center space-x-2">
                 <Image

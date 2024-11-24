@@ -199,6 +199,18 @@ export const blockHost = async (uId, hId) => {
     [ApiParams.host_id]: hId,
   });
 };
+export const valletRequest = async (price, name, surname, productName, phoneNumber, userEmail) => {
+  return await apiClient.post("valletRequest", {
+    productsTotalPrice: price,
+    orderPrice: price,
+    buyerName: name,
+    buyerSurName: surname,
+    productName: `${productName} elmas`,
+    buyerGsmNo: phoneNumber,
+    buyerMail: userEmail,
+  });
+};
+
 
 export const makeUserHost = async (data, images, videos) => {
   const formData = new FormData();

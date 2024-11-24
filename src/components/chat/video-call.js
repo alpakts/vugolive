@@ -29,6 +29,7 @@ import { sendNotification, transactVideoCallDiamonds } from "@/lib/services/fire
 import { useRouter } from "next/navigation";
 
 async function Call(props) {
+  const router = useRouter();
   if (!window) {
     return;
   }
@@ -121,12 +122,12 @@ function Videos(props) {
       
     }
   }, [apiUser]);
+  
   useEffect(() => {
     
-   if (host) {
+   if (host && !isNotificationSent && apiUser.id != host.id) {
     sendNotification(host.deviceToken, 'Gelen Arama', apiUser.fullName,{url:window.location.origin+'/chat/channel/'+channelName+'?calledUser='+host.id,type:'videoCall',callerName:apiUser.fullName,callerAvatar:apiUser.profileimages || apiUser.images[0]?.image});
     setIsNotificationSent(true);
-    
    }
   }, [host]);
 
@@ -217,14 +218,14 @@ function Videos(props) {
   <p className="text-2xl mb-4 z-10 mt-5">Aranıyor...</p>
 
   {/* Çağrıyı Sonlandır Butonu */}
-  <div className="flex justify-center items-center space-x-4 z-10">
+  <div className="flex justify-center items-center space-x-4 z-10"    onClick={() => {
+        router.push(`/account/messages`);
+      }}>
     <MdCallEnd
       size={50}
       className="cursor-pointer"
       color="red"
-      onClick={() => {
-        router.push(`/chat/${host.id}`);
-      }}
+   
     />
   </div>
 </div>

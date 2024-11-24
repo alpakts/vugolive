@@ -298,7 +298,8 @@ const transactDiamonds = async (sender, receiver, gift,free) => {
   const transactResponse = await minusDiamonds(sender.id, amount,sender.is_host,1,messageType,receiver.id);
   if (transactResponse.data.message == "diamoand minush") {
     if (isMessageFree.paymentToHost) {
-      await addDiamonds(receiver.id,amount- messageCharge,0,receiver.is_host,0,messageType,sender.id);
+      const amountGift = gift ? gift.diamond : 0;
+      await addDiamonds(receiver.id, gift ? amountGift :amount- messageCharge,0,receiver.is_host,0,messageType,sender.id);
       return true;
     }
   } else {

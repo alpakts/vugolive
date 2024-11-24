@@ -29,6 +29,7 @@ const ForYou = () => {
     const userId=localStorage.getItem("userId");
     getExploreProfilesByGender(userId??250,apiUser?.gender??0).then((response) => {
       setUsers(response.data.data);
+      response.data.data.sort((a, b) => new Date(b.last_seen) - new Date(a.last_seen));
     }).catch((err) => console.log(err));
   }, [apiUser]); 
   const sayHiToUser = async (sender, receiver) => {

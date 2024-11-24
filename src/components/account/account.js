@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import MenuItem from '../web-components/menu-item'
 import { FaWallet, FaUserAltSlash, FaUserPlus, FaShareAlt, FaRegBookmark, FaFileAlt, FaInfoCircle, FaChevronLeft, FaGooglePlay, FaUser, FaUserLock } from 'react-icons/fa';
 import Image from 'next/image';

@@ -159,7 +159,7 @@ const Profile = () => {
                 <div className="flex items-center bg-white rounded-full p-2 hover:bg-primary" onClick={() => router.push(`/chat/${host.id}`)}>
                   <AiFillMessage size={30} color="black" />
                 </div>
-                {host.is_video_call === 1 && host.is_host == 2 && (
+                {host.is_video_call === 1 && (
                   <div className="flex items-center bg-white rounded-full p-2 hover:bg-primary" onClick={startVideoCall}>
                     <IoVideocamSharp size={30} color="black" />
                   </div>
