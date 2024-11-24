@@ -77,7 +77,7 @@ const DiamondPage = async () => {
             <div
               key={diamond.id}
               className="flex justify-between items-center bg-secondary text-black p-4 rounded-lg"
-              onClick={()=>getPaymentForm(diamond)}
+              // onClick={()=>getPaymentForm(diamond)}
             >
               <div className="flex items-center space-x-2">
                 <Image

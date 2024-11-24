@@ -101,6 +101,7 @@ export default function SidebarMenu({ isOpen, closeMenu }) {
             href="/auth"
             onClick={() => {
               closeMenu();
+              window.open(process.env.NEXT_PUBLIC_APP_PUBLIC_URL);
             }}
           >
            <Image src={'/logo.png'} width={16} height={16}/>  Uygulamayı İndir
