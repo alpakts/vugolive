@@ -200,15 +200,17 @@ export const blockHost = async (uId, hId) => {
   });
 };
 export const valletRequest = async (price, name, surname, productName, phoneNumber, userEmail) => {
-  return await apiClient.post("valletRequest", {
-    productsTotalPrice: price,
-    orderPrice: price,
-    buyerName: name,
-    buyerSurName: surname,
-    productName: `${productName} elmas`,
-    buyerGsmNo: phoneNumber,
-    buyerMail: userEmail,
-  });
+  return await apiClient.post("valletRequest",{
+    "nameValuePairs": {
+        "productsTotalPrice": price,
+        "orderPrice": price,
+        "buyerName": name,
+        "buyerSurName": surname,
+        "productName":productName,
+        "buyerGsmNo": phoneNumber,
+        "buyerMail": userEmail
+    }
+});
 };
 
 

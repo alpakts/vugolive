@@ -7,11 +7,14 @@ import { useEffect, useState } from 'react';
 import Loading from '@/app/(app)/loading';
 import { GrDocumentText } from "react-icons/gr";
 import { useRouter } from 'next/navigation';
+import PaymentForm from './payment/payment-form';
 
 const DiamondPage = async () => {
   const [diamondList,setDiamondList] = useState([]);
   const [loading,setLoading] = useState(true);
   const [apiUser,setApiUser] = useState({});
+  const [currentStep,setCurrentStep] = useState(0);
+  const [selectedDiamond,setSelectedDiamond] = useState(null);
   const router = useRouter();
   useEffect(() => {
     const userId=localStorage.getItem('userId');
@@ -72,12 +75,16 @@ const DiamondPage = async () => {
           tadını çıkarmak için lütfen Elmas satın alın.
         </p>
 
-        <div className="space-y-4 overflow-auto max-h-[30vh]">
-          {diamondList.map((diamond, index) => (
+        <div className="space-y-4 overflow-auto max-h-[40vh]">
+
+          {currentStep == 0 && diamondList.map((diamond, index) => (
             <div
               key={diamond.id}
               className="flex justify-between items-center bg-secondary text-black p-4 rounded-lg"
-              // onClick={()=>getPaymentForm(diamond)}
+              onClick={()=>{
+                setSelectedDiamond(diamond);
+                setCurrentStep(1)
+              }}
             >
               <div className="flex items-center space-x-2">
                 <Image
@@ -93,6 +100,9 @@ const DiamondPage = async () => {
               </CustomButton>
             </div>
           ))}
+          {currentStep == 1 && (
+            <PaymentForm diamond={selectedDiamond} />
+            )}
         </div>
       </div>
 
