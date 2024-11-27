@@ -8,20 +8,15 @@ import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/lib/hooks";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { FaChevronLeft } from "react-icons/fa";
 
-const PaymentForm = async (diamond) => {
+const PaymentForm = async ({diamond,setStep}) => {
   const [loading, setLoading] = useState(false); // Control loading state
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
   const router = useRouter();
 
   // Yup validation schema
   const validationSchema = Yup.object({
-    name: Yup.string()
-    .required("İsim zorunludur")
-    .matches(/^[a-zA-ZçÇğĞıİöÖşŞüÜ\s]+$/, "Sadece harfler kullanılabilir"),
-  surname: Yup.string()
-    .required("Soyisim zorunludur")
-    .matches(/^[a-zA-ZçÇğĞıİöÖşŞüÜ\s]+$/, "Sadece harfler kullanılabilir"),
     phone: Yup.string()
       .required("Telefon numarası zorunludur")
       .matches(/^\d{10}$/, "Telefon no 10 rakamdan oluşmalıdır"),
@@ -34,8 +29,8 @@ const PaymentForm = async (diamond) => {
         const dia = diamond.diamond;
         const response = await valletRequest(
             dia.price,
-          values.name,
-          values.surname,
+          apiUser.fullName.split(" ")[0],
+          apiUser.fullName.split(" ")[1] ?? apiUser.fullName.split(" ")[0],
           dia.diamond,
           values.phone,
           apiUser.email
@@ -59,6 +54,7 @@ const PaymentForm = async (diamond) => {
 
   return (
     <div className="bg-black text-white p-4">
+    <div className="flex justify-start gap-2"><FaChevronLeft size={24} onClick={() => setStep(0)} /><span>geri</span></div>
       <h2 className="text-xl font-bold mb-4">Ödeme Formu</h2>
       <Formik
         initialValues={{ name: "", surname: "", phone: "" }}

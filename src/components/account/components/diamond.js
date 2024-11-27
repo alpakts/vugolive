@@ -101,7 +101,7 @@ const DiamondPage = async () => {
             </div>
           ))}
           {currentStep == 1 && (
-            <PaymentForm diamond={selectedDiamond} />
+            <PaymentForm diamond={selectedDiamond} setStep={setCurrentStep} />
             )}
         </div>
       </div>

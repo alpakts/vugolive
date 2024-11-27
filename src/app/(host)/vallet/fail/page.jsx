@@ -1,9 +1,12 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React, { useEffect } from 'react'
 
 const Page = () => {
     const router = useRouter();
+    useEffect(() => {
+        localStorage.removeItem("amount");
+    }, [])
   return (
     <div>   <div className="flex items-center justify-center h-screen bg-black text-primary">
     <div className="text-center px-4">
