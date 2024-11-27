@@ -16,8 +16,9 @@ const Page = () => {
       </p>
       <button
         className="px-6 py-2 bg-primary text-black font-semibold rounded-md hover:bg-yellow-600"
+        onClick={()=>router.push('/') }
       >
-       onClick={()=>router.push('/') }
+      
         Ana Sayfaya Dön
       </button>
     </div>
