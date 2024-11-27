@@ -1,12 +1,17 @@
 "use client";
 import TabComponent from "./tab-select";
 import List from "./list/list";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SkeletonImage from "../web-components/skeleton/skeloton-image";
 import { getExploreProfiles } from "@/lib/services/api-service";
 import LiveHostList from "./list/live-hosts";
 import Badges from "./badge";
 import { useSearchParams } from "next/navigation";
+import PopupModalComp from "../web-components/popup-modal/popup-modal";
+import SlidingModal from "../web-components/modals/sliding-modal";
+import UpdateProfile from "../account/components/update-profile";
+import CustomButton from "../web-components/button/button";
+import { useAppSelector } from "@/lib/hooks";
 
 
 
@@ -15,7 +20,19 @@ export default function HomeIndex(params) {
   const searchParams = useSearchParams();
   const [category, setCategory] = useState(null);
   const [activeTab, setActiveTab] = useState(searchParams.get('at') == 2 ? "Canlı": "Profiller");
-
+  const apiUser = useAppSelector((state) => state.apiUser.apiUser);
+  const popupModal = useRef(null);
+  useEffect(() => {
+    if (apiUser && apiUser != -1){
+      if (apiUser && apiUser.gender == null) {
+        popupModal.current.openModal();
+      }else{
+        popupModal.current.closeModal();
+      }
+    }
+    
+  }
+  , [apiUser])
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     setLoading(true);
@@ -61,7 +78,12 @@ export default function HomeIndex(params) {
       ) : (
         <SkeletonImage count={10} haveLine={false} ></SkeletonImage>
       )}
-      
+      <PopupModalComp ref={popupModal} >
+        <div className="flex flex-col items-center gap-4 justify-center p-4">
+          <h1 className="text-lg font-bold">Keşfette diğer kullanıcılara görünmek için lütfen cinsiyetinizi seçiniz!</h1>
+          <SlidingModal  OpenButton={<CustomButton className="bg-black text-white ">CİNSİYET SEÇ</CustomButton>} ><UpdateProfile></UpdateProfile></SlidingModal>
+        </div>
+      </PopupModalComp>
     </div>
   ) 
   

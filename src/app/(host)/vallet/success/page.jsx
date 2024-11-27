@@ -3,23 +3,31 @@ import { useAppSelector } from '@/lib/hooks';
 import { addDiamonds } from '@/lib/services/api-service';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
+import Loading from '../../loading';
 
 const Page = () => {
   const router = useRouter();
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
+  const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   useEffect(() => {
     if (apiUser) {
       const amount = localStorage.getItem("amount");
       addDiamonds(apiUser.id,amount,2,apiUser.is_host,-1,2,apiUser.id).then((response) => {
-        debugger;
-        if (response.status === 200) {
+        if (response.data.false == true) {
           setSuccess(true);
           localStorage.removeItem("amount");
+          setLoading(false);
+        }else{
+          setSuccess(false);
+          setLoading(false);
         }
       });
     }
   }, [apiUser])
+  if (loading) {
+    return <Loading></Loading>;
+  }
   return (
  <>
 <div className="flex items-center justify-center h-screen bg-black text-primary">

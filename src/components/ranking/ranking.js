@@ -19,12 +19,11 @@ const Ranking = () => {
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
 
   useEffect(() => {
-    if (!apiUser) return;
     setLoading(true);
     // userType: 2 yayıncı, 0/1 kullanıcı
     // operationType: 0 elmas kazanan, 1 elmas harcayan
     // duration: 0 daily, 1 weekly, 2 monthly
-    getPurchaseTransactions(apiUser.id ?? 250, activeTab, activeOpType, activeOrder).then((response) => {
+    getPurchaseTransactions(apiUser?.id == -1 ?5 : apiUser?.id ?? 5, activeTab, activeTab == 0 ? 1 : 0, activeOrder).then((response) => {
       setListData(response.data.data);
       setLoading(false);
     });

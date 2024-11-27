@@ -53,7 +53,7 @@ export default function LeaderboardItem({ item }) {
               width={50}
               height={50}
               sizes="100vw"
-              className="rounded-full aspect-square w-full h-full border-yellow-400"
+              className="rounded-full aspect-square object-cover w-full h-full border-yellow-400"
             />
           ) : (
             <FaUser className="rounded-full w-full h-full aspect-square border-yellow-400" />

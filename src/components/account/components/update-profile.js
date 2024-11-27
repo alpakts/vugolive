@@ -29,7 +29,7 @@ const UpdateProfile = () => {
       fullName: apiUser?.fullName || "",
       about: apiUser?.about || "",
       intrests: apiUser?.intrests && apiUser?.intrests.join(',') || "",
-      gender: apiUser?.gender || "",
+      gender: apiUser?.gender,
     },
     validationSchema: profileSchema,
     onSubmit: async (values) => {
@@ -65,7 +65,6 @@ const UpdateProfile = () => {
       formik.setFieldValue("profileImage", imageUrl); // Set the uploaded image as profile picture
     }
   };
-
   const handleButtonClick = () => {
     fileInputRef.current.click(); // Butona tıklanınca input'u tetikle
   };
@@ -162,15 +161,15 @@ const UpdateProfile = () => {
           </label>
           <select
             name="gender"
-            disabled={apiUser.rightChangeGender == 0}
+            disabled={apiUser?.gender != null ? true : false}
             value={formik.values.gender}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 text-gray-200 leading-tight focus:outline-none focus:shadow-outline bg-gray-800"
           >
-            <option value="" disabled>Seçiniz</option>
-            <option value="0">Erkek</option>
-            <option value="1">Kadın</option>
+            <option value="" disabled selected>Seçiniz</option>
+            <option value={0}>Erkek</option>
+            <option value={1}>Kadın</option>
           </select>
           {formik.touched.gender && formik.errors.gender && (
             <div className="text-red-500 text-sm mt-1">{formik.errors.gender}</div>

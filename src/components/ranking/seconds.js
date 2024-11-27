@@ -31,7 +31,7 @@ export default function SecondRank({ item }) {
               width={50}
               height={50}
               sizes="100vw"
-              className="w-full h-full rounded-full aspect-square border-yellow-400 object-cover" 
+              className="w-full object-cover h-full rounded-full aspect-square border-yellow-400" 
             />
           ) : (
             <FaUser className="w-full h-full rounded-full" />

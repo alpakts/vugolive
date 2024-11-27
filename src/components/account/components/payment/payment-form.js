@@ -26,19 +26,15 @@ const PaymentForm = async ({diamond,setStep}) => {
     setLoading(true);
     if (apiUser) {
       try {
-        const dia = diamond.diamond;
         const response = await valletRequest(
-            dia.price,
+            diamond.price,
           apiUser.fullName.split(" ")[0],
           apiUser.fullName.split(" ")[1] ?? apiUser.fullName.split(" ")[0],
-          dia.diamond,
+          diamond.diamond,
           values.phone,
           apiUser.email
         );
-        if (response.status !== 200) {
-            alert("Ödeme işlemi başarısız oldu");
-        }
-        localStorage.setItem("amount", dia.diamond);
+        localStorage.setItem("amount", diamond.diamond);
         router.push(response.data);
       } catch (error) {
         console.error("Error submitting payment:", error);
@@ -63,37 +59,9 @@ const PaymentForm = async ({diamond,setStep}) => {
       >
         {() => (
           <Form>
-            <div className="flex space-x-4">
-              <div className="flex-1">
-                <label className="block mb-1 text-sm font-medium">Ad</label>
-                <Field
-                  name="name"
-                  type="text"
-                  className="w-full p-2 rounded border  text-black border-gray-300"
-                  placeholder="Ad"
-                />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
-              </div>
-              <div className="flex-1">
-                <label className="block mb-1 text-sm font-medium">
-                  Soyad
-                </label>
-                <Field
-                  name="surname"
-                  type="text"
-                  className="w-full p-2 rounded border  text-black border-gray-300"
-                  placeholder="Soyad"
-                />
-                <ErrorMessage
-                  name="surname"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
-              </div>
+            <div className="flex space-x-4 justify-center">
+            Tutar : {parseFloat(diamond.price).toFixed(2)} TL -
+            Elmas : {diamond.diamond}
             </div>
             <div className="mt-4">
               <label className="block mb-1 text-sm font-medium">

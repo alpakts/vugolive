@@ -24,7 +24,7 @@ export default function RankingCard({ rank, item }) {
             width={50}
             height={50}
             sizes="100vw"
-            className="rounded-full aspect-square border-yellow-400"
+            className="rounded-full aspect-square object-cover border-yellow-400"
           />
         ) : (
           <FaUser className="rounded-full w-[50px] h-[50px] aspect-square border-yellow-400" />
