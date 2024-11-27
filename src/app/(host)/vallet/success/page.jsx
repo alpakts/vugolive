@@ -14,7 +14,7 @@ const Page = () => {
     if (apiUser) {
       const amount = localStorage.getItem("amount");
       addDiamonds(apiUser.id,amount,2,apiUser.is_host,-1,2,apiUser.id).then((response) => {
-        if (response.data.false == true) {
+        if (response.data.status == true) {
           setSuccess(true);
           localStorage.removeItem("amount");
           setLoading(false);
