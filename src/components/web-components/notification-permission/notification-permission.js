@@ -7,38 +7,61 @@ import { useAppSelector } from "@/lib/hooks";
 const NotificationPermission = () => {
   const [showPopup, setShowPopup] = useState(false);
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
+
   useEffect(() => {
-   if (apiUser != -1 && apiUser) {
-    if (
-      Notification.permission === "default" &&
-      !localStorage.getItem("notificationsDenied")
-    ) {
-      setShowPopup(true);
-    }else{
-      requestForToken().then((token) => {
-        updateUserProfile({ deviceToken: token, user_id: apiUser.id ,fullName:apiUser.fullName});
-      });
+    // Notification API desteğini kontrol et
+    if (typeof Notification === "undefined") {
+      console.warn("Notification API is not supported on this device.");
+      return;
     }
 
-    if (
-      Notification.permission === "granted" &&
-      localStorage.getItem("notificationsDenied")
-    ) {
-      localStorage.removeItem("notificationsDenied");
-      requestForToken().then((token) => {
-        updateUserProfile({ deviceToken: token, user_id: apiUser.id,fullName:apiUser.fullName });
-      });
-        
+    if (apiUser !== -1 && apiUser) {
+      if (
+        Notification.permission === "default" &&
+        !localStorage.getItem("notificationsDenied")
+      ) {
+        setShowPopup(true);
+      } else if (Notification.permission === "granted") {
+        requestForToken().then((token) => {
+          updateUserProfile({
+            deviceToken: token,
+            user_id: apiUser.id,
+            fullName: apiUser.fullName,
+          });
+        });
+      }
+
+      if (
+        Notification.permission === "granted" &&
+        localStorage.getItem("notificationsDenied")
+      ) {
+        localStorage.removeItem("notificationsDenied");
+        requestForToken().then((token) => {
+          updateUserProfile({
+            deviceToken: token,
+            user_id: apiUser.id,
+            fullName: apiUser.fullName,
+          });
+        });
+      }
     }
-   }
   }, [apiUser]);
 
   // Kullanıcıdan bildirim iznini isteyen fonksiyon
   const requestNotificationPermission = () => {
+    if (typeof Notification === "undefined") {
+      console.warn("Notification API is not supported on this device.");
+      return;
+    }
+
     Notification.requestPermission().then(async (permission) => {
       if (permission === "granted") {
         const token = await requestForToken();
-        updateUserProfile({ deviceToken: token, user_id: apiUser.id,fullName:apiUser.fullName });
+        updateUserProfile({
+          deviceToken: token,
+          user_id: apiUser.id,
+          fullName: apiUser.fullName,
+        });
       } else if (permission === "denied") {
         localStorage.setItem("notificationsDenied", "true");
       }
@@ -50,7 +73,7 @@ const NotificationPermission = () => {
     <>
       {showPopup && (
         <div className="fixed bottom-0 w-full flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-black p-6 rounded-lg shadow-lg text-center  w-full">
+          <div className="bg-black p-6 rounded-lg shadow-lg text-center w-full">
             <p className="mb-4 text-secondary">
               Mesaj ve aramalardan haberdar olmak için bildirimleri
               onaylamalısınız
