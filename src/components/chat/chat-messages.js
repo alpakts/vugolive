@@ -87,7 +87,7 @@ const ChatMessages = ({
 
   const handleDeleteMessages = () => {
     const selectedMessagesİds = selectedMessages.map((msg) => msg.id);
-    updateSelectedMessagesBetweenUsers(apiUser.identity,messagesToId,selectedMessagesİds);
+    updateSelectedMessagesBetweenUsers(apiUser?.identity,messagesToId,selectedMessagesİds);
     setSelectedMessages([]);
     setLongPressActivated(true);
   };

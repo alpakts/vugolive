@@ -1,4 +1,6 @@
 "use client";
+import 'swiper/css';
+import 'swiper/css/pagination';
 import { useEffect, useState } from "react";
 import SidebarMenu from "./sidebar-menu";
 import Image from "next/image";

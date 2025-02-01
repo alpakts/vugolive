@@ -39,7 +39,7 @@ const Profile = () => {
   const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
 
   const startVideoCall = () => {
-    router.push(`/chat/channel/${host.id}and${apiUser.id}?calledUser=${host.id}`);
+    router.push(`/chat/channel/${host.id}and${apiUser?.id}?calledUser=${host.id}`);
   };
 
   const closeModal = () => {
@@ -67,13 +67,13 @@ const Profile = () => {
 
   const handleSaveProfile = async () => {
     try {
-      const res = await saveProfile(apiUser.id, host.id);
+      const res = await saveProfile(apiUser?.id, host.id);
       if (res.data.status) {
         setIsFavorite(true);
         handleShowPopup(<FaHeart />, "Takip edildi");
       }
       await sendMessageBetweenUsers(
-        apiUser.identity,
+        apiUser?.identity,
         host.identity,
         "Seni takip Ettim. Birbirimizi takip ettikten sonra arkadaş olabiliriz.",
         apiUser,
@@ -91,7 +91,7 @@ const Profile = () => {
 
   const handleRemoveFromSaved = async () => {
     try {
-      const res = await removeFromSaved(apiUser.id, host.id);
+      const res = await removeFromSaved(apiUser?.id, host.id);
       if (res.data.status) {
         setIsFavorite(false);
         handleShowPopup(<CiCircleRemove />, "Takipten çıkarıldı");

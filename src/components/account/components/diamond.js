@@ -39,10 +39,10 @@ const DiamondPage = async () => {
     }
   return (
     <div className=" bg-black text-white p-4">
-      {/* Header */}
+        <a className="bg-white my-5" href="https://www.gpay.com.tr" target="blank" title="www.gpay.com.tr | Gpay "><Image src="https://www.gpay.com.tr/assets/gpay_logo/gpay-atm-450px.png" target="blank" title="www.gpay.com.tr | Gpay" width={400} height={80} className="h-auto w-full"  alt="www.gpay.com.tr | Gpay "/></a>
       <div className="flex items-center justify-center px-4 py-2 w-full relative">
         <h1 className="font-bold text-lg">VUGO | CÜZDAN</h1> 
-        <div className='absolute right-0 flex-col flex justify-center items-center' onClick={()=>{
+        <div className='absolute right-0 flex-col flex justify-center items-center top-5' onClick={()=>{
           router.push('/account/diamond-history');
         }}>
           <GrDocumentText size={24} /> 

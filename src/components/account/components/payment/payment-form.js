@@ -1,7 +1,7 @@
 // components/DiamondPage.js
 "use client";
 
-import { valletRequest } from "@/lib/services/api-service";
+import { makePaymentRequest, valletRequest } from "@/lib/services/api-service";
 import { useState } from "react";
 import Loading from "@/app/(app)/loading";
 import { useRouter } from "next/navigation";
@@ -9,33 +9,21 @@ import { useAppSelector } from "@/lib/hooks";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { FaChevronLeft } from "react-icons/fa";
+import Image from "next/image";
 
 const PaymentForm = async ({diamond,setStep}) => {
   const [loading, setLoading] = useState(false); // Control loading state
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
   const router = useRouter();
 
-  // Yup validation schema
-  const validationSchema = Yup.object({
-    phone: Yup.string()
-      .required("Telefon numarası zorunludur")
-      .matches(/^\d{10}$/, "Telefon no 10 rakamdan oluşmalıdır"),
-  });
-
   const handleSubmit = async (values) => {
     setLoading(true);
     if (apiUser) {
       try {
-        const response = await valletRequest(
-            diamond.price,
-          apiUser.fullName.split(" ")[0],
-          apiUser.fullName.split(" ")[1] ?? apiUser.fullName.split(" ")[0],
-          diamond.diamond,
-          values.phone,
-          apiUser.email
+        const response = await makePaymentRequest('https://vugolive.com/vallet/success',diamond.price,
         );
         localStorage.setItem("amount", diamond.diamond);
-        router.push(response.data);
+        router.push(response);
       } catch (error) {
         console.error("Error submitting payment:", error);
       } finally {
@@ -54,7 +42,6 @@ const PaymentForm = async ({diamond,setStep}) => {
       <h2 className="text-xl font-bold mb-4">Ödeme Formu</h2>
       <Formik
         initialValues={{ name: "", surname: "", phone: "" }}
-        validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {() => (
@@ -63,28 +50,13 @@ const PaymentForm = async ({diamond,setStep}) => {
             Tutar : {parseFloat(diamond.price).toFixed(2)} TL -
             Elmas : {diamond.diamond}
             </div>
-            <div className="mt-4">
-              <label className="block mb-1 text-sm font-medium">
-                Telefon Numarası
-              </label>
-              <Field
-                name="phone"
-                type="text"
-                className="w-full p-2 rounded border  text-black border-gray-300"
-                placeholder="Telefon"
-              />
-              <ErrorMessage
-                name="phone"
-                component="div"
-                className="text-red-500 text-sm mt-1"
-              />
-            </div>
             <button
               type="submit"
               className="bg-secondary text-black py-2 px-4 rounded mt-6 hover:bg-primary"
             >
-              Onayla
+              Gpay İle Öde
             </button>
+            
           </Form>
         )}
       </Formik>

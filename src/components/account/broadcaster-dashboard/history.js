@@ -13,7 +13,7 @@ export default function History() {
     if (apiUser == null) {
       return;
     }
-    getPaymentHistory(apiUser.id, 0, 20).then((response) => {
+    getPaymentHistory(apiUser?.id, 0, 20).then((response) => {
       setHistory(response.data.data);
     });
   }, [apiUser]);

@@ -57,16 +57,14 @@ export default function DashboardTab() {
           />
         </button>
       </div>
-
-      {/* Start Live Broadcast Button */}
+{/* 
       <div className="flex items-center justify-center py-6">
-        {/* Button to start the live broadcast */}
         <button className="bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold" onClick={()=>{
             openModal();
         }}>
           CANLI YAYINA BAŞLA
         </button>
-      </div>
+      </div> */}
 
       {/* Diamond Section */}
       <div className="px-4 py-4 border-t border-b border-gray-700">

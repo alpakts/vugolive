@@ -93,7 +93,7 @@ const SlidingModal =  forwardRef(({ OpenButton,modalTitle ,children }, ref) => {
               </CustomButton>
             </div>
 
-            <div className="px-4 flex flex-col justify-between h-full">
+            <div className="px-4 flex flex-col justify-between h-full overflow-auto">
               <div>
                { modalTitle&& {modalTitle}}
                 {children}

@@ -41,7 +41,7 @@ function RefundDiamond() {
     function handleSubmit(values, { setSubmitting, resetForm }) {
       console.log('Form submitted with values:', values);
       setTimeout(() => {
-        requestRedeem(apiUser.id,values.diamond,values.accountInfo,values.bank).then(() => {
+        requestRedeem(apiUser?.id,values.diamond,values.accountInfo,values.bank).then(() => {
             popupRef.current.triggerPopup(BsDiamondFill, 'istek Başarıyla Gönderildi');
             dispatch(setApiUser({ ...apiUser, diamond: apiUser.diamond - values.diamond }));
             router.push('/account/host-panel');

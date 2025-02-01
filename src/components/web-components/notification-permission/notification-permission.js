@@ -9,7 +9,6 @@ const NotificationPermission = () => {
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
 
   useEffect(() => {
-    // Notification API desteğini kontrol et
     if (typeof Notification === "undefined") {
       console.warn("Notification API is not supported on this device.");
       return;
@@ -25,7 +24,7 @@ const NotificationPermission = () => {
         requestForToken().then((token) => {
           updateUserProfile({
             deviceToken: token,
-            user_id: apiUser.id,
+            user_id: apiUser?.id,
             fullName: apiUser.fullName,
           });
         });
@@ -39,7 +38,7 @@ const NotificationPermission = () => {
         requestForToken().then((token) => {
           updateUserProfile({
             deviceToken: token,
-            user_id: apiUser.id,
+            user_id: apiUser?.id,
             fullName: apiUser.fullName,
           });
         });
@@ -59,7 +58,7 @@ const NotificationPermission = () => {
         const token = await requestForToken();
         updateUserProfile({
           deviceToken: token,
-          user_id: apiUser.id,
+          user_id: apiUser?.id,
           fullName: apiUser.fullName,
         });
       } else if (permission === "denied") {

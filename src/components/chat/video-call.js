@@ -93,7 +93,7 @@ function Videos(props) {
     };
   }, [remoteUsers]);
   useEffect(() => {
-    if (apiUser && host && apiUser.id != calledUser && !isCalling && !firstPayment) {
+    if (apiUser && host && apiUser?.id != calledUser && !isCalling && !firstPayment) {
       transactVideoCallDiamonds(apiUser,host);
       setFirstPayment(true);
         intervalRef.current = setInterval(async () => {
@@ -115,7 +115,7 @@ function Videos(props) {
     }
   }, [isCalling,host]);
   useEffect(() => {
-    if (apiUser && calledUser && apiUser.id != calledUser) {
+    if (apiUser && calledUser && apiUser?.id != calledUser) {
       getUserProfile(calledUser).then((response) => {
         setHost(response.data.data);
       });
@@ -125,7 +125,7 @@ function Videos(props) {
   
   useEffect(() => {
     
-   if (host && !isNotificationSent && apiUser.id != host.id) {
+   if (host && !isNotificationSent && apiUser?.id != host.id) {
     sendNotification(host.deviceToken, 'Gelen Arama', apiUser.fullName,{url:window.location.origin+'/chat/channel/'+channelName+'?calledUser='+host.id,type:'videoCall',callerName:apiUser.fullName,callerAvatar:apiUser.profileimages || apiUser.images[0]?.image});
     setIsNotificationSent(true);
    }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import SlidingModal from "../web-components/modals/sliding-modal";
 import ForYou from "../account/components/for-you";
-import { FaCompass, FaHeart, FaStar, FaTrophy, FaUser } from "react-icons/fa";
+import { FaCamera, FaCompass, FaHeart, FaStar, FaTrophy, FaUser } from "react-icons/fa";
 import { RiCustomerServiceFill } from "react-icons/ri";
 export default function SidebarMenu({ isOpen, closeMenu }) {
   const user = useSelector((state) => state.apiUser.apiUser);
@@ -33,6 +33,16 @@ export default function SidebarMenu({ isOpen, closeMenu }) {
           >
             <FaUser size={24} />
             <span>Profilim</span>
+          </Link>
+          <Link
+            href="/account/moments"
+            className="flex items-center space-x-2 text-lg hover:text-yellow-400"
+            onClick={() => {
+              closeMenu();
+            }}
+          >
+            <FaCamera size={24} />
+            <span>Anlarım</span>
           </Link>
           <div className="bg-secondary h-1  rounded-full "></div>
        </>

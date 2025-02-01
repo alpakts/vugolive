@@ -100,7 +100,7 @@ const PublisherApplicationForm = () => {
       const imagesToSend = uploadedPhotos.filter((image) => image instanceof File);
       const videosToSend = uploadedVideos.filter((video) => video instanceof File);
   
-      values.user_id = apiUser.id;
+      values.user_id = apiUser?.id;
   
       if (uploadedVideos.filter((video) => video).length < 2) {
         setVideoError("En az 2 video yüklemeniz gerekiyor");
@@ -118,7 +118,7 @@ const PublisherApplicationForm = () => {
   
       setImageError(null);
       setVideoError(null);
-      values.id = apiUser.id;
+      values.id = apiUser?.id;
       const response = await makeUserHost(values, imagesToSend, videosToSend);
       
       dispatch(setApiUser(response.data.data));

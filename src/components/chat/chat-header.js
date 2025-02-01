@@ -24,7 +24,7 @@ const ChatHeader = ({ messageToUser, fileBaseUrl,popupRef }) => {
     }
   }, []);
   const handleBlockUser = (userId,apiUser) => {
-    blockHost(apiUser.id, userId).then(() => {
+    blockHost(apiUser?.id, userId).then(() => {
       popupRef.current.triggerPopup(<FaUser/>,'Kullanıcı engellendi.');
       dispatch(setApiUser({
         ...apiUser,
@@ -33,7 +33,7 @@ const ChatHeader = ({ messageToUser, fileBaseUrl,popupRef }) => {
     }).catch((err) => console.log(err));
   }
   const handleRemoveBlock = (userId,apiUser) => {
-    unblockHost(apiUser.id,userId).then(() => {
+    unblockHost(apiUser?.id,userId).then(() => {
       popupRef.current.triggerPopup(<FaUser/>,'Kullanıcı engeli kaldırıldı.');
       dispatch(setApiUser({
         ...apiUser,
@@ -73,7 +73,7 @@ const ChatHeader = ({ messageToUser, fileBaseUrl,popupRef }) => {
       </div>
       { messageToUser.is_video_call === 1 && !apiUser?.is_block_list?.includes(messageToUser.id) && <button className="text-white px-2 relative">
         <IoVideocamSharp size={24}  onClick={()=>{
-          router.push(`/chat/channel/${messageToUser.id}and${apiUser.id}?calledUser=${messageToUser.id}`);
+          router.push(`/chat/channel/${messageToUser.id}and${apiUser?.id}?calledUser=${messageToUser.id}`);
         }} />
       
       </button>}

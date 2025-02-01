@@ -20,7 +20,7 @@ function DiamondHistory() {
     if (apiUser == null) {
       return;
     }
-    getDiamondHistory(apiUser.id).then((response) => {
+    getDiamondHistory(apiUser?.id).then((response) => {
       setHistory(response.data.data);
     });
   }, [apiUser]);

@@ -2,12 +2,12 @@
 import { getCountryList } from "@/lib/services/api-service";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { FiChevronDown } from "react-icons/fi"; // React Icons'dan iconlar
+import { FiChevronDown } from "react-icons/fi";
 import { TbCategoryFilled } from "react-icons/tb";
 export default function TabComponent({ activeTab, setActiveTab, setCategory }) {
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false); // Dropdown'un açık olup olmadığını kontrol ediyoruz
+  const [dropdownOpen, setDropdownOpen] = useState(false); 
   useEffect(() => {
     getCountryList()
       .then((response) => {
@@ -16,14 +16,13 @@ export default function TabComponent({ activeTab, setActiveTab, setCategory }) {
       .catch((err) => console.log(err));
   }, []);
   const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen); // Dropdown durumunu değiştir
+    setDropdownOpen(!dropdownOpen); 
   };
   useEffect(() => {
     activeCategory ? setCategory(activeCategory.id) : setCategory(null);
   }, [activeCategory]);
   return (
     <div className="flex items-center py-4 space-x-4 text-sm justify-between ">
-      {/* Sekmeler */}
       <div className="flex items-center border border-black rounded-full">
         <button
           className={`py-2 px-2 font-bold flex min-w-max items-center rounded-r-none  text-center justify-center ${
@@ -47,15 +46,14 @@ export default function TabComponent({ activeTab, setActiveTab, setCategory }) {
             setActiveTab("Canlı");
           }}
         >
-          Canlı Yayınlar
+          Anlar
         </button>
       </div>
 
-      {/* Global Dropdown */}
       <div className="relative">
         <button
           className="flex items-center space-x-2 bg-black text-white py-2 px-4 rounded-full"
-          onClick={toggleDropdown} // Dropdown'u aç/kapat
+          onClick={toggleDropdown} 
         >
           {activeCategory ? (
             ""
@@ -76,7 +74,6 @@ export default function TabComponent({ activeTab, setActiveTab, setCategory }) {
           <FiChevronDown className="text-white" size={16} />
         </button>
 
-        {/* Dropdown Menüsü: Eğer `dropdownOpen` true ise gösterilir */}
         {dropdownOpen && (
           <div className="absolute z-10 right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg">
             <div

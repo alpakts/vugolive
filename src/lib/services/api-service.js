@@ -212,7 +212,33 @@ export const valletRequest = async (price, name, surname, productName, phoneNumb
     }
 });
 };
+export async function makePaymentRequest(return_url, amount) {
+  try {
+    const response = await fetch("/api/payment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        return_url: return_url,
+        amount: amount 
+      })
+    });
 
+    const result = await response.json();
+
+    if (response.ok) {
+      console.log("Başarılı:", result.link);
+      return result.link;
+    } else {
+      console.error("Hata:", result.message);
+      throw new Error(result.message || "Bir hata oluştu.");
+    }
+  } catch (error) {
+    console.error("İstek Hatası:", error.message);
+    throw new Error("API isteği sırasında bir hata oluştu.");
+  }
+}
 
 export const makeUserHost = async (data, images, videos) => {
   const formData = new FormData();
@@ -396,3 +422,35 @@ export const verifyPurchase = async (token) => {
     [ApiParams.token]: token,
   });
 };
+export const GetPosts = async () => {
+  return await apiClient.get(ApiName.posts);
+};
+export const LikePostById = async (postId) => {
+  return await apiClient.post(`posts/${postId}/like`);
+};
+export const GetPostById = async (postId) => {
+  return await apiClient.get(`posts/${postId}`);
+};
+export const CommentPostById = async (postId, comment) => { 
+  const formData = new FormData();
+  formData.append('comment', comment);
+
+  return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}/comment`,{body: formData, method: 'POST'});
+}
+export const ListOwnPosts = async () => {
+  return await apiClient.get(`my-posts`);
+};
+
+export const AddNewPost = async (data) => {
+  const formData = new FormData();
+  Object.keys(data).forEach((key) => formData.append(key, data[key]));
+  return await fetch(`my-add-post`, {body: formData, method: 'POST'});
+}
+export const UpdateOwnPost = async (postId, data) => {
+  const formData = new FormData();
+  Object.keys(data).forEach((key) => formData.append(key, data[key]));
+  return await fetch(`my-posts/${postId}`, {body: formData, method: 'PUT'});
+}
+export const DeleteOwnPost = async (postId) => {
+  return await fetch(`my-posts/${postId}`, {method: 'DELETE'});
+}

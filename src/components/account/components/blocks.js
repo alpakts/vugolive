@@ -16,7 +16,7 @@ const BlocksList = () => {
   const [hosts, setHosts] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    getBlockedProfiles(apiUser.id,0,25).then((response) => {
+    getBlockedProfiles(apiUser?.id,0,25).then((response) => {
       setHosts(response.data.data);
       setLoading(false);
     }).catch((err) => console.log(err));
@@ -25,7 +25,7 @@ const BlocksList = () => {
     return <Loading></Loading>
   }
   const handleRemoveBlock = (hostId) => {
-    unblockHost(apiUser.id,hostId).then((response) => {
+    unblockHost(apiUser?.id,hostId).then((response) => {
       setHosts(hosts.filter((host) => host.id !== hostId));
     }).catch((err) => console.log(err));
 

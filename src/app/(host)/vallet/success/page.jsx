@@ -13,7 +13,7 @@ const Page = () => {
   useEffect(() => {
     if (apiUser) {
       const amount = localStorage.getItem("amount");
-      addDiamonds(apiUser.id,amount,2,apiUser.is_host,-1,2,apiUser.id).then((response) => {
+      addDiamonds(apiUser?.id,amount,2,apiUser.is_host,-1,2,apiUser?.id).then((response) => {
         if (response.data.status == true) {
           setSuccess(true);
           localStorage.removeItem("amount");

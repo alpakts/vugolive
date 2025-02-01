@@ -12,6 +12,7 @@ import SlidingModal from "../web-components/modals/sliding-modal";
 import UpdateProfile from "../account/components/update-profile";
 import CustomButton from "../web-components/button/button";
 import { useAppSelector } from "@/lib/hooks";
+import PostComponent from "./post";
 
 
 
@@ -45,36 +46,46 @@ export default function HomeIndex(params) {
 
   },[activeTab,category]);
   useEffect(() => {
-    setActiveTab(searchParams.get('at') == 2 ? "Canlı": "Profiller");
+    setActiveTab(searchParams.get('at') == 2 ? "Profiller":"Canlı");
   }
   , [searchParams]);
   return  ( 
     <div className="p-4">
       <TabComponent activeTab={activeTab} category={category} setCategory={setCategory} setActiveTab={setActiveTab} />
       {
-        activeTab == 'Profiller' ? (
+        activeTab == 'Profiller' && (
           <h1 className="text-base font-bold mb-4 border-b border-primary pb-3">
             Sizin İçin Önerilenler
           </h1>
-        )
-        :
-        (
+        )   
+      }
+      {
+        activeTab == 'Canlı' && (
           <h1 className="text-base font-bold mb-4 border-b border-primary pb-3">
-            Canlı Yayınlar
+          Anlar
           </h1>
         )
-
+      }
+      {
+        activeTab == 'Anlar' && (
+          <h1 className="text-base font-bold mb-4 border-b border-primary pb-3">
+            Anlar
+          </h1>
+        )
       }
       <Badges></Badges>
       {!loading ?(
+        <>
         <div className="grid grid-cols-2 gap-4 relative">
           {activeTab == 'Profiller' && users.map((item, index) => (
             <List key={index}  item={item} />
           ))}
-          {activeTab == 'Canlı' && 
-            <LiveHostList/>
-          }
+
         </div>
+        {activeTab == 'Canlı' && 
+            <PostComponent />
+          }
+        </>
       ) : (
         <SkeletonImage count={10} haveLine={false} ></SkeletonImage>
       )}

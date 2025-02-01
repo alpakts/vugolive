@@ -14,7 +14,7 @@ const FollowersList = () => {
   const [hosts, setHosts] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    getSavedProfiles(apiUser.id,0,25).then((response) => {
+    getSavedProfiles(apiUser?.id,0,25).then((response) => {
       setHosts(response.data.data);
       setLoading(false);
     }).catch((err) => console.log(err));

@@ -41,13 +41,13 @@ const UpdateProfile = () => {
         }
         const updateResult = await updateUserProfile(
           {
-            user_id: apiUser.id,
+            user_id: apiUser?.id,
             ...values,
           },
           file
         );
         if (updateResult.data.status) {
-          getUserProfile(apiUser.id).then((res) => {
+          getUserProfile(apiUser?.id).then((res) => {
             dispatch(setApiUser(res.data.data));
           });
         }

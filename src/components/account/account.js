@@ -13,6 +13,7 @@ import { useAppSelector } from '@/lib/hooks';
 import { useRouter } from 'next/navigation';
 import Terms from '../contracts/terms';
 import Kvkk from '../contracts/kvkk';
+import Policy from '@/app/(app)/policy/page';
 const AccounHome = () => {
   const apiUser = useAppSelector((state) => state.apiUser.apiUser);
   const router = useRouter();
@@ -102,6 +103,14 @@ const AccounHome = () => {
       >
         {" "}
         <Kvkk />
+      </SlidingModal>
+      <SlidingModal
+        OpenButton={
+          <MenuItem icon={<FaInfoCircle />} text=" (CSAE) Konusunda Uygulama Politikası Beyanı" />
+        }
+      >
+        {" "}
+        <Policy />
       </SlidingModal>
       <MenuItem
         onClick={() => {

@@ -83,6 +83,7 @@ function Messages() {
           <button className="option w-full text-left p-2 text-white " onClick={()=>{
             deleteAllMessages();
             updateMsg(selectedMessage,{lastMsg:''});
+            updateMsg(selectedMessage,{newMsg:false});
             modalRef.current.closeModal();
           }} >Sohbeti Temizle</button>
           <button className="option w-full text-left p-2 text-white " onClick={()=>{
