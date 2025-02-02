@@ -144,7 +144,10 @@ export default function PostComponent() {
                   </div>
                 )}
               </div>
-
+              <div className="p-2 text-lg text-primary">
+                  <span>{post.title}</span>
+                  <p className="text-sm text-white">{post.content}</p>
+                </div>
               <div>
                 <PhotoProvider>
                   <PhotoView
@@ -193,10 +196,6 @@ export default function PostComponent() {
                     </button>
                   </div>
                 </div>
-                <div className="py-1 text-lg text-primary">
-                  <span>{post.title}</span>
-                </div>
-                <p className="text-sm">{post.content}</p>
               </div>
             </div>
           ))

@@ -13,7 +13,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { IoMdSend } from "react-icons/io";
 import { PhotoProvider, PhotoView } from "react-photo-view";
-import { timeAgo} from "@/lib/utils/utils";
+import { timeAgo } from "@/lib/utils/utils";
 export default function PostDetailClient({ postData, setPostData }) {
   const [isPending, startTransition] = useTransition();
   const { post, comments, pictures } = postData;
@@ -45,37 +45,37 @@ export default function PostDetailClient({ postData, setPostData }) {
   const handleCommentSubmit = async () => {
     startTransition(async () => {
       if (commentText.trim() === "") return;
-    setCommentLoading(true);
+      setCommentLoading(true);
 
-    try {
-      await CommentPostById(post.id, commentText);
-      const newComment = {
-        id: Date.now(),
-        user_id: 1,
-        post_id: post.id,
-        comment: commentText,
-        created_at: new Date().toISOString(),
-        user: {
-          fullName: "Sen",
-          profileimages: null,
-        },
-      };
+      try {
+        await CommentPostById(post.id, commentText);
+        const newComment = {
+          id: Date.now(),
+          user_id: 1,
+          post_id: post.id,
+          comment: commentText,
+          created_at: new Date().toISOString(),
+          user: {
+            fullName: "Sen",
+            profileimages: null,
+          },
+        };
 
-      setPostData((prev) => ({
-        ...prev,
-        post: {
-          ...prev.post,
-          comments_count: prev.post.comments_count + 1,
-        },
-        comments: [newComment, ...prev.comments],
-      }));
-      setCommentText("");
-    } catch (error) {
-      console.error("Yorum gönderme hatası:", error);
-    } finally {
-      setCommentLoading(false);
-    }
-  });
+        setPostData((prev) => ({
+          ...prev,
+          post: {
+            ...prev.post,
+            comments_count: prev.post.comments_count + 1,
+          },
+          comments: [newComment, ...prev.comments],
+        }));
+        setCommentText("");
+      } catch (error) {
+        console.error("Yorum gönderme hatası:", error);
+      } finally {
+        setCommentLoading(false);
+      }
+    });
   };
   return (
     <>
@@ -109,23 +109,26 @@ export default function PostDetailClient({ postData, setPostData }) {
               {postData.user?.fullName ?? "Anonim"}
             </p>
             <p className="text-xs text-gray-400">
-              { timeAgo(new Date(post.created_at))}
+              {timeAgo(new Date(post.created_at))}
             </p>
           </div>
         </div>
-
-              <PhotoProvider>
-        <div className="my-4">
-          {pictures.length > 0 && (
-            <Swiper
-              modules={[Pagination]}
-              spaceBetween={10}
-              slidesPerView={1}
-              pagination={{ clickable: true }}
-              className="rounded-md"
-            >
-              {pictures.map((picture, index) => (
-                <SwiperSlide key={index}>
+        <div className="p-2 text-lg text-primary text-start">
+          <span>{post.title}</span>
+          <p className="text-sm text-white">{post.content}</p>
+        </div>
+        <PhotoProvider>
+          <div className="my-4">
+            {pictures.length > 0 && (
+              <Swiper
+                modules={[Pagination]}
+                spaceBetween={10}
+                slidesPerView={1}
+                pagination={{ clickable: true }}
+                className="rounded-md"
+              >
+                {pictures.map((picture, index) => (
+                  <SwiperSlide key={index}>
                     <PhotoView
                       src={
                         picture.picture_path
@@ -145,13 +148,12 @@ export default function PostDetailClient({ postData, setPostData }) {
                         className="w-full h-auto object-contain rounded-md aspect-square bg-black"
                       />
                     </PhotoView>
-                </SwiperSlide>
-              ))}
-                  
-            </Swiper>
-          )}
-        </div>
-              </PhotoProvider> 
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            )}
+          </div>
+        </PhotoProvider>
 
         <div className="flex items-center space-x-4 mb-4">
           <button className="relative flex items-center" onClick={handleLike}>
@@ -174,10 +176,6 @@ export default function PostDetailClient({ postData, setPostData }) {
             <span className="ml-1 text-sm">{post.comments_count}</span>
           </button>
         </div>
-        <div className="py-1 text-lg text-primary text-start">
-          <span>{post.title}</span>
-        </div>
-        <p className="text-sm mb-6 text-start">{post.content}</p>
         <div
           className={`${
             !commentOpen
