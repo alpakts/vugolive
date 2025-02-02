@@ -12,16 +12,9 @@ export async function POST(req) {
             key: "JQzMFhfhm",
             order_id: Buffer.from(`order_${Date.now()}`).toString("base64"),
             amount: amount,
-            currency: "949",
+            currency: 949,
+            selected_payment: "krediKarti",
             return_url: return_url, 
-            phone: "50213123213",
-            selected_bank_id: "62",
-            nufus_bilgileri: {
-                ad_soyad: "AD SOYAD",
-                tc_no: "151000000000",
-                dogum_yili: "1978",
-                il: "ANKARA"
-            }
         };
 
     

@@ -6,9 +6,9 @@ import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import VideoPlayer from "../web-components/video-player/video-player";
 import { FaPlayCircle, FaTrash } from "react-icons/fa";
-import { updateAllMessagesBetweenUsers, updateSelectedMessagesBetweenUsers } from "@/lib/services/firebase-service";
+import { updateSelectedMessagesBetweenUsers } from "@/lib/services/firebase-service";
 import { useAppSelector } from "@/lib/hooks";
-
+import {timeAgo} from "@/lib/utils/utils";
 const groupMessagesByDate = (messages) => {
   return messages.reduce((groups, message) => {
     const messageDate = new Date(message.time);

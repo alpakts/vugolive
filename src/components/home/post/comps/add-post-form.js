@@ -76,7 +76,7 @@ export default function AddPostForm() {
       }
     } catch (error) {
       setErrorMessage("Sunucuya bağlanırken bir hata oluştu!");
-    } finally {
+    } finally {""
       setIsSubmitting(false);
     }
   };

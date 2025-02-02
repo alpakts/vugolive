@@ -435,7 +435,7 @@ export const CommentPostById = async (postId, comment) => {
   const formData = new FormData();
   formData.append('comment', comment);
 
-  return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}/comment`,{body: formData, method: 'POST'});
+  return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/${postId}/comment`,{body: formData, method: 'POST', headers: {Authtoken: `${localStorage.getItem('token')}`, Apikey: '123'}});
 }
 export const ListOwnPosts = async () => {
   return await apiClient.get(`my-posts`);
@@ -444,13 +444,13 @@ export const ListOwnPosts = async () => {
 export const AddNewPost = async (data) => {
   const formData = new FormData();
   Object.keys(data).forEach((key) => formData.append(key, data[key]));
-  return await fetch(`my-add-post`, {body: formData, method: 'POST'});
+  return await fetch(`my-add-post`, {body: formData, method: 'POST', headers: {Authtoken: `${localStorage.getItem('token')}`, Apikey: '123'}});
 }
 export const UpdateOwnPost = async (postId, data) => {
   const formData = new FormData();
   Object.keys(data).forEach((key) => formData.append(key, data[key]));
-  return await fetch(`my-posts/${postId}`, {body: formData, method: 'PUT'});
+  return await fetch(`my-posts/${postId}`, {body: formData, method: 'PUT', headers: {Authtoken: `${localStorage.getItem('token')}`, Apikey: '123'}});
 }
 export const DeleteOwnPost = async (postId) => {
-  return await fetch(`my-posts/${postId}`, {method: 'DELETE'});
+  return await apiClient.delete(`my-posts/${postId}`);
 }

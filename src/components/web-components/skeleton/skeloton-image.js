@@ -4,14 +4,14 @@ const SkeletonImage = ({ haveLine = false,count=0  }) => {
     const array = Array.from({ length: count });
     return (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 py-4">
             {[...Array(count)].map((_, index) => (
               <div
-                key={index} // `key` prop'u dış `div`'de olmalı
+                key={index} 
                 role="status"
-                className="space-y-2 flex flex-col justify-center items-center animate-pulse md:space-y-0  rtl:space-x-reverse md:flex md:items-center"
+                className="space-y-2 flex flex-col justify-center items-center animate-pulse md:space-y-0 "
               >
-                <div className="flex items-center justify-center w-full  bg-gray-300 rounded-2xl aspect-[0.75] ">
+                <div className="flex items-center justify-center w-full  bg-gray-300 h-64 rounded-2xl aspect-[0.75] ">
                   <svg
                     className="w-10 h-10 text-gray-200 dark:text-gray-600"
                     aria-hidden="true"

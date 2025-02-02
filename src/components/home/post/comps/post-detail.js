@@ -1,5 +1,6 @@
 "use client";
-import './style.scss';
+import "./style.scss";
+import "react-photo-view/dist/react-photo-view.css";
 import { useEffect, useState, useTransition } from "react";
 import { LikePostById, CommentPostById } from "@/lib/services/api-service";
 import Image from "next/image";
@@ -11,7 +12,8 @@ import { FiChevronLeft } from "react-icons/fi";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { IoMdSend } from "react-icons/io";
-
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import { timeAgo} from "@/lib/utils/utils";
 export default function PostDetailClient({ postData, setPostData }) {
   const [isPending, startTransition] = useTransition();
   const { post, comments, pictures } = postData;
@@ -41,7 +43,8 @@ export default function PostDetailClient({ postData, setPostData }) {
     });
   };
   const handleCommentSubmit = async () => {
-    if (commentText.trim() === "") return;
+    startTransition(async () => {
+      if (commentText.trim() === "") return;
     setCommentLoading(true);
 
     try {
@@ -72,6 +75,7 @@ export default function PostDetailClient({ postData, setPostData }) {
     } finally {
       setCommentLoading(false);
     }
+  });
   };
   return (
     <>
@@ -92,7 +96,7 @@ export default function PostDetailClient({ postData, setPostData }) {
           {postData?.user?.profileimages ? (
             <Image
               alt="User Avatar"
-              src={postData.user.profileimages}
+              src={`${fileBaseUrl}/${postData.user.profileimages}`}
               width={50}
               height={50}
               className="rounded-full"
@@ -105,44 +109,54 @@ export default function PostDetailClient({ postData, setPostData }) {
               {postData.user?.fullName ?? "Anonim"}
             </p>
             <p className="text-xs text-gray-400">
-              {new Date(post.created_at).toLocaleString()}
+              { timeAgo(new Date(post.created_at))}
             </p>
           </div>
         </div>
 
+              <PhotoProvider>
         <div className="my-4">
           {pictures.length > 0 && (
             <Swiper
               modules={[Pagination]}
               spaceBetween={10}
               slidesPerView={1}
-              pagination={{ clickable: true}}
+              pagination={{ clickable: true }}
               className="rounded-md"
             >
               {pictures.map((picture, index) => (
                 <SwiperSlide key={index}>
-                  <Image
-                    src={
-                      picture.picture_path
-                        ? `${fileBaseUrl}/${picture.picture_path}`
-                        : ""
-                    }
-                    alt={post.title}
-                    width={600}
-                    height={600}
-                    className="w-full h-auto object-contain rounded-md aspect-square bg-black"
-                  />
+                    <PhotoView
+                      src={
+                        picture.picture_path
+                          ? `${fileBaseUrl}/${picture.picture_path}`
+                          : ""
+                      }
+                    >
+                      <Image
+                        src={
+                          picture.picture_path
+                            ? `${fileBaseUrl}/${picture.picture_path}`
+                            : ""
+                        }
+                        alt={post.title}
+                        width={600}
+                        height={600}
+                        className="w-full h-auto object-contain rounded-md aspect-square bg-black"
+                      />
+                    </PhotoView>
                 </SwiperSlide>
               ))}
-
+                  
             </Swiper>
           )}
         </div>
+              </PhotoProvider> 
 
         <div className="flex items-center space-x-4 mb-4">
           <button className="relative flex items-center" onClick={handleLike}>
             {post.liked_by_user ? (
-              <IoHeartDislike className="text-red-500 " size={28} />
+              <IoHeartDislike className="text-primary " size={28} />
             ) : (
               <IoHeartOutline size={28} />
             )}
@@ -156,11 +170,13 @@ export default function PostDetailClient({ postData, setPostData }) {
               setCommentOpen((prev) => !prev);
             }}
           >
-            <FaComment size={24} />
+            <FaComment className="text-primary" size={24} />
             <span className="ml-1 text-sm">{post.comments_count}</span>
           </button>
         </div>
-
+        <div className="py-1 text-lg text-primary text-start">
+          <span>{post.title}</span>
+        </div>
         <p className="text-sm mb-6 text-start">{post.content}</p>
         <div
           className={`${
@@ -180,12 +196,13 @@ export default function PostDetailClient({ postData, setPostData }) {
               placeholder="Yorum yaz..."
               value={commentText}
               onKeyUp={(e) => e.key === "Enter" && handleCommentSubmit()}
+              disabled={isPending}
               onChange={(e) => setCommentText(e.target.value)}
             />
             <IoMdSend
               size={16}
               className=" text-white z-99 rounded absolute right-2 bottom-10"
-              onClick={handleCommentSubmit}
+              onClick={!isPending && handleCommentSubmit}
             />
           </div>
 
@@ -195,16 +212,16 @@ export default function PostDetailClient({ postData, setPostData }) {
               comments.map((comment) => (
                 <div
                   key={comment.id}
-                  className="border rounded-sm my-3 px-2 border-gray-700 py-2"
+                  className="border  rounded-3xl rounded-tl-none my-3 px-2 border-gray-700 py-2"
                 >
                   <div className="flex items-center justify-start">
                     {comment.user?.profileimages ? (
                       <Image
-                        src={comment.user.profileimages}
+                        src={`${fileBaseUrl}/${comment.user.profileimages}`}
                         alt="User Avatar"
                         width={30}
                         height={30}
-                        className="rounded-full"
+                        className="rounded-full aspect-square object-contain"
                       />
                     ) : (
                       <FaUser className="text-gray-400" size={30} />
@@ -214,7 +231,7 @@ export default function PostDetailClient({ postData, setPostData }) {
                         {comment.user?.fullName ?? "Anonim"}
                       </p>
                       <p className="text-xs text-gray-400 text-start">
-                        {new Date(comment.created_at).toLocaleString()}
+                        {timeAgo(new Date(comment.created_at))}
                       </p>
                     </div>
                   </div>
