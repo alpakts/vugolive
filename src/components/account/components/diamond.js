@@ -39,7 +39,7 @@ const DiamondPage = async () => {
     }
   return (
     <div className=" bg-black text-white p-4">
-        <a className="bg-white my-5" href="https://www.gpay.com.tr" target="blank" title="www.gpay.com.tr | Gpay "><Image src="https://www.gpay.com.tr/assets/gpay_logo/gpay-atm-450px.png" target="blank" title="www.gpay.com.tr | Gpay" width={400} height={80} className="h-auto w-full"  alt="www.gpay.com.tr | Gpay "/></a>
+        {/* <a className="bg-white my-5" href="https://www.gpay.com.tr" target="blank" title="www.gpay.com.tr | Gpay "><Image src="https://www.gpay.com.tr/assets/gpay_logo/gpay-atm-450px.png" target="blank" title="www.gpay.com.tr | Gpay" width={400} height={80} className="h-auto w-full"  alt="www.gpay.com.tr | Gpay "/></a> */}
       <div className="flex items-center justify-center px-4 py-2 w-full relative">
         <h1 className="font-bold text-lg">VUGO | CÜZDAN</h1> 
         <div className='absolute right-0 flex-col flex justify-center items-center top-5' onClick={()=>{
@@ -66,10 +66,10 @@ const DiamondPage = async () => {
         <CustomButton onClick={()=>{
           window.open('https://wa.me/05312983233?text=Merhaba%20Elmas%20Fiyat%20Listenizi%20Alabilir%20miyim?%20');
         }} className="font-bold !text-lg w-full bg-white py-2 text-black text-center rounded-lg mb-6">
-          ELMAS BAYİİ
+          Satın alımlar devredışı yönetim ile iletişime geçiniz
         </CustomButton>
 
-      <div className="px-4 text-center">
+      {/* <div className="px-4 text-center">
         <p className="text-sm mb-4">
           Sohbet, video görüşmeleri ve canlı yayınlar gibi tüm özelliklerin
           tadını çıkarmak için lütfen Elmas satın alın.
@@ -104,17 +104,17 @@ const DiamondPage = async () => {
             <PaymentForm diamond={selectedDiamond} setStep={setCurrentStep} />
             )}
         </div>
-      </div>
+      </div> */}
 
       {/* Footer Text */}
-      <div className="px-4 py-6 text-center text-sm text-gray-500">
+      {/* <div className="px-4 py-6 text-center text-sm text-gray-500">
         <p>
           Satın alma işlemine devam ederek Koşulları kabul etmiş olursunuz.
         </p>
         <p className="text-black font-bold">
           Kullanım Koşulları ve Gizlilik Politikası
         </p>
-      </div>
+      </div> */}
     </div>
   );
 };
