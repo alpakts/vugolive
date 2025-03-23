@@ -105,7 +105,7 @@ export default function SidebarMenu({ isOpen, closeMenu }) {
             Giriş Yap
           </Link>
         )}
-        {(user == -1 || !user ) && (
+        {/* {(user == -1 || !user ) && (
           <Link
             className="bg-white text-black text-center px-4 py-2 rounded hover:bg-yellow-400 flex justify-center items-center space-x-2"
             href="/auth"
@@ -116,7 +116,7 @@ export default function SidebarMenu({ isOpen, closeMenu }) {
           >
            <Image src={'/logo.png'} width={16} height={16}/>  Uygulamayı İndir
           </Link>
-        )}
+        )} */}
       </div>
     </div>
   );
