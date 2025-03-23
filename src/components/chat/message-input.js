@@ -8,6 +8,8 @@ import { getGifsList, getUrl } from "@/lib/services/api-service";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { MdBlock } from "react-icons/md";
+import PopupModalComp from "../web-components/popup-modal/popup-modal";
+import InsufficentDiamondPopupContent from "../web-components/insufficent-diamond-popup/insufficent-diamond-popup-content";
 
 const ChatMessageInput = ({ messageToUser, userEmail, apiUser, popupRef }) => {
   const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
@@ -15,6 +17,7 @@ const ChatMessageInput = ({ messageToUser, userEmail, apiUser, popupRef }) => {
   const fileInputRef = useRef(null);
   const [newMessage, setNewMessage] = useState("");
   const slidingModalRef = useRef(null);
+  const popupModal = useRef(null);
   const [giftList, setGiftList] = useState([]);
   useEffect(() => {
     getGifsList().then((res) => {
@@ -57,7 +60,7 @@ const ChatMessageInput = ({ messageToUser, userEmail, apiUser, popupRef }) => {
       photoUrl = fileResponse.data.url;
     }
     setNewMessage("");
-    sendMessageBetweenUsers(
+    const res = await sendMessageBetweenUsers(
       userEmail,
       messageToUserParams.identity,
       gift ? `${gift.diamond}` : newMessage,
@@ -67,6 +70,10 @@ const ChatMessageInput = ({ messageToUser, userEmail, apiUser, popupRef }) => {
       gift,
       photoUrl
     );
+    if (res == "openmodal") {
+      popupModal.current.openModal();
+      
+    }
   };
 
   return (
@@ -186,6 +193,9 @@ const ChatMessageInput = ({ messageToUser, userEmail, apiUser, popupRef }) => {
           }}
         />
       </button>
+      <PopupModalComp ref={popupModal} >
+        <InsufficentDiamondPopupContent popupRef={popupModal}></InsufficentDiamondPopupContent>
+      </PopupModalComp>
     </div>
   );
 };

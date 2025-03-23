@@ -1,12 +1,14 @@
 // components/FollowersList.js
 'use client';
 import CustomButton from "@/components/web-components/button/button";
+import InsufficentDiamondPopupContent from "@/components/web-components/insufficent-diamond-popup/insufficent-diamond-popup-content";
+import PopupModalComp from "@/components/web-components/popup-modal/popup-modal";
 import { useAppSelector } from "@/lib/hooks";
 import { getExploreProfilesByGender } from "@/lib/services/api-service";
 import { sendMessageBetweenUsers } from "@/lib/services/firebase-service";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaUser } from "react-icons/fa";
 const hiMessages = [
   "Merhaba Günün nasıl geçiyor.",
@@ -24,6 +26,7 @@ const ForYou = () => {
   const filebaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   const router = useRouter();
   const [users, setUsers] = useState([]);
+  const popupModal = useRef(null);
   const apiUser =useAppSelector((state) => state.apiUser.apiUser);
   useEffect(() => {
     const userId=localStorage.getItem("userId");
@@ -35,7 +38,12 @@ const ForYou = () => {
   const sayHiToUser = async (sender, receiver) => {
     if (sender && receiver) {
       const hiMessage = getRandomHiMessage();
-      await sendMessageBetweenUsers(sender.email, receiver.email, hiMessage, sender, receiver, "text");
+      debugger;
+      const res = await sendMessageBetweenUsers(sender.email, receiver.email, hiMessage, sender, receiver, "text");
+      if (res == "openmodal") {
+        popupModal.current.openModal();
+        return;
+      }
       router.push(`/chat/${receiver.id}`);
     }
   };
@@ -100,6 +108,9 @@ const ForYou = () => {
           </div>
         ))}
       </div>
+      <PopupModalComp ref={popupModal} >
+        <InsufficentDiamondPopupContent popupRef={popupModal}></InsufficentDiamondPopupContent>
+      </PopupModalComp>
     </div>
   );
 };

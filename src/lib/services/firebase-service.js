@@ -79,8 +79,8 @@ export const sendMessageBetweenUsers = async (
     gift,
     free
   );
-  if (transaction == false ) {
-    return false;
+  if (transaction == "openmodal" ) {
+    return "openmodal";
   }
   const combinedEmail = [userEmail1, userEmail2].sort().join("");
   let chatDocRef = doc(db, "chat", combinedEmail);
@@ -303,8 +303,7 @@ const transactDiamonds = async (sender, receiver, gift,free) => {
       return true;
     }
   } else {
-    window.location.href = "/account/charge";
-    return false;
+    return "openmodal";
   }
 };
 const checkMessageIsFree = (sender, receiver,gift) => {
@@ -523,8 +522,7 @@ export const transactVideoCallDiamonds = async (sender, receiver,free = false) =
       await addDiamonds(receiver.id,amount,2,receiver.is_host,0,0,sender.id);
       return true
   } else {
-    window.location.href = "/account/charge";
-    return false;
+    return "openmodal";
   }
 };
 export const listenToNonEmptyHosts = (setHosts) => {

@@ -43,6 +43,11 @@ const LoginForm = ({setPage}) => {
         one_signal_id:'123'
       }
       var registerResponse = await registerUser(registerData);
+
+      if (registerResponse.data.data.is_block == 1) {
+        alert('Hesabınız bloke edilmiştir. Lütfen yönetici ile iletişime geçiniz.');
+        return;
+      }
       localStorage.setItem('userId',registerResponse.data.data.id);
       localStorage.setItem('token', registerResponse.data.data.auth_token);
       dispatch(setApiUser(registerResponse.data.data));

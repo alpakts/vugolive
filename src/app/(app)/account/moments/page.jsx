@@ -23,6 +23,8 @@ import Loading from "../../loading";
 import PopupComp from "@/components/web-components/popup/popup";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import { timeAgo } from "@/lib/utils/utils";
+import PopupModalComp from "@/components/web-components/popup-modal/popup-modal";
+import InsufficentDiamondPopupContent from "@/components/web-components/insufficent-diamond-popup/insufficent-diamond-popup-content";
 const hiMessages = [
   "Merhaba Günün nasıl geçiyor.",
   "Merhaba tanışabilir miyiz?",
@@ -38,6 +40,7 @@ const getRandomHiMessage = () => {
 export default function Page() {
   const [posts, setPosts] = useState(null);
   const [isPending, startTransition] = useTransition();
+  const popupModal = useRef(null);
   const popupRef = useRef(null);
   const fileBaseUrl = process.env.NEXT_PUBLIC_FILE_URL;
   const [openDropdowns, setOpenDropdowns] = useState({});
@@ -65,12 +68,12 @@ export default function Page() {
           prevPosts.map((post) =>
             post.id === postId
               ? {
-                  ...post,
-                  liked_by_user: !post.liked_by_user,
-                  likes_count: post.liked_by_user
-                    ? post.likes_count - 1
-                    : post.likes_count + 1,
-                }
+                ...post,
+                liked_by_user: !post.liked_by_user,
+                likes_count: post.liked_by_user
+                  ? post.likes_count - 1
+                  : post.likes_count + 1,
+              }
               : post
           )
         );
@@ -84,7 +87,7 @@ export default function Page() {
     const receiver = res.data.data;
     if (sender && receiver) {
       const hiMessage = getRandomHiMessage();
-      await sendMessageBetweenUsers(
+      const res = await sendMessageBetweenUsers(
         sender.email,
         receiver.email,
         hiMessage,
@@ -92,6 +95,11 @@ export default function Page() {
         receiver,
         "text"
       );
+      console.log(res)
+      if (res == "openmodal") {
+        popupModal.current.openModal();
+        return;
+      }
       router.push(`/chat/${receiver.id}`);
     }
   };
@@ -267,6 +275,9 @@ export default function Page() {
         )}
       </div>
       <PopupComp ref={popupRef} />
+      <PopupModalComp ref={popupModal} >
+        <InsufficentDiamondPopupContent popupRef={popupModal}></InsufficentDiamondPopupContent>
+      </PopupModalComp>
     </div>
   );
 }

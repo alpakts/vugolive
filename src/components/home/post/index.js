@@ -1,6 +1,6 @@
 "use client";
 import "react-photo-view/dist/react-photo-view.css";
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect, useTransition, useRef } from "react";
 import Image from "next/image";
 import {
   GetPosts,
@@ -18,6 +18,8 @@ import { sendMessageBetweenUsers, sendNotification } from "@/lib/services/fireba
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import { timeAgo } from "@/lib/utils/utils";
 import Loading from "@/app/(app)/loading";
+import PopupModalComp from "@/components/web-components/popup-modal/popup-modal";
+import InsufficentDiamondPopupContent from "@/components/web-components/insufficent-diamond-popup/insufficent-diamond-popup-content";
 const hiMessages = [
   "Merhaba Günün nasıl geçiyor.",
   "Merhaba tanışabilir miyiz?",
@@ -48,12 +50,13 @@ export default function PostComponent() {
 
     fetchPosts();
   }, []);
+  const popupModal = useRef(null);
   const sayHiToUser = async (sender, receiverId) => {
     const res = await getUserProfile(receiverId);
     const receiver = res.data.data;
     if (sender && receiver) {
       const hiMessage = getRandomHiMessage();
-      await sendMessageBetweenUsers(
+      const res = await sendMessageBetweenUsers(
         sender.email,
         receiver.email,
         hiMessage,
@@ -61,6 +64,10 @@ export default function PostComponent() {
         receiver,
         "text"
       );
+      if (res == "openmodal") {
+        popupModal.current.openModal();
+        return;
+      }
       router.push(`/chat/${receiver.id}`);
     }
   };
@@ -203,6 +210,9 @@ export default function PostComponent() {
           <p>Gönderi bulunamadı.</p>
         ) : <Loading></Loading>}
       </div>
+      <PopupModalComp ref={popupModal} >
+        <InsufficentDiamondPopupContent popupRef={popupModal}></InsufficentDiamondPopupContent>
+      </PopupModalComp>
     </div>
   );
 }

@@ -55,7 +55,7 @@ export default function Header() {
           {hasNewMessage && <div className="w-3 h-3 bg-red-500 rounded-full absolute top-0 right-0"></div>}
         </Link>}
         <button >
-       <Link href={'/account/charge'}>
+       {/* <Link href={'/account/charge'}>
        <Image
                 width={24}
                 height={24}
@@ -63,7 +63,7 @@ export default function Header() {
                 src="/diamond.png"
                 alt="diamond menu"
               />
-       </Link>
+       </Link> */}
         </button>
         {(apiUser == -1 || !apiUser) ? (
           <button onClick={() => setIsMenuOpen(!isMenuOpen)}>

@@ -33,6 +33,10 @@ const AuthHome = () => {
           var registerResponse = await registerUser(registerData);
           localStorage.setItem('userId',registerResponse.data.data.id);
           localStorage.setItem('token', registerResponse.data.data.auth_token);
+          if (registerResponse.data.data.is_block == 1) {
+            alert('Hesabınız bloke edilmiştir. Lütfen yönetici ile iletişime geçiniz.');
+            return;
+          }
           dispatch(setApiUser(registerResponse.data.data));
           window.location.href=(params.get('callbackUrl') ??'/account');
         } catch (error) {

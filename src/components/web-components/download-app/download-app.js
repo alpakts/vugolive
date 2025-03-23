@@ -19,7 +19,7 @@ const DownloadAppPrompt = () => {
 
   return (
     <>
-      {showPopup && (
+      {showPopup && false && (
         <div className="fixed bottom-0 w-full flex items-center justify-center bg-black bg-opacity-50 z-50 ">
           <div className="bg-black p-6 rounded-lg shadow-lg text-center w-full relative  ">
             <p className="mb-4 text-secondary">

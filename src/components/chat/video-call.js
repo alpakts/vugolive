@@ -27,6 +27,8 @@ import { useAppSelector } from "@/lib/hooks";
 import { FaUser } from "react-icons/fa";
 import { sendNotification, transactVideoCallDiamonds } from "@/lib/services/firebase-service";
 import { useRouter } from "next/navigation";
+import PopupModalComp from "../web-components/popup-modal/popup-modal";
+import InsufficentDiamondPopupContent from "../web-components/insufficent-diamond-popup/insufficent-diamond-popup-content";
 
 async function Call(props) {
   const router = useRouter();
@@ -64,6 +66,7 @@ function Videos(props) {
   const intervalRef = useRef(null);
   const inactivityTimeout = useRef(null);
   const [firstPayment, setFirstPayment] = useState(false);
+  const popupModal = useRef(null);
   usePublish([localMicrophoneTrack, localCameraTrack]);
   useJoin({
     appid: AppID,
@@ -94,7 +97,12 @@ function Videos(props) {
   }, [remoteUsers]);
   useEffect(() => {
     if (apiUser && host && apiUser?.id != calledUser && !isCalling && !firstPayment) {
-      transactVideoCallDiamonds(apiUser,host);
+      const res = transactVideoCallDiamonds(apiUser,host);
+      if (res == "openmodal") {
+        popupModal.current.openModal();
+        return;
+      }
+        
       setFirstPayment(true);
         intervalRef.current = setInterval(async () => {
           transactVideoCallDiamonds(apiUser,host);
@@ -313,6 +321,9 @@ function Videos(props) {
           </a>
         </div>
       )}
+        <PopupModalComp ref={popupModal} >
+        <InsufficentDiamondPopupContent popupRef={popupModal}></InsufficentDiamondPopupContent>
+      </PopupModalComp>
     </div>
   );
 }

@@ -28,11 +28,11 @@ const AccounHome = () => {
   return (
     <div className="w-full mt-6 space-y-4 text-white">
       {/* Elmas Yükleme */}
-      <SlidingModal
+      {/* <SlidingModal
         OpenButton={<MenuItem icon={<FaWallet />} text="Elmas Yükleme" />}
       >
         <DiamondPage />
-      </SlidingModal>
+      </SlidingModal> */}
       {/* Takip Edilenler */}
 
       <SlidingModal
@@ -112,13 +112,13 @@ const AccounHome = () => {
         {" "}
         <Policy />
       </SlidingModal>
-      <MenuItem
+      {/* <MenuItem
         onClick={() => {
           router.push(process.env.NEXT_PUBLIC_APP_PUBLIC_URL);
         }}
         icon={<FaGooglePlay />}
         text="Uygulamayı indir"
-      />
+      /> */}
       <MenuItem
         onClick={handleLogout}
         icon={<FaChevronLeft />}

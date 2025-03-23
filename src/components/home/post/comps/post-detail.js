@@ -17,6 +17,8 @@ import { timeAgo } from "@/lib/utils/utils";
 export default function PostDetailClient({ postData, setPostData }) {
   const [isPending, startTransition] = useTransition();
   const { post, comments, pictures } = postData;
+  const  {user} = post;
+  console.log(user);
   const [commentText, setCommentText] = useState("");
   const [commentOpen, setCommentOpen] = useState(false);
   const [commentLoading, setCommentLoading] = useState(false);
@@ -93,20 +95,20 @@ export default function PostDetailClient({ postData, setPostData }) {
 
       <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 mt-2 max-h-[calc(100vh-100px)] overflow-y-auto">
         <div className="flex items-center">
-          {postData?.user?.profileimages ? (
+          {user?.profileimages ? (
             <Image
               alt="User Avatar"
-              src={`${fileBaseUrl}/${postData.user.profileimages}`}
+              src={`${fileBaseUrl}/${user.profileimages}`}
               width={50}
               height={50}
-              className="rounded-full"
+              className="rounded-full aspect-square object-contain"
             />
           ) : (
             <FaUser className="text-gray-400" size={50} />
           )}
           <div className="ml-3 text-start">
             <p className="font-semibold text-sm">
-              {postData.user?.fullName ?? "Anonim"}
+              {user?.fullName ?? "Anonim"}
             </p>
             <p className="text-xs text-gray-400">
               {timeAgo(new Date(post.created_at))}
